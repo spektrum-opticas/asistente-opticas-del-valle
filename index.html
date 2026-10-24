@@ -199,6 +199,66 @@ a.btn[aria-disabled="true"]{opacity:.45;pointer-events:none}
 .hitem .s{font-size:.82rem;color:var(--muted)}
 @media (max-width:520px){.hitem{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){.progress>div{transition:none}}
+/* Gráficas, buscador, expedientes y diálogos */
+:root{--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;--s6:#6250d6;--grid:#e3e9ed;--shade:rgba(10,20,28,.45)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#9085e9;--grid:#22333d;--shade:rgba(0,0,0,.6)}}
+:root[data-theme="dark"]{--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#9085e9;--grid:#22333d;--shade:rgba(0,0,0,.6)}
+.chart{width:100%;min-width:0}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart text{font-family:var(--f-body);font-size:11px;fill:var(--muted)}
+.chart text.val{fill:var(--ink);font-weight:700}
+.chart .gl{stroke:var(--grid);stroke-width:1}
+.chart .zl{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 3}
+.chart [data-tip]{cursor:default}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.8rem;color:var(--muted);margin-top:8px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px}
+#tip{position:fixed;z-index:50;pointer-events:none;background:var(--ink);color:var(--surface);font-size:.8rem;padding:6px 9px;border-radius:6px;max-width:260px;line-height:1.35;white-space:pre-line;font-variant-numeric:tabular-nums}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.search{flex:1 1 220px;min-width:0;font:inherit;padding:8px 12px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+.search:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:inline-flex;flex-wrap:wrap;border:1.5px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{font:inherit;font-size:.85rem;font-weight:700;border:0;background:var(--surface);color:var(--muted);padding:7px 12px;cursor:pointer}
+.seg button+button{border-left:1.5px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.seg button:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+.why{font-size:.84rem;color:var(--warn);font-weight:700}
+.sitem details{grid-column:1/-1;font-size:.85rem}
+.sitem details summary{cursor:pointer;color:var(--accent);font-weight:700}
+.sitem details pre{margin-top:8px}
+.map .wide{grid-column:1/-1}
+.map input[type=date]{font:inherit;font-weight:400;padding:7px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);width:100%}
+.map input[readonly]{background:var(--bg);color:var(--muted)}
+.map input:disabled{opacity:.7}
+table.rx.rxedit td{padding:3px}
+table.rx.rxedit input{width:100%;min-width:62px;font:inherit;font-variant-numeric:tabular-nums;text-align:center;color:var(--rx-blue);padding:6px 4px;border:1px solid transparent;border-radius:6px;background:transparent}
+table.rx.rxedit input:focus{border-color:var(--accent);outline:none;background:var(--surface)}
+table.rx.rxedit input:disabled{color:var(--ink)}
+.exmiss{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.exmiss .chip{font-size:.72rem;padding:2px 8px}
+.hitem.on{background:var(--accent-soft);border-radius:8px;padding-inline:10px}
+.prog{display:flex;flex-direction:column;gap:10px}
+.prog .pr{display:grid;grid-template-columns:minmax(0,170px) 1fr 64px;gap:10px;align-items:center;font-size:.86rem}
+.prog .pr>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prog .tr{height:12px;border-radius:999px;background:var(--line);overflow:hidden}
+.prog .tr>div{height:100%;background:var(--s1);border-radius:999px}
+.prog .mono{text-align:right}
+.sbars{display:flex;flex-direction:column;gap:9px}
+.sbars .sb{display:grid;grid-template-columns:minmax(0,130px) 1fr 34px;gap:10px;align-items:center;font-size:.86rem}
+.sbars .tr{display:flex;gap:2px;height:12px}
+.sbars .tr>div{height:100%}
+.sbars .tr>div:first-child{border-radius:999px 0 0 999px}.sbars .tr>div:last-child{border-radius:0 999px 999px 0}.sbars .tr>div:only-child{border-radius:999px}
+.sbars .mono{text-align:right}
+dialog.dlg{border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);padding:20px;width:min(560px,calc(100vw - 32px));max-height:calc(100vh - 48px)}
+dialog.dlg::backdrop{background:var(--shade)}
+.dlg h2{margin-bottom:8px}
+.dlg .body{font-size:.92rem;display:flex;flex-direction:column;gap:8px}
+.dlg .chg{max-height:300px;overflow:auto;border:1px solid var(--line);border-radius:8px}
+.dlg .chg td{white-space:normal;vertical-align:top}
+.dlg .chg td.antes{color:var(--muted);text-decoration:line-through}
+.dlg .acts{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;margin-top:16px}
+.kpi small{font-size:.78rem;color:var(--muted)}
+.dwide{grid-column:1/-1}
 </style>
 <style>
 html{color-scheme:light}
@@ -315,6 +375,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   <nav class="tabs" role="tablist" aria-label="Secciones">
     <button class="tab" role="tab" id="tab-dashboard" data-tab="dashboard" aria-selected="true" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h6V4H4zM14 20h6v-9h-6zM4 20h6v-4H4zM14 7h6V4h-6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span class="tl">Dashboard</span><span class="ts">Inicio</span></button>
     <button class="tab" role="tab" id="tab-carga" data-tab="carga" aria-selected="false" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 15v4h14v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tl">Carga de datos</span><span class="ts">Cargar</span></button>
+    <button class="tab" role="tab" id="tab-expedientes" data-tab="expedientes" aria-selected="false" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7.5 17c.8-1.9 2.5-3 4.5-3s3.7 1.1 4.5 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="tl">Expedientes</span><span class="ts">Pacientes</span></button>
     <button class="tab" role="tab" id="tab-mensajes" data-tab="mensajes" aria-selected="false" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18.5 5.3 15A7.5 7.5 0 1 1 9 18.6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span class="tl">Mensajes WhatsApp</span><span class="ts">Mensajes</span></button>
     <button class="tab" role="tab" id="tab-nps" data-tab="nps" aria-selected="false" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 4 2.4 5 5.4.6-4 3.7 1.1 5.4L12 16l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span class="tl">Encuesta NPS</span><span class="ts">NPS</span></button>
     <button class="tab" role="tab" id="tab-usuarios" data-tab="usuarios" aria-selected="false" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 4.5a3.5 3.5 0 0 1 0 7M18 14c2 .6 3.5 2.6 3.5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="tl">Usuarios</span><span class="ts">Equipo</span></button>
@@ -352,10 +413,15 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   <div class="panel" id="panel-dashboard" role="tabpanel" aria-labelledby="tab-dashboard">
     <div class="kpis" id="kpis"></div>
     <div class="dgrid">
+      <section class="step dwide"><div><h2>Envíos por mes y tipo de mensaje</h2><p class="small muted">Últimos 12 meses. Pasa el cursor por una barra para ver el detalle.</p></div><div class="chart" id="cMes"></div></section>
+      <section class="step"><div><h2>Avance del mes por campaña</h2><p class="small muted" id="cAvSub">Enviados contra pacientes elegibles este mes.</p></div><div class="prog" id="cAv"></div></section>
+      <section class="step"><div><h2>Próximos exámenes anuales</h2><p class="small muted">Pacientes que cumplen 11, 12 y 13 meses desde su entrega o consulta.</p></div><div class="chart" id="cExam"></div></section>
       <section class="step"><h2>Mensajes enviados, últimos 30 días</h2><div class="days" id="dDays"></div></section>
-      <section class="step"><h2>Envíos por tipo de mensaje</h2><div class="hbars" id="dTpl"></div></section>
+      <section class="step"><div><h2>Consultas por mes</h2><p class="small muted">Según la fecha de consulta del expediente.</p></div><div class="chart" id="cCons"></div></section>
+      <section class="step"><h2>Pacientes por mes de cumpleaños</h2><div class="chart" id="cCump"></div></section>
+      <section class="step"><div><h2>Diagnósticos estimados</h2><p class="small muted">Calculados con la graduación; un paciente puede tener más de uno.</p></div><div class="hbars" id="cDx"></div></section>
+      <section class="step"><div><h2>Calidad de la base</h2><p class="small muted">Expedientes a los que les falta cada dato.</p></div><div class="hbars" id="cCal"></div></section>
       <section class="step"><h2>Envíos por usuario</h2><div class="hbars" id="dUser"></div></section>
-      <section class="step"><h2>Calidad de los datos cargados</h2><div class="hbars" id="dData"></div></section>
     </div>
   </div>
 
@@ -390,7 +456,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   </section>
 
   <section class="step" id="s4" aria-disabled="true">
-    <div class="step-head"><span class="num">4</span><div><h2>Guardar la carga</h2><p class="small muted">En cuanto la guardes queda disponible en «Mensajes WhatsApp» y en «Encuesta NPS».</p></div></div>
+    <div class="step-head"><span class="num">4</span><div><h2>Guardar la carga</h2><p class="small muted">En cuanto la guardes se integra a «Expedientes» y queda disponible en «Mensajes WhatsApp» y en «Encuesta NPS».</p></div></div>
     <div class="row"><button class="btn" id="saveBtn" type="button" disabled>Guardar carga</button><span class="small muted" id="saveHint"></span></div>
     <div class="progress" id="prog" hidden><div></div></div>
     <div id="saveMsg"></div>
@@ -399,6 +465,42 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   <section class="step">
     <div class="step-head"><span class="num"></span><div><h2>Cargas guardadas</h2><p class="small muted">Las más recientes primero.</p></div></div>
     <div class="hist" id="hist"><p class="muted small">Aún no hay cargas. Cuando guardes la primera aparecerá aquí con su número de filas y su estado.</p></div>
+  </section>
+  </div>
+
+  <div class="panel" id="panel-expedientes" role="tabpanel" aria-labelledby="tab-expedientes" hidden>
+  <section class="step">
+    <div class="step-head"><span class="num"></span><div><h2>Expedientes de pacientes</h2><p class="small muted">Un expediente por folio, armado con todas tus cargas de Excel. Busca a un paciente para completar o corregir sus datos. Los pacientes nuevos se siguen dando de alta con una carga de Excel.</p></div></div>
+    <div class="toolbar">
+      <input type="search" id="exQ" class="search" placeholder="Buscar por nombre, teléfono o folio" aria-label="Buscar expediente" autocomplete="off">
+      <label class="small">Mostrar <select id="exF" aria-label="Filtrar expedientes"></select></label>
+      <button class="btn ghost sm" id="exDl" type="button">Descargar expedientes en Excel</button>
+    </div>
+    <div class="stats" id="exStats"></div>
+    <div class="msg info" id="exSync" hidden></div>
+    <div class="hist" id="exList"><p class="muted small">Cuando guardes una carga de Pacientes, sus expedientes aparecerán aquí.</p></div>
+    <div class="row"><button class="btn ghost sm" id="exMore" type="button" hidden>Mostrar más</button></div>
+  </section>
+  <section class="step" id="exFicha" hidden>
+    <div class="step-head"><span class="num"></span><div><h2 id="exTitle">Expediente</h2><p class="small muted" id="exSub"></p></div></div>
+    <form id="exForm" class="map" novalidate>
+      <label>Nombre <em>*</em><input type="text" id="ex-nombre" autocomplete="off"></label>
+      <label>Teléfono / WhatsApp<input type="tel" id="ex-telefono" placeholder="10 dígitos" autocomplete="off"></label>
+      <label>Fecha de nacimiento<input type="date" id="ex-fechaNacimiento"></label>
+      <label>Folio<input type="text" id="ex-folio" readonly></label>
+      <label>Fecha de consulta<input type="date" id="ex-fechaConsulta"></label>
+      <div class="wide rxscroll"><table class="rx rxedit" aria-label="Receta">
+        <tr><th class="rxh">RX</th><th class="rxh">ESF</th><th class="rxh">CIL</th><th class="rxh">EJE</th><th class="rxh">D.I.</th><th class="rxh">ADD</th><th class="rxh">ACO</th></tr>
+        <tr><th class="rxe">OD</th><td><input id="ex-od-esf" inputmode="decimal" aria-label="OD ESF"></td><td><input id="ex-od-cil" inputmode="decimal" aria-label="OD CIL"></td><td><input id="ex-od-eje" inputmode="numeric" aria-label="OD EJE"></td><td><input id="ex-od-di" inputmode="decimal" aria-label="OD D.I."></td><td><input id="ex-od-add" aria-label="OD ADD"></td><td><input id="ex-od-aco" inputmode="decimal" aria-label="OD ACO"></td></tr>
+        <tr><th class="rxe">OS</th><td><input id="ex-oi-esf" inputmode="decimal" aria-label="OS ESF"></td><td><input id="ex-oi-cil" inputmode="decimal" aria-label="OS CIL"></td><td><input id="ex-oi-eje" inputmode="numeric" aria-label="OS EJE"></td><td><input id="ex-oi-di" inputmode="decimal" aria-label="OS D.I."></td><td><input id="ex-oi-add" aria-label="OS ADD"></td><td><input id="ex-oi-aco" inputmode="decimal" aria-label="OS ACO"></td></tr>
+      </table></div>
+      <p class="small muted wide">ESF con su signo; «neutro» se guarda como 0.00. CIL siempre negativo. ADD positiva, o escribe «Solo cerca» / «Solo lejos». EJE de 0 a 180. Lo que dejes vacío se queda vacío.</p>
+      <label>Material<input type="text" id="ex-material" autocomplete="off"></label>
+      <label>Fecha de entrega<input type="date" id="ex-fechaEntrega"></label>
+      <label>Armazón o L/C<input type="text" id="ex-armazon" autocomplete="off"></label>
+      <div class="row wide"><button class="btn" type="submit" id="exSave">Guardar cambios</button><button class="btn ghost" type="button" id="exClose">Cerrar expediente</button><span class="small" id="exMsg"></span></div>
+    </form>
+    <div><span class="label">Historial de cambios</span><div class="hist" id="exHist"><p class="small muted">Sin cambios registrados.</p></div></div>
   </section>
   </div>
 
@@ -430,13 +532,18 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       <label data-f="desc" hidden>Descuento de cumpleaños<input type="text" id="in-desc" placeholder="Ej. 20%"></label>
       <label data-f="promo" hidden>Link para agendar visita<input type="url" id="in-promo" placeholder="Pégalo aquí (opcional)"></label>
       <label data-f="mesCumple" hidden>Cumpleañeros de<select id="in-mesCumple"><option value="">Todos los pacientes</option></select></label>
-      <label data-f="filtro" class="check" hidden><span><input type="checkbox" id="in-filtro" checked> Filtrar por meses desde la entrega de sus lentes</span></label>
+      <label data-f="filtro" class="check" hidden><span><input type="checkbox" id="in-filtro" checked> Filtrar por meses desde su entrega (o su consulta, si no hay fecha de entrega)</span></label>
     </div>
   </section>
   <section class="step">
-    <div class="step-head"><span class="num">3</span><div><h2>Envía uno por uno</h2><p class="small muted">«Abrir WhatsApp» abre el chat con el mensaje escrito; tú solo presionas enviar. Queda marcado como enviado.</p></div></div>
+    <div class="step-head"><span class="num">3</span><div><h2>Envía uno por uno</h2><p class="small muted">«Abrir WhatsApp» abre el chat con el mensaje escrito; tú solo presionas enviar. Queda marcado como enviado y el paciente sale de pendientes hasta que le vuelva a tocar.</p></div></div>
+    <div class="toolbar">
+      <input type="search" id="mQ" class="search" placeholder="Buscar por nombre, teléfono o folio" aria-label="Buscar paciente" autocomplete="off">
+      <div class="seg" role="group" aria-label="Qué mostrar" id="mSeg"><button type="button" data-v="pend" aria-pressed="true">Pendientes</button><button type="button" data-v="sent" aria-pressed="false">Ya enviados</button><button type="button" data-v="no" aria-pressed="false">No elegibles</button></div>
+    </div>
     <div class="row"><div class="stats" id="sendStats"></div><span style="flex:1"></span><button class="btn ghost sm" id="expBtn" type="button" disabled>Descargar lista en Excel</button></div>
-    <div class="sendlist" id="sendList"><p class="muted small">Elige una plantilla y una carga para ver los mensajes listos.</p></div>
+    <div class="sendlist" id="sendList"><p class="muted small">Elige una plantilla y el origen de los pacientes para ver los mensajes listos.</p></div>
+    <div class="row"><button class="btn ghost sm" id="mMore" type="button" hidden>Mostrar más</button></div>
   </section>
   </div>
 
@@ -450,6 +557,14 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     <div><span class="label">Distribución de calificaciones</span><div class="dist" id="npsDist"></div></div>
     <div><span class="label">Temas en los comentarios</span><div class="themes" id="npsThemes"><p class="small muted">Aparecen cuando haya comentarios.</p></div></div>
   </section>
+  <div class="dgrid">
+    <section class="step"><div><h2>Evolución del NPS</h2><p class="small muted">Últimos 12 meses, de -100 a +100.</p></div><div class="chart" id="nLine"></div></section>
+    <section class="step"><div><h2>Promotores, pasivos y detractores</h2><p class="small muted">Respuestas por mes.</p></div><div class="chart" id="nStack"></div></section>
+    <section class="step"><div><h2>Tasa de respuesta</h2><p class="small muted">Encuestas enviadas contra respuestas recibidas, por mes.</p></div><div class="chart" id="nRate"></div></section>
+    <section class="step"><h2>Respuestas por origen</h2><div class="hbars" id="nSrc"></div></section>
+    <section class="step"><div><h2>Temas de los comentarios por grupo</h2><p class="small muted">Qué mencionan detractores, pasivos y promotores.</p></div><div id="nTheme"></div></section>
+    <section class="step"><div><h2>NPS por tipo de lente</h2><p class="small muted">Cruza el teléfono de cada respuesta con el material del expediente.</p></div><div class="tablebox" id="nLens"></div></section>
+  </div>
   <section class="step">
     <div class="step-head"><span class="num"></span><div><h2>Encuesta web</h2><p class="small muted">Las calificaciones que los clientes dejan en la encuesta llegan aquí solas. Cada mensaje lleva un link personal para saber quién respondió.</p></div></div>
     <div class="map">
@@ -520,6 +635,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   </footer>
 </div>
 
+<dialog class="dlg" id="dlg" aria-labelledby="dlgT"><h2 id="dlgT"></h2><div class="body" id="dlgB"></div><div class="acts"><button class="btn ghost" id="dlgNo" type="button">Cancelar</button><button class="btn" id="dlgOk" type="button">Confirmar</button></div></dialog>
+<div id="tip" hidden></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
@@ -576,23 +693,35 @@ function rxFields(k,eye,eyeSyn){
   return RX.map(([f,lab,syn])=>[k+"_"+f,`${eye} ${lab}`,0,eyeSyn.flatMap(e=>syn.flatMap(s=>[e+" "+s,s+" "+e]))]);
 }
 const RX_KEYS = new Set(["od","oi"].flatMap(e=>RX.map(r=>e+"_"+r[0])));
-const PLANO = /^(pl|plano|plan|neutro|n|esf|-+)$/i;
-function fmtDiop(v){            /* conserva signo, 2 decimales, Plano/vacío = 0.00, sin transponer */
+/* Normalización de receta: vacío se queda vacío, neutro = 0.00, CIL siempre negativo, ADD positiva o leyenda */
+const NEUTRO=/^(pl|plano|neutro|neutral|n)$/i, VACIO=/^([-—–]+|none|null|n\/a|s\/d)$/i;
+function nEsf(v){
   const t=String(v??"").trim().replace(",",".").replace(/\s+/g,"");
-  if(t===""||PLANO.test(t)) return {v:"0.00"};
-  const n=Number(t.replace(/[^0-9.+\-]/g,""));
-  if(isNaN(n)) return {v:t,err:"valor no numérico"};
+  if(!t||VACIO.test(t)) return {v:null};
+  if(NEUTRO.test(t)) return {v:"0.00",n:0};
+  let s=t.replace(/[^0-9.+\-]/g,"");
+  if(/^[+-]?\d{3}$/.test(s)) s=s.replace(/(\d)(\d\d)$/,"$1.$2");   /* -075 = -0.75 */
+  const n=Number(s);
+  if(s===""||isNaN(n)) return {v:t,err:"no es un número"};
   const r=Math.round(n*100)/100;
   return {v: r>0 ? "+"+r.toFixed(2) : r<0 ? r.toFixed(2) : "0.00", n:r};
 }
-function fmtEje(v,cil){
-  const t=String(v??"").replace(/[°º]|grados|x/gi,"").trim();
-  if(t===""){ return cil!==0 ? {v:null,err:"Falta eje"} : {v:"0°"}; }
-  const n=Math.round(Number(t.replace(",",".")));
-  if(isNaN(n)||n<0||n>180) return {v:t,err:"Eje fuera de 0°-180°"};
-  return {v:n+"°"};
+function nCil(v){ const x=nEsf(v); if(x.n===undefined) return x; const r=-Math.abs(x.n); return {v:r===0?"0.00":r.toFixed(2),n:r}; }
+function nAdd(v){
+  const t=String(v??"").trim();
+  if(/solo\s*cerca/i.test(t)) return {v:"Solo cerca"};
+  if(/solo\s*lejos/i.test(t)) return {v:"Solo lejos"};
+  const x=nEsf(t); if(x.n===undefined) return x; const r=Math.abs(x.n); return {v:r===0?"0.00":"+"+r.toFixed(2),n:r};
 }
-function fmtMm(v){ const t=String(v??"").trim(); if(!t) return null; const n=t.replace(/mm/i,"").trim(); return /^[0-9.,\/ -]+$/.test(n) ? n.replace(",",".")+" mm" : t; }
+function nEje(v){
+  const t=String(v??"").replace(/[°º]|grados|x/gi,"").trim();
+  if(!t||VACIO.test(t)) return {v:null};
+  const n=Math.round(Number(t.replace(",",".")));
+  if(isNaN(n)||n<0||n>180) return {v:t,err:"debe ir de 0 a 180"};
+  return {v:String(n),n};
+}
+function nMm(v){ const t=String(v??"").replace(/mm/i,"").trim(); return (!t||VACIO.test(t))?{v:null}:{v:t.replace(",",".")}; }
+function fmtMm(v){ const x=nMm(v).v; if(x==null) return null; return /^[0-9.\/ -]+$/.test(x) ? x+" mm" : x; }
 function fmtFecha(v){ const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(v)); return m ? `${+m[3]}/${+m[2]}/${m[1]}` : v; }
 function diagEye(e){
   if(!e) return [];
@@ -611,6 +740,7 @@ const CATS = {
     ["telefono","Teléfono / WhatsApp",1,["telefono","teléfono","celular","whatsapp","tel","movil","móvil","numero","número"]],
     ["fechaNacimiento","Fecha de nacimiento",0,["fecha de nacimiento","nacimiento","cumpleanos","cumpleaños","fecha nac","f nacimiento","f nac"]],
     ["folio","Folio",0,["folio","no folio","numero de folio","nota"]],
+    ["fechaConsulta","Fecha de consulta",0,["fecha de consulta","fecha consulta","consulta","fecha de visita","fecha de examen"]],
     ...rxFields("od","OD",["od","ojo derecho","derecho","o d"]),
     ...rxFields("oi","OS",["os","oi","ojo izquierdo","izquierdo","o i","o s"]),
     ["material","Material",0,["material","lente","tipo de lente","micas"]],
@@ -752,7 +882,7 @@ function buildRows(){
     fields.forEach(([key,label,req])=>{
       let v = mapping[key]!==undefined ? String(r[mapping[key]]??"").trim() : "";
       if(RX_KEYS.has(key)){ raw[key]=v; return; }
-      if((key==="fechaEntrega"||key==="fechaNacimiento")&&v) v=fmtFecha(v);
+      if((key==="fechaEntrega"||key==="fechaNacimiento"||key==="fechaConsulta")&&v) v=fmtFecha(v);
       if(key==="telefono"&&v){ const p=cleanPhone(v); if(p.length!==10) avisos.push(`Teléfono con ${p.length} dígitos`); v=p; }
       if(NUMERIC.has(key)&&v!==""){ const n=cleanMoney(v); if(n===""||isNaN(n)){ avisos.push(`${label} no es número`); } else v=n; }
       if(key==="calificacion"&&v!==""){ const n=parseInt(v,10); if(isNaN(n)||n<0||n>10) avisos.push("Calificación fuera de 0-10"); else v=n; }
@@ -762,17 +892,16 @@ function buildRows(){
     if(cat==="pacientes"){
       const receta={}, dx=[];
       for(const e of ["od","oi"]){
-        const has=RX.some(([f])=>raw[e+"_"+f]);
+        const has=RX.some(([f])=>raw[e+"_"+f]&&!VACIO.test(raw[e+"_"+f]));
         const eyeLab=e==="od"?"OD":"OS";
         if(!has){ receta[e]=null; faltan.push("Receta "+eyeLab); continue; }
-        const esf=fmtDiop(raw[e+"_esf"]), cil=fmtDiop(raw[e+"_cil"]);
-        const eje=fmtEje(raw[e+"_eje"],cil.n??0);
-        const add=raw[e+"_add"]?fmtDiop(raw[e+"_add"]):{v:null};
+        const esf=nEsf(raw[e+"_esf"]), cil=nCil(raw[e+"_cil"]), eje=nEje(raw[e+"_eje"]), add=nAdd(raw[e+"_add"]);
+        if(cil.n&&eje.v==null) avisos.push(`${eyeLab} EJE: falta el eje`);
         [[esf,"ESF"],[cil,"CIL"],[eje,"EJE"],[add,"ADD"]].forEach(([x,l])=>{ if(x.err) avisos.push(`${eyeLab} ${l}: ${x.err}`); });
-        receta[e]={esfera:esf.v,cilindro:cil.v,eje:eje.v,di:fmtMm(raw[e+"_di"]),adicion:add.v,aco:fmtMm(raw[e+"_aco"])};
+        receta[e]={esfera:esf.v,cilindro:cil.v,eje:eje.v==null?null:eje.v+"°",di:fmtMm(raw[e+"_di"]),adicion:add.v,aco:fmtMm(raw[e+"_aco"])};
         dx.push(...diagEye({esfN:esf.n??0,cilN:cil.n??0}));
       }
-      const anyAdd=["od","oi"].some(e=>receta[e]&&receta[e].adicion&&parseFloat(receta[e].adicion)>0);
+      const anyAdd=["od","oi"].some(e=>receta[e]&&receta[e].adicion&&(parseFloat(receta[e].adicion)>0||receta[e].adicion==="Solo cerca"));
       const uniq=[...new Set(dx)];
       o.receta={ojo_derecho:receta.od,ojo_izquierdo:receta.oi};
       o.diagnostico_estimado = (receta.od||receta.oi) ? ((uniq.length?uniq.join(" / "):"Emétrope")+(anyAdd?" + Presbicia":"")) : null;
@@ -799,7 +928,7 @@ function renderPreview(){
   $("#tableBox").hidden=isRx; $("#rxCards").hidden=!isRx;
   if(isRx){
     const logo=$("#logoImg").hidden?"":$("#logoImg").src;
-    const cell=(v,miss)=> v==null ? `<td class="rxv miss">[Falta ${miss}]</td>` : `<td class="rxv">${esc(v)}</td>`;
+    const cell=(v,miss)=> v==null ? `<td class="rxv" style="color:var(--muted)">—</td>` : `<td class="rxv">${esc(v)}</td>`;
     const eyeRow=(lab,e)=> e ? `<tr><th class="rxe">${lab}</th>${cell(e.esfera,"ESF")}${cell(e.cilindro,"CIL")}${cell(e.eje,"Eje")}${cell(e.di,"D.I.")}${cell(e.adicion,"ADD")}${cell(e.aco,"ACO")}</tr>`
       : `<tr><th class="rxe">${lab}</th><td class="rxv miss" colspan="6">[Falta Receta]</td></tr>`;
     $("#rxCards").innerHTML = rows.slice(0,30).map((r,i)=>`
@@ -851,9 +980,9 @@ $("#saveBtn").onclick=async()=>{
     await ref.set({categoria:cat,categoriaNombre:CATS[cat].t,archivo:fileName,hoja:sheetName,fecha:new Date().toISOString(),
       totalFilas:clean.length,partes:parts.length,conFaltantes:clean.filter(r=>r.faltan.length).length,
       aRevisar:clean.filter(r=>r.avisos.length).length,repetidas:clean.filter(r=>r.repetida).length,
-      columnas:Object.fromEntries(Object.entries(mapping).map(([k,i])=>[k,headers[i]])),estado:"pendiente"});
+      columnas:Object.fromEntries(Object.entries(mapping).map(([k,i])=>[k,headers[i]])),estado:"pendiente",parser:2});
     bar.style.width="100%";
-    msg.innerHTML=`<div class="msg ok">Carga guardada: ${clean.length} filas de ${esc(CATS[cat].t)}. Ya está disponible en «Mensajes WhatsApp».</div>`;
+    msg.innerHTML=`<div class="msg ok">Carga guardada: ${clean.length} filas de ${esc(CATS[cat].t)}. En unos segundos se integra a «Expedientes» y queda lista para «Mensajes WhatsApp».</div>`;
   }catch(e){
     const q=e&&e.code==="quota_exceeded";
     msg.innerHTML=`<div class="msg bad">${q?"Se llenó el espacio de cargas. Elimina cargas antiguas ya integradas y vuelve a intentar.":"No se pudo guardar ("+esc(e&&e.code||"error")+"). Revisa tu conexión y vuelve a intentar."}</div>`;
@@ -871,7 +1000,7 @@ function renderHist(snap){
   el.innerHTML="";
   snap.docs.forEach(d=>{
     const c=d.data(); const it=document.createElement("div"); it.className="hitem";
-    const est = c.estado==="integrada" ? `<span class="chip ok">Integrada</span>` : `<span class="chip">Lista para mensajes</span>`;
+    const est = c.estado==="integrada" ? `<span class="chip ok">Integrada a Expedientes</span>` : `<span class="chip">Lista para mensajes</span>`;
     it.innerHTML=`<div style="min-width:0"><div class="t">${esc(c.categoriaNombre||c.categoria)} · ${esc(c.archivo)}</div>
       <div class="s"><span class="mono">${c.totalFilas} filas</span>${c.conFaltantes?` · ${c.conFaltantes} con faltantes`:""}${c.aRevisar?` · ${c.aRevisar} a revisar`:""} · ${esc(fmtDate(c.fecha))}</div></div>
       <div class="row">${est}${puede("borrarCarga")?`<button class="btn danger sm" type="button">Eliminar</button>`:""}</div>`;
@@ -1046,8 +1175,55 @@ Tus seguidores solo deben mencionarlo en sucursal o escribirnos al WhatsApp 221 
 
 ¡Tu evaluación nos ayuda a darte siempre el mejor servicio! Muchas gracias. 🙏`}
 };
-let marcasPor={};
-let tpl=null, cargasList=[], srcRows=[], srcId="", envioRef=null, marcas={}, shownRows=[];
+/* ===== Estado compartido: expedientes y contactos (historial de envíos y bajas por teléfono) ===== */
+let expList=[], expMap={}, expLoaded=false;
+let contactos={}, ctLoaded=false; const ctWrite={};
+const MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const MES3=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const pad2=n=>String(n).padStart(2,"0");
+const ymOf=d=>d.getFullYear()+"-"+pad2(d.getMonth()+1);
+const ymdOf=d=>ymOf(d)+"-"+pad2(d.getDate());
+function toISO(v){
+  if(v==null||v==="") return null; if(v instanceof Date) return isNaN(v)?null:ymdOf(v);
+  const s=String(v).trim(); let m=/^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(s); if(m) return m[1]+"-"+pad2(+m[2])+"-"+pad2(+m[3]);
+  m=/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})/.exec(s); if(m){ let y=+m[3]; if(y<100) y+=2000; return y+"-"+pad2(+m[2])+"-"+pad2(+m[1]); }
+  return null;
+}
+function parseFecha(v){ const iso=toISO(v); if(!iso) return null; const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(iso); return new Date(+m[1],+m[2]-1,+m[3]); }
+const fmtDMY=v=>{ const d=parseFecha(v); return d?`${pad2(d.getDate())}/${pad2(d.getMonth()+1)}/${d.getFullYear()}`:""; };
+const segSafe=s=>String(s??"").trim().replace(/[^A-Za-z0-9_\-.~:@+]/g,"_").slice(0,150)||"x";
+const telOf=r=>{ const t=r&&r.telefono!=null?String(r.telefono):""; return /^\d{10}$/.test(t)?t:null; };
+function pidOf(r){
+  if(r.folio) return "F-"+segSafe(String(r.folio).toUpperCase());
+  const t=telOf(r); if(t) return "T-"+t+"-"+segSafe(norm(r.nombre).replace(/ /g,"_").slice(0,40));
+  return "N-"+segSafe(norm(r.nombre).replace(/ /g,"_").slice(0,60));
+}
+const isBaja=tel=>!!(tel&&contactos[tel]&&contactos[tel].baja);
+function ctSave(tel,mut){
+  if(!db||!tel) return;
+  const prev=contactos[tel]; const d=prev?JSON.parse(JSON.stringify(prev)):{tel,env:{},baja:null};
+  if(!d.env) d.env={}; mut(d); d.tel=tel; d.actualizado=new Date().toISOString(); contactos[tel]=d;
+  ctWrite[tel]=(ctWrite[tel]||Promise.resolve()).then(()=>db.collection("contactos").doc(tel).set(d)).catch(()=>aviso("No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.",true));
+}
+
+/* ===== Diálogo de confirmación y avisos ===== */
+function ask(title,html,okTxt="Confirmar",noTxt="Cancelar",danger=false){
+  return new Promise(res=>{
+    const d=$("#dlg"); $("#dlgT").textContent=title; $("#dlgB").innerHTML=html;
+    const ok=$("#dlgOk"), no=$("#dlgNo"); ok.textContent=okTxt; no.textContent=noTxt; ok.className="btn"+(danger?" danger":"");
+    const fin=v=>{ ok.onclick=no.onclick=null; d.oncancel=null; try{ d.close(); }catch(e){ d.removeAttribute("open"); } res(v); };
+    ok.onclick=()=>fin(true); no.onclick=()=>fin(false); d.oncancel=e=>{ e.preventDefault(); fin(false); };
+    try{ d.showModal(); }catch(e){ d.setAttribute("open",""); }
+    no.focus();
+  });
+}
+const aviso=(t,bad=false)=>toast(bad?"⚠️ "+t:"✅ "+t,"");
+
+/* ===== Mensajes: plantillas, origen y reglas de elegibilidad ===== */
+const BAJA_TPLS=new Set(["examen","cumple","promo","codigoCliente","nps"]);  /* la baja NO frena compra, entrega, pago ni factura */
+const POR_TEL=new Set(["promo","codigoCliente","nps"]);                       /* un solo mensaje por número */
+const POR_PERSONA=new Set(["examen","cumple"]);                                 /* uno por persona aunque compartan número */
+let tpl=null, cargasList=[], srcRows=[], srcId="", shownItems=[], mView="pend", mPage=40;
 const rowsCache=new Map();
 async function loadCargaRows(id){
   if(rowsCache.has(id)) return rowsCache.get(id);
@@ -1055,6 +1231,7 @@ async function loadCargaRows(id){
   const rows=ps.docs.sort((a,b)=>a.id<b.id?-1:1).flatMap(d=>d.data().filas||[]);
   rowsCache.set(id,rows); return rows;
 }
+const expRows=()=>expList.map(x=>({...x,_pid:x.id}));
 const tplsEl=$("#tpls");
 for(const [k,t] of Object.entries(TPLS)){
   const b=document.createElement("button"); b.type="button"; b.className="cat"; b.dataset.k=k; b.setAttribute("aria-pressed","false");
@@ -1067,13 +1244,15 @@ function selectTpl(k){
   syncBenef(); fillSrc();
 }
 function fillSrc(){
-  const sel=$("#srcSel"); if(!tpl){ return; }
-  const t=TPLS[tpl]; const opts=cargasList.filter(c=>t.src.includes(c.categoria));
-  const names=t.src.map(x=>CATS[x].t).join(" o ");
-  $("#srcHint").textContent = opts.length ? `Cargas disponibles de ${names}.` : `Primero sube una carga de ${names} en «Carga de datos».`;
+  const sel=$("#srcSel"); if(!tpl) return;
+  const t=TPLS[tpl]; const usaExp=t.src.includes("pacientes");
+  const opts=cargasList.filter(c=>t.src.includes(c.categoria)&&c.categoria!=="pacientes");
+  const names=t.src.filter(x=>x!=="pacientes").map(x=>CATS[x].t);
+  $("#srcHint").textContent = usaExp ? "Los pacientes salen de Expedientes. También puedes usar una carga de "+(names.join(" o ")||"otro tipo")+"." : (opts.length ? `Cargas disponibles de ${names.join(" o ")}.` : `Primero sube una carga de ${names.join(" o ")} en «Carga de datos».`);
   const prev=sel.value;
-  sel.innerHTML = opts.length ? opts.map(c=>`<option value="${c.id}">${esc(c.categoriaNombre)} · ${esc(c.archivo)} · ${c.totalFilas} filas</option>`).join("") : `<option value="">— No hay cargas de ${esc(names)} —</option>`;
-  if(opts.some(c=>c.id===prev)) sel.value=prev;
+  const html=(usaExp?`<option value="__exp">Expedientes · ${expList.length} pacientes</option>`:"")+opts.map(c=>`<option value="${c.id}">${esc(c.categoriaNombre)} · ${esc(c.archivo)} · ${c.totalFilas} filas</option>`).join("");
+  sel.innerHTML = html || `<option value="">— No hay cargas de ${esc(names.join(" o "))} —</option>`;
+  if([...sel.options].some(o=>o.value===prev)) sel.value=prev;
   loadSrc();
 }
 $("#srcSel").onchange=loadSrc;
@@ -1087,86 +1266,184 @@ function syncBenef(){
   document.querySelector('[data-f="libre"]').hidden=b!=="otro";
 }
 $("#in-benef").addEventListener("change",syncBenef);
-(()=>{ const meses=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"]; const sel=$("#in-mesCumple");
-  sel.innerHTML=`<option value="">Todos los pacientes</option>`+meses.map((m,i)=>`<option value="${i}">${m[0].toUpperCase()+m.slice(1)}</option>`).join(""); sel.value=String(new Date().getMonth()); })();
-let rT=null; document.querySelectorAll("[data-f] input,[data-f] select").forEach(x=>x.addEventListener(x.type==="checkbox"||x.tagName==="SELECT"?"change":"input",()=>{ clearTimeout(rT); rT=setTimeout(renderSend,250); }));
-let envUnsub=null;
+(()=>{ const sel=$("#in-mesCumple");
+  sel.innerHTML=`<option value="">Todos los pacientes</option>`+MESES.map((m,i)=>`<option value="${i}">${m[0].toUpperCase()+m.slice(1)}</option>`).join(""); sel.value=String(new Date().getMonth()); })();
+let rT=null; const later=()=>{ clearTimeout(rT); rT=setTimeout(()=>{ mPage=40; renderSend(); },250); };
+document.querySelectorAll("[data-f] input,[data-f] select").forEach(x=>x.addEventListener(x.type==="checkbox"||x.tagName==="SELECT"?"change":"input",later));
+$("#mQ").addEventListener("input",later);
+$("#mSeg").querySelectorAll("button").forEach(b=>b.onclick=()=>{ mView=b.dataset.v; mPage=40; $("#mSeg").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b))); renderSend(); });
+$("#mMore").onclick=()=>{ mPage+=40; renderSend(); };
 async function loadSrc(){
-  const id=$("#srcSel").value; srcId=id; srcRows=[]; marcas={};
-  if(envUnsub){ envUnsub(); envUnsub=null; }
+  const id=$("#srcSel").value; srcId=id; srcRows=[]; mPage=40;
   if(!id||!db){ renderSend(); return; }
+  if(id==="__exp"){ srcRows=expRows(); renderSend(); return; }
   $("#sendList").innerHTML=`<p class="muted small">Cargando pacientes…</p>`;
   try{ srcRows=await loadCargaRows(id); }catch(e){ $("#sendList").innerHTML=`<p class="msg bad">No pude leer esa carga. Vuelve a intentarlo.</p>`; return; }
-  envioRef=db.collection("envios").doc(tpl+"__"+id);
-  envUnsub=envioRef.onSnapshot(s=>{ marcas=(s.exists&&s.data().marcas)||{}; marcasPor=(s.exists&&s.data().por)||{}; renderSend(); },()=>{});
-  renderSend();
-}
-function parseFecha(v){
-  if(!v) return null; let m=/^(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec(v); if(m) return new Date(+m[3],+m[2]-1,+m[1]);
-  m=/^(\d{4})-(\d{2})-(\d{2})/.exec(v); if(m) return new Date(+m[1],+m[2]-1,+m[3]); return null;
+  if(srcId===id) renderSend();
 }
 let encuestaUrl="";
-function npsToken(i){ const str=srcId+":"+i; let h1=0x811c9dc5,h2=0x01000193; for(let k=0;k<str.length;k++){ const c=str.charCodeAt(k); h1=Math.imul(h1^c,16777619)>>>0; h2=Math.imul(h2^c,2246822519)>>>0; } return "n"+h1.toString(36)+h2.toString(36); }
-function buildMsg(r,i){
-  const t=TPLS[tpl]; const o={};
+function hashTok(str){ let h1=0x811c9dc5,h2=0x01000193; for(let k=0;k<str.length;k++){ const c=str.charCodeAt(k); h1=Math.imul(h1^c,16777619)>>>0; h2=Math.imul(h2^c,2246822519)>>>0; } return "n"+h1.toString(36)+h2.toString(36); }
+const npsToken=r=>hashTok("nps:"+(telOf(r)||"")+":"+pidOf(r));
+function readOpts(){
+  const o={};
   ["mesCumple","etapa","temp","benef","pct","msi","libre","minimo","aplica","vig","codigo","influ","cond","agenda","desc","promo"].forEach(k=>o[k]=$("#in-"+k).value.trim());
+  o.filtro=$("#in-filtro").checked;
   if(o.desc&&/^\d+(\.\d+)?$/.test(o.desc)) o.desc+="%";
-  o.encuesta=encuestaUrl.replace(/[?#].*$/,"").replace(/\/$/,""); o.token=npsToken(i);
-  return t.build(r,o)+"\n\n"+CIERRE+(t.optout?"\n\n(Para dejar de recibir promos, responde *Baja*)":"");
+  o.encuesta=encuestaUrl.replace(/[?#].*$/,"").replace(/\/$/,"");
+  return o;
 }
+function buildMsg(r,o){
+  const t=TPLS[tpl]; const oo={...o,token:npsToken(r)};
+  return t.build(r,oo)+"\n\n"+CIERRE+(t.optout?"\n\n(Para dejar de recibir promos, responde *Baja*)":"");
+}
+const campKey=o=>o.temp==="libre" ? "libre~"+segSafe(norm(o.libre||o.pct||o.msi||o.vig||"especial").replace(/ /g,"_")) : (o.temp||"libre");
+function monthsSince(d,now){ return (now.getFullYear()-d.getFullYear())*12+(now.getMonth()-d.getMonth())-(now.getDate()<d.getDate()?1:0); }
+const baseExamen=r=>parseFecha(r.fechaEntrega)||parseFecha(r.fechaConsulta);
+const keyRef=(r,i,campo,cid)=>r[campo]?segSafe(String(r[campo]).toUpperCase()):"c:"+cid+":"+i;
+const pagoKey=(r,i,cid)=>"pago|"+((r.monto!=null&&r.monto!==""&&r.fecha)?segSafe([r.concepto||"",r.monto,r.fecha].join("~")):"c:"+cid+":"+i);
+function npsReciente(tel,now){
+  const lim=now.getTime()-182*864e5; const c=contactos[tel];
+  if(c&&c.env&&Object.entries(c.env).some(([k,v])=>k.startsWith("nps|")&&new Date(v.f).getTime()>=lim)) return "Ya recibió la encuesta en los últimos 6 meses";
+  if(allNps().some(x=>x.telefono===tel&&x.fecha&&(parseFecha(x.fecha)||new Date(x.fecha)).getTime()>=lim)) return "Respondió la encuesta en los últimos 6 meses";
+  return null;
+}
+/* Regla por plantilla: clave única del envío + motivo por el que no aplica */
+function evalItems(tk,rows,o,cid,now=new Date()){
+  const out=[]; const seenTel=new Map(), seenPid=new Set(); const ym=ymOf(now), y=now.getFullYear();
+  rows.forEach((r,i)=>{
+    const tel=telOf(r); const pid=r._pid||pidOf(r); let key="", motivo=null;
+    switch(tk){
+      case "compra": key="compra|"+keyRef(r,i,"folio",cid); break;
+      case "entrega": { const ref=keyRef(r,i,"folio",cid); key="entrega|"+ref; if(tel&&contactos[tel]&&contactos[tel].env&&contactos[tel].env["entregado|"+ref]) motivo="Ya se entregó"; break; }
+      case "factura": key="factura|"+keyRef(r,i,"folioFiscal",cid); break;
+      case "pago": key=pagoKey(r,i,cid); break;
+      case "codigoInflu": key="codigoInflu|"+keyRef(r,i,"codigo",cid); break;
+      case "examen": { const b=baseExamen(r);
+        if(!b){ motivo="Sin fecha de entrega ni de consulta"; key="examen|"+pid+"|"+o.etapa+"|sin-fecha"; break; }
+        key="examen|"+pid+"|"+o.etapa+"|"+ymdOf(b);
+        if(o.filtro){ const m=monthsSince(b,now); const ok=o.etapa==="aviso"?m===11:o.etapa==="anual"?m===12:m>=13;
+          if(!ok) motivo = m<11 ? `Le faltan ${11-m} ${11-m===1?"mes":"meses"} para el aviso` : `Va en ${m} meses; no está en esta etapa`; }
+        break; }
+      case "cumple": { key="cumple|"+pid+"|"+y; const d=parseFecha(r.fechaNacimiento);
+        if(!d) motivo="Sin fecha de nacimiento"; else if(o.mesCumple!==""&&d.getMonth()!==+o.mesCumple) motivo="Cumple años en "+MESES[d.getMonth()]; break; }
+      case "promo": key="promo|"+campKey(o)+"|"+ym; break;
+      case "codigoCliente": key="codigo|"+segSafe(String(o.codigo||"").toUpperCase()); if(!o.codigo) motivo="Escribe el código en «Datos de la campaña»"; break;
+      case "nps": key="nps|"+ym; break;
+    }
+    if(!motivo&&!tel) motivo="Sin teléfono válido";
+    if(!motivo&&BAJA_TPLS.has(tk)&&isBaja(tel)) motivo="Dado de baja";
+    if(!motivo&&POR_PERSONA.has(tk)){ if(seenPid.has(pid)) motivo="Registro repetido"; else seenPid.add(pid); }
+    if(!motivo&&POR_TEL.has(tk)&&tel){ if(seenTel.has(tel)) motivo=`Mismo teléfono que ${seenTel.get(tel)}; va un solo mensaje`; else seenTel.set(tel,nom(r)); }
+    const sent=(tel&&contactos[tel]&&contactos[tel].env&&contactos[tel].env[key])||null;
+    if(!sent&&!motivo&&tk==="nps") motivo=npsReciente(tel,now);
+    out.push({r,i,tel,pid,key,motivo,sent});
+  });
+  return out;
+}
+const fechaCorta=iso=>{ try{ return new Date(iso).toLocaleDateString("es-MX",{day:"numeric",month:"short",year:"numeric"}); }catch(e){ return ""; } };
 function renderSend(){
   const el=$("#sendList");
-  if(!tpl||!srcId){ el.innerHTML=`<p class="muted small">Elige una plantilla y una carga para ver los mensajes listos.</p>`; $("#sendStats").innerHTML=""; $("#expBtn").disabled=true; return; }
-  let rows=srcRows.map((r,i)=>({r,i}));
-  let excl=0;
-  if(tpl==="cumple"&&$("#in-mesCumple").value!==""){
-    const mes=+$("#in-mesCumple").value;
-    rows=rows.filter(({r})=>{ const d=parseFecha(r.fechaNacimiento); const ok=d&&d.getMonth()===mes; if(!ok) excl++; return ok; });
+  if(!tpl||!srcId){ el.innerHTML=`<p class="muted small">Elige una plantilla y el origen de los pacientes para ver los mensajes listos.</p>`; $("#sendStats").innerHTML=""; $("#expBtn").disabled=true; $("#mMore").hidden=true; return; }
+  const o=readOpts(); const items=evalItems(tpl,srcRows,o,srcId);
+  const q=norm($("#mQ").value);
+  const match=it=>!q||norm([it.r.nombre,it.r.telefono,it.r.folio,it.r.codigo,it.r.folioFiscal].filter(Boolean).join(" ")).includes(q);
+  const G={pend:items.filter(x=>!x.sent&&!x.motivo),sent:items.filter(x=>x.sent),no:items.filter(x=>!x.sent&&x.motivo)};
+  const lab={pend:"Pendientes",sent:"Ya enviados",no:"No elegibles"};
+  $("#mSeg").querySelectorAll("button").forEach(b=>b.textContent=`${lab[b.dataset.v]} (${G[b.dataset.v].length})`);
+  const list=G[mView].filter(match); shownItems=list;
+  const razones={}; G.no.forEach(x=>{ const k=x.motivo.startsWith("Mismo teléfono")?"Mismo teléfono que otro paciente":x.motivo.startsWith("Cumple años en")?"Cumplen años en otro mes":x.motivo.startsWith("Va en ")||x.motivo.startsWith("Le faltan")?"Fuera de esta etapa":x.motivo; razones[k]=(razones[k]||0)+1; });
+  $("#sendStats").innerHTML=`<span class="chip">${G.pend.length} pendientes</span><span class="chip ok">${G.sent.length} ya enviados</span>`+
+    Object.entries(razones).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span class="chip warn">${v} · ${esc(k)}</span>`).join("")+
+    (q?`<span class="chip">${list.length} coinciden con la búsqueda</span>`:"");
+  $("#expBtn").disabled=!list.length;
+  if(!list.length){
+    el.innerHTML=`<p class="muted small">${q?"Nadie en esta vista coincide con la búsqueda.":mView==="pend"?(items.length?"No quedan pendientes. Revisa «Ya enviados» o «No elegibles».":"Este origen no tiene pacientes."):mView==="sent"?"Todavía no hay envíos para este mensaje.":"Todos los pacientes son elegibles."}</p>`;
+    $("#mMore").hidden=true; return;
   }
-  if(tpl==="examen"&&$("#in-filtro").checked){
-    const et=$("#in-etapa").value; const now=new Date();
-    rows=rows.filter(({r})=>{ const d=parseFecha(r.fechaEntrega); if(!d){excl++;return false;}
-      const m=(now.getFullYear()-d.getFullYear())*12+(now.getMonth()-d.getMonth())-(now.getDate()<d.getDate()?1:0);
-      const ok= et==="aviso"? m===11 : et==="anual"? m===12 : m>=13; if(!ok) excl++; return ok; });
-  }
-  shownRows=rows;
-  const sent=rows.filter(({i})=>marcas[i]).length;
-  const noTel=rows.filter(({r})=>!r.telefono||String(r.telefono).length!==10).length;
-  $("#sendStats").innerHTML=`<span class="chip">${rows.length} mensajes</span><span class="chip ok">${sent} enviados</span>`+
-    (noTel?`<span class="chip bad">${noTel} sin teléfono válido</span>`:"")+(excl?`<span class="chip warn">${excl} ${tpl==="cumple"?"no cumplen en ese mes o sin fecha de nacimiento":"fuera de esta etapa o sin fecha de entrega"}</span>`:"");
-  $("#expBtn").disabled=!rows.length;
-  if(!rows.length){ el.innerHTML=`<p class="muted small">${excl?(tpl==="cumple"?"Ningún paciente cumple años en ese mes. Elige otro mes o «Todos los pacientes».":"Ningún paciente está en esta etapa. Cambia la etapa o desactiva el filtro."):"Esta carga no tiene filas."}</p>`; return; }
   el.innerHTML="";
-  rows.forEach(({r,i})=>{
-    const msg=buildMsg(r,i); const telOk=r.telefono&&String(r.telefono).length===10;
-    const it=document.createElement("div"); it.className="sitem"+(marcas[i]?" sent":"");
+  const esPac=BAJA_TPLS.has(tpl);
+  list.slice(0,mPage).forEach(it=>{
+    const {r,tel}=it; const msg=buildMsg(r,o);
     const falta=(msg.match(/\[Falta [^\]]+\]/g)||[]).length;
-    it.innerHTML=`<div class="who"><b>${esc(nom(r))}</b><span class="mono small">${telOk?esc(r.telefono):'<span class="miss">[Falta Teléfono]</span>'}</span>
-      ${marcas[i]?`<span class="chip ok">Enviado ${esc(new Date(marcas[i]).toLocaleDateString("es-MX"))}${marcasPor[i]?" por "+esc(marcasPor[i]):""}</span>`:""}${falta?`<span class="chip warn">${falta} dato(s) faltante(s)</span>`:""}</div>
-      <div class="act"><button class="btn ghost sm" type="button" data-a="copy">Copiar</button>
-      <a class="btn sm" data-a="wa" target="_blank" rel="noopener" ${telOk?`href="https://wa.me/52${esc(r.telefono)}?text=${encodeURIComponent(msg)}"`:'aria-disabled="true"'}>Abrir WhatsApp</a>
-      ${marcas[i]?`<button class="btn ghost sm" type="button" data-a="undo">Desmarcar</button>`:`<button class="btn ghost sm" type="button" data-a="mark">Marcar enviado</button>`}</div>
-      <pre>${esc(msg)}</pre>`;
-    it.querySelector('[data-a="copy"]').onclick=async e=>{ const b=e.currentTarget; try{ await navigator.clipboard.writeText(msg); b.textContent="Copiado"; }catch(err){ const sel=window.getSelection(); const rg=document.createRange(); rg.selectNodeContents(it.querySelector("pre")); sel.removeAllRanges(); sel.addRange(rg); b.textContent="Texto seleccionado"; } setTimeout(()=>b.textContent="Copiar",2000); };
-    const wa=it.querySelector('[data-a="wa"]'); if(telOk) wa.addEventListener("click",()=>setMark(i,true));
-    const mk=it.querySelector('[data-a="mark"],[data-a="undo"]'); mk.onclick=()=>setMark(i,!marcas[i]);
-    el.appendChild(it);
+    const div=document.createElement("div"); div.className="sitem"+(it.sent?" sent":"");
+    const who=`<div class="who"><b>${esc(nom(r))}</b><span class="mono small">${tel?esc(tel):'<span class="miss">[Falta Teléfono]</span>'}</span>${r.folio?`<span class="mono small muted">${esc(r.folio)}</span>`:""}
+      ${it.sent?`<span class="chip ok">Enviado ${esc(fechaCorta(it.sent.f))}${it.sent.por?" por "+esc(it.sent.por):""}</span>`:""}${falta&&!it.sent?`<span class="chip warn">${falta} dato(s) faltante(s)</span>`:""}
+      ${it.motivo&&!it.sent?`<span class="why">${esc(it.motivo)}</span>`:""}</div>`;
+    let act="";
+    if(mView==="pend"){
+      act=`<button class="btn ghost sm" type="button" data-a="copy">Copiar</button><a class="btn sm" data-a="wa" target="_blank" rel="noopener" href="https://wa.me/52${esc(tel)}?text=${encodeURIComponent(msg)}">Abrir WhatsApp</a><button class="btn ghost sm" type="button" data-a="mark">Marcar enviado</button>`+
+        (tpl==="entrega"?`<button class="btn ghost sm" type="button" data-a="entregado">Marcar entregado</button>`:"")+(esPac?`<button class="btn danger sm" type="button" data-a="baja">Dar de baja</button>`:"");
+    } else if(mView==="sent"){
+      act=`<button class="btn ghost sm" type="button" data-a="undo">Desmarcar</button>`+(tpl==="entrega"&&!it.motivo?`<button class="btn ghost sm" type="button" data-a="entregado">Marcar entregado</button>`:"");
+    } else {
+      if(it.motivo==="Dado de baja"&&puede("reactivarBaja")) act=`<button class="btn ghost sm" type="button" data-a="reactivar">Reactivar</button>`;
+      if(it.motivo==="Ya se entregó") act=`<button class="btn ghost sm" type="button" data-a="noentregado">Quitar «entregado»</button>`;
+      if(it.motivo&&it.motivo.startsWith("Sin ")&&srcId==="__exp"&&puede("editarExp")) act+=`<button class="btn ghost sm" type="button" data-a="ficha">Completar expediente</button>`;
+    }
+    div.innerHTML=who+`<div class="act">${act}</div>`+(mView==="pend"?`<pre>${esc(msg)}</pre>`:mView==="sent"?`<details><summary>Ver mensaje</summary><pre>${esc(msg)}</pre></details>`:"");
+    const q1=a=>div.querySelector(`[data-a="${a}"]`);
+    if(q1("copy")) q1("copy").onclick=async e=>{ const b=e.currentTarget; try{ await navigator.clipboard.writeText(msg); b.textContent="Copiado"; }catch(err){ const sel=window.getSelection(); const rg=document.createRange(); rg.selectNodeContents(div.querySelector("pre")); sel.removeAllRanges(); sel.addRange(rg); b.textContent="Texto seleccionado"; } setTimeout(()=>b.textContent="Copiar",2000); };
+    if(q1("wa")) q1("wa").addEventListener("click",()=>setMark(it,true));
+    if(q1("mark")) q1("mark").onclick=()=>setMark(it,true);
+    if(q1("undo")) q1("undo").onclick=async()=>{ if(await ask("¿Desmarcar este envío?",`<p><b>${esc(nom(r))}</b> volverá a aparecer en pendientes de «${esc(TPLS[tpl].t)}».</p>`,"Desmarcar")) setMark(it,false); };
+    if(q1("entregado")) q1("entregado").onclick=()=>{ ctSave(tel,d=>{ d.env["entregado|"+keyRef(r,it.i,"folio",srcId)]={f:new Date().toISOString(),por:quien(),tpl:"entregado",n:nom(r)}; }); aviso("Marcado como entregado"); renderSend(); };
+    if(q1("noentregado")) q1("noentregado").onclick=()=>{ ctSave(tel,d=>{ delete d.env["entregado|"+keyRef(r,it.i,"folio",srcId)]; }); renderSend(); };
+    if(q1("baja")) q1("baja").onclick=()=>darBaja(tel,nom(r));
+    if(q1("reactivar")) q1("reactivar").onclick=async()=>{ if(await ask("¿Reactivar este número?",`<p>El ${esc(tel)} volverá a recibir promociones, cumpleaños, examen anual y encuesta NPS. Hazlo solo si el paciente lo pidió.</p>`,"Reactivar")){ ctSave(tel,d=>{ d.baja=null; d.reactivado={f:new Date().toISOString(),por:quien()}; }); aviso("Número reactivado"); renderAll(); } };
+    if(q1("ficha")) q1("ficha").onclick=()=>{ showTab("expedientes"); openExp(it.pid); };
+    el.appendChild(div);
   });
+  $("#mMore").hidden=list.length<=mPage; $("#mMore").textContent=`Mostrar más (${list.length-mPage} restantes)`;
 }
-let markBusy=Promise.resolve();
-function setMark(i,on){
-  if(!envioRef) return;
-  const next={...marcas}, por={...marcasPor}; if(on){ next[i]=new Date().toISOString(); por[i]=quien(); } else { delete next[i]; delete por[i]; }
-  if(on&&tpl==="nps"&&db){ const r=srcRows[i]||{}; db.collection("npsTokens").doc(npsToken(i)).set({nombre:r.nombre||null,telefono:r.telefono||null,carga:srcId,fila:i,enviado:new Date().toISOString(),por:quien()}).catch(()=>{}); }
-  marcas=next; marcasPor=por; renderSend();
-  markBusy=markBusy.then(()=>envioRef.set({plantilla:tpl,carga:srcId,marcas:next,por,actualizado:new Date().toISOString()})).catch(()=>{});
+async function darBaja(tel,nombre){
+  if(!tel) return;
+  const otros=expList.filter(x=>telOf(x)===tel).map(x=>x.nombre).filter(Boolean);
+  const ok=await ask("¿Dar de baja este número?",`<p><b>${esc(nombre)}</b> · <span class="mono">${esc(tel)}</span></p><p>Dejará de recibir de forma definitiva promociones, cumpleaños, examen anual y encuesta NPS. Seguirá recibiendo los avisos de sus compras: nota de compra, entrega, pago y factura.</p>${otros.length>1?`<p class="why">Este número también es de: ${esc(otros.filter(n=>n!==nombre).join(", "))}. La baja aplica a todos.</p>`:""}`,"Dar de baja","Cancelar",true);
+  if(!ok) return;
+  ctSave(tel,d=>{ d.baja={f:new Date().toISOString(),por:quien()}; });
+  aviso("Baja registrada"); renderAll();
+}
+function setMark(it,on){
+  if(!db){ aviso("Para guardar el envío abre la página con tu cuenta de Claude.",true); return; }
+  const {r,tel,key}=it; if(!tel) return;
+  ctSave(tel,d=>{ if(on) d.env[key]={f:new Date().toISOString(),por:quien(),tpl,n:nom(r)}; else delete d.env[key]; });
+  if(on&&tpl==="nps") db.collection("npsTokens").doc(npsToken(r)).set({nombre:r.nombre||null,telefono:tel,carga:srcId,fila:it.i,enviado:new Date().toISOString(),por:quien()}).catch(()=>{});
+  renderSend(); renderDash();
 }
 $("#expBtn").onclick=async()=>{
   if(!downloads){ flash("La descarga no está disponible en esta vista."); return; }
-  const aoa=[["Nombre","Teléfono","Enviado","Mensaje"],...shownRows.map(({r,i})=>[nom(r),r.telefono||"",marcas[i]?"Sí":"No",buildMsg(r,i)])];
+  const o=readOpts(); const est={pend:"Pendiente",sent:"Enviado",no:"No elegible"}[mView];
+  const aoa=[["Nombre","Teléfono","Folio","Estado","Motivo","Enviado el","Mensaje"],...shownItems.map(it=>[nom(it.r),it.tel||"",it.r.folio||"",est,it.motivo||"",it.sent?fechaCorta(it.sent.f):"",buildMsg(it.r,o)])];
   const book=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(book,XLSX.utils.aoa_to_sheet(aoa),"Mensajes");
-  try{ await downloads.save({filename:`Mensajes ${TPLS[tpl].t} - Opticas del Valle.xlsx`,data:XLSX.write(book,{type:"array",bookType:"xlsx"})}); }catch(e){}
+  try{ await downloads.save({filename:`Mensajes ${TPLS[tpl].t} (${est}) - Opticas del Valle.xlsx`,data:XLSX.write(book,{type:"array",bookType:"xlsx"})}); }catch(e){}
 };
+
+/* ===== Migración de las marcas anteriores (por carga) al historial por teléfono ===== */
+let envOld=[], migrando=false;
+function oldKey(t,r,i,cid,d){
+  const pid=pidOf(r);
+  return ({compra:"compra|"+keyRef(r,i,"folio",cid),entrega:"entrega|"+keyRef(r,i,"folio",cid),factura:"factura|"+keyRef(r,i,"folioFiscal",cid),pago:pagoKey(r,i,cid),
+    codigoInflu:"codigoInflu|"+keyRef(r,i,"codigo",cid),examen:"examen|"+pid+"|anterior|"+ymdOf(d),cumple:"cumple|"+pid+"|"+d.getFullYear(),
+    promo:"promo|anterior|"+ymOf(d),codigoCliente:"codigo|ANTERIOR-"+ymOf(d),nps:"nps|"+ymOf(d)})[t]||null;
+}
+async function migrarEnvios(){
+  if(migrando||!db||!ctLoaded) return;
+  const pend=envOld.filter(e=>!e.migrado&&e.marcas&&Object.keys(e.marcas).length);
+  if(!pend.length) return;
+  migrando=true;
+  for(const e of pend){
+    try{
+      let rows=[]; try{ rows=await loadCargaRows(e.carga); }catch(x){}
+      for(const [i,f] of Object.entries(e.marcas)){
+        const r=rows[+i]; if(!r) continue; const tel=telOf(r); if(!tel) continue;
+        const key=oldKey(e.plantilla,r,+i,e.carga,new Date(f)); if(!key) continue;
+        if(!(contactos[tel]&&contactos[tel].env&&contactos[tel].env[key])) ctSave(tel,d=>{ d.env[key]={f,por:(e.por||{})[i]||"Sin usuario",tpl:e.plantilla,n:nom(r),migrado:true}; });
+      }
+      await db.collection("envios").doc(e._id).update({migrado:true});
+    }catch(x){}
+  }
+  migrando=false;
+}
 
 /* ================= NPS ================= */
 let npsManual=[], npsCargas=[];
@@ -1183,6 +1460,7 @@ async function refreshNpsCargas(){
 }
 function renderNps(){
   const all=allNps(); const n=all.length;
+  renderNpsCharts(all);
   const c={promotor:0,pasivo:0,detractor:0}; const dist=Array(11).fill(0);
   all.forEach(x=>{ c[grupo(x.calificacion)]++; dist[x.calificacion]++; });
   if(!n){ $("#npsVal").textContent="—"; $("#npsN").textContent="Sin respuestas todavía"; }
@@ -1240,16 +1518,16 @@ document.getElementById("themeBtn").onclick=()=>{ const sig={system:"light",ligh
 try{ setTheme(localStorage.getItem("ov-tema")||"system"); }catch(e){ setTheme("system"); }
 
 /* ================= Usuarios y permisos ================= */
-const SECCIONES=[["dashboard","Dashboard"],["carga","Carga de datos"],["mensajes","Mensajes WhatsApp"],["nps","Encuesta NPS"],["usuarios","Usuarios"]];
-const ROLES={"Administrador":["dashboard","carga","mensajes","nps","usuarios"],"Gerente":["dashboard","carga","mensajes","nps"],
-  "Comunicación / CRM":["dashboard","mensajes","nps"],"Recepción / Ventas":["carga","mensajes","nps"],"Optometrista":["carga","nps"]};
+const SECCIONES=[["dashboard","Dashboard"],["carga","Carga de datos"],["expedientes","Expedientes"],["mensajes","Mensajes WhatsApp"],["nps","Encuesta NPS"],["usuarios","Usuarios"]];
+const ROLES={"Administrador":["dashboard","carga","expedientes","mensajes","nps","usuarios"],"Gerente":["dashboard","carga","expedientes","mensajes","nps"],
+  "Comunicación / CRM":["dashboard","expedientes","mensajes","nps"],"Recepción / Ventas":["carga","expedientes","mensajes","nps"],"Optometrista":["carga","expedientes","nps"]};
 let usuarios=[], me=null, current=null, editId=null, usuariosListos=false;
 $("#uRol").innerHTML=Object.keys(ROLES).map(r=>`<option>${esc(r)}</option>`).join("");
-const ROL_ACC={"Administrador":"Usuarios, logo, borrar cargas y respuestas","Gerente":"Borrar cargas y respuestas","Comunicación / CRM":"—","Recepción / Ventas":"—","Optometrista":"—"};
+const ROL_ACC={"Administrador":"Usuarios, logo, borrar cargas y respuestas, editar expedientes, reactivar bajas","Gerente":"Borrar cargas y respuestas, editar expedientes","Comunicación / CRM":"Solo consulta expedientes","Recepción / Ventas":"Editar expedientes","Optometrista":"Editar expedientes"};
 $("#rolesTable").innerHTML=`<thead><tr><th>Rol</th>${SECCIONES.map(s=>`<th>${s[1]}</th>`).join("")}<th>Acciones especiales</th></tr></thead><tbody>`+
   Object.entries(ROLES).map(([r,ps])=>`<tr><td><b>${esc(r)}</b></td>${SECCIONES.map(([k])=>`<td>${ps.includes(k)?"✔":"—"}</td>`).join("")}<td>${esc(ROL_ACC[r]||"—")}</td></tr>`).join("")+`</tbody>`;
 const quien=()=> current ? current.nombre : "Sin usuario";
-const ACCIONES={encuesta:["Administrador"],logo:["Administrador"],borrarCarga:["Administrador","Gerente"],borrarNps:["Administrador","Gerente"]};
+const ACCIONES={encuesta:["Administrador"],logo:["Administrador"],borrarCarga:["Administrador","Gerente"],borrarNps:["Administrador","Gerente"],editarExp:["Administrador","Gerente","Recepción / Ventas","Optometrista"],reactivarBaja:["Administrador"]};
 function puede(a){ return !!current&&(ACCIONES[a]||[]).includes(current.rol); }
 const estadoDe=u=>u.estado||"activo";
 const normRol=r=>(r==="Recepción"||r==="Vendedor")?"Recepción / Ventas":r;
@@ -1324,7 +1602,7 @@ function applyAccess(){
   $("#logoBox").hidden=!current;
   if(!lg) $("#logoDel").hidden=true; else $("#logoDel").hidden=$("#logoImg").hidden;
   const enc=puede("encuesta"); $("#encLinkBox").hidden=!enc; $("#encSave").hidden=!enc;
-  renderUsers(); if(lastHist) renderHist(lastHist); if(typeof renderNps==="function") renderNps();
+  renderUsers(); if(lastHist) renderHist(lastHist); if(typeof renderNps==="function") renderNps(); renderExp(); if(exCur&&!$("#exFicha").hidden){ const ed=puede("editarExp"); $("#exForm").querySelectorAll("input").forEach(i=>{ if(i.id!=="ex-folio") i.disabled=!ed; }); $("#exSave").hidden=!ed; }
   const on=document.querySelector('.tab[aria-selected="true"]');
   if(!perms.length){ all.forEach(x=>$("#panel-"+x).hidden=true); }
   else if(!on||on.hidden||$("#panel-"+on.dataset.tab).hidden) showTab(perms.includes((on||{}).dataset?.tab)?on.dataset.tab:perms[0]);
@@ -1394,34 +1672,127 @@ $("#uForm").addEventListener("submit",async e=>{
 });
 
 /* ================= Dashboard ================= */
-let envios=[];
 function hbars(el,items,empty){
+  if(!el) return;
   if(!items.length){ el.innerHTML=`<p class="small muted">${empty}</p>`; return; }
   const mx=Math.max(1,...items.map(x=>x[1]));
-  el.innerHTML=items.map(([l,v,extra])=>`<div class="hb"><span title="${esc(l)}">${esc(l)}</span><div class="tr"><div style="width:${v/mx*100}%"></div></div><span class="mono">${v}${extra||""}</span></div>`).join("");
+  el.innerHTML=items.map(([l,v,extra])=>`<div class="hb" data-tip="${esc(l)}: ${v}${esc(extra||"")}"><span title="${esc(l)}">${esc(l)}</span><div class="tr"><div style="width:${v/mx*100}%"></div></div><span class="mono">${v}${extra||""}</span></div>`).join("");
+}
+const GRUPO_TPL={promo:"Promociones",codigoCliente:"Promociones",cumple:"Cumpleaños",examen:"Examen anual",nps:"Encuesta NPS",compra:"Avisos de compra",entrega:"Avisos de compra",pago:"Avisos de compra",factura:"Avisos de compra",codigoInflu:"Influencers"};
+const GRUPOS=["Promociones","Cumpleaños","Examen anual","Encuesta NPS","Avisos de compra","Influencers"];
+function envEntries(){
+  const out=[]; Object.values(contactos).forEach(c=>Object.entries(c.env||{}).forEach(([k,v])=>{ if(k.startsWith("entregado|")||!v||!v.f) return; out.push({key:k,tpl:v.tpl||k.split("|")[0],fecha:v.f,por:v.por||"Sin usuario",tel:c.tel}); }));
+  return out;
+}
+function dxDe(x){
+  const out=new Set(); if(!hasRx(x)) return ["Sin receta"];
+  ["od","oi"].forEach(e=>{ const r=x.rx&&x.rx[e]; if(!r) return; const esf=parseFloat(r.esf), cil=parseFloat(r.cil);
+    diagEye({esfN:isNaN(esf)?0:esf,cilN:isNaN(cil)?0:cil}).forEach(d=>out.add(d));
+    const ad=parseFloat(r.add); if(ad>0||r.add==="Solo cerca") out.add("Presbicia"); });
+  if(!out.size) out.add("Emétrope (sin graduación)");
+  return [...out];
 }
 function renderDash(){
-  const marks=[]; envios.forEach(e=>{ Object.entries(e.marcas||{}).forEach(([i,f])=>marks.push({tpl:e.plantilla,fecha:f,por:(e.por||{})[i]||"Sin usuario"})); });
-  const pac=cargasList.filter(c=>c.categoria==="pacientes").reduce((a,c)=>a+(c.totalFilas||0),0);
-  const d30=new Date(); d30.setDate(d30.getDate()-29); d30.setHours(0,0,0,0);
-  const last30=marks.filter(m=>new Date(m.fecha)>=d30);
-  const all=allNps(); const n=all.length; const pr=all.filter(x=>x.calificacion>=9).length, de=all.filter(x=>x.calificacion<=6).length;
-  const nps=n?Math.round((pr-de)/n*100):null;
+  if(!$("#kpis")) return;
+  const now=new Date(), ym=ymOf(now), ents=envEntries();
+  const all=allNps(); const st=npsStats(all); const stM=npsStats(all.filter(x=>(toISO(x.fecha)||String(x.fecha||"")).slice(0,7)===ym));
+  const bajas=Object.values(contactos).filter(c=>c.baja).length;
+  const pac=expList.length||cargasList.filter(c=>c.categoria==="pacientes").reduce((a,c)=>a+(c.totalFilas||0),0);
+  const sgn=v=>v==null?"—":(v>0?"+":"")+v;
   $("#kpis").innerHTML=[
-    ["Pacientes cargados",pac.toLocaleString("es-MX"),""],["Mensajes enviados",marks.length.toLocaleString("es-MX"),""],
-    ["Enviados en 30 días",last30.length.toLocaleString("es-MX"),""],["NPS",nps===null?"—":(nps>0?"+":"")+nps,"hl"],
-    ["Respuestas NPS",n.toLocaleString("es-MX"),""],["Cargas guardadas",cargasList.length.toLocaleString("es-MX"),""]
-  ].map(([l,v,c])=>`<div class="kpi ${c}"><span class="label">${l}</span><b>${v}</b></div>`).join("");
-  const days=[]; for(let i=0;i<30;i++){ const d=new Date(d30); d.setDate(d30.getDate()+i); days.push(d); }
-  const cnt=days.map(d=>last30.filter(m=>{ const x=new Date(m.fecha); return x.getFullYear()===d.getFullYear()&&x.getMonth()===d.getMonth()&&x.getDate()===d.getDate(); }).length);
-  const mx=Math.max(1,...cnt);
-  $("#dDays").innerHTML=days.map((d,i)=>`<div class="d" title="${d.toLocaleDateString("es-MX")}: ${cnt[i]} envíos"><div class="b" style="height:${cnt[i]/mx*100}%;opacity:${cnt[i]?1:.25}"></div>${i%5===0||i===29?`<span class="k">${d.getDate()}/${d.getMonth()+1}</span>`:""}</div>`).join("");
-  const byT={}; marks.forEach(m=>byT[m.tpl]=(byT[m.tpl]||0)+1);
-  hbars($("#dTpl"),Object.entries(byT).map(([k,v])=>[(TPLS[k]||{t:k}).t,v]).sort((a,b)=>b[1]-a[1]),"Todavía no se ha enviado ningún mensaje.");
-  const byU={}; marks.forEach(m=>byU[m.por]=(byU[m.por]||0)+1);
+    ["Pacientes",pac.toLocaleString("es-MX"),expList.length?"en Expedientes":"en cargas",""],
+    ["Mensajes enviados",ents.length.toLocaleString("es-MX"),"en total",""],
+    ["Enviados este mes",ents.filter(m=>ymOf(new Date(m.fecha))===ym).length.toLocaleString("es-MX"),MESES[now.getMonth()],""],
+    ["NPS del mes",sgn(stM.nps),stM.n?`${stM.n} respuesta${stM.n===1?"":"s"}`:"sin respuestas este mes","hl"],
+    ["NPS acumulado",sgn(st.nps),`${st.n} respuesta${st.n===1?"":"s"}`,""],
+    ["Bajas",bajas.toLocaleString("es-MX"),"números dados de baja",""]
+  ].map(([l,v,s,c])=>`<div class="kpi ${c}"><span class="label">${l}</span><b>${v}</b><small>${esc(s)}</small></div>`).join("");
+
+  const ms=last12();
+  colChart($("#cMes"),{labels:ms.map(m=>m.label),stacked:true,aria:"Envíos por mes y tipo de mensaje",empty:"Cuando el equipo envíe mensajes verás aquí cuántos salen cada mes y de qué tipo.",
+    series:GRUPOS.map((gname,k)=>({name:gname,color:SC[k],values:ms.map(m=>ents.filter(e=>(GRUPO_TPL[e.tpl]||"Avisos de compra")===gname&&ymOf(new Date(e.fecha))===m.ym).length)}))});
+
+  const rows=expRows(); const av=[];
+  if(rows.length){
+    const conteo=(tk,o)=>{ const it=evalItems(tk,rows,o,"__exp",now); return [it.filter(x=>x.sent).length,it.filter(x=>x.sent||!x.motivo).length]; };
+    const base={filtro:true,mesCumple:String(now.getMonth())};
+    const add=(l,[s,t])=>{ if(t) av.push([l,s,t]); };
+    add("Cumpleaños de "+MESES[now.getMonth()],conteo("cumple",base));
+    add("Examen: aviso 11 meses",conteo("examen",{...base,etapa:"aviso"}));
+    add("Examen: aniversario 12 meses",conteo("examen",{...base,etapa:"anual"}));
+    add("Examen: recordatorio 13+",conteo("examen",{...base,etapa:"recordatorio"}));
+    add("Encuesta NPS",conteo("nps",base));
+    const telsOk=[...new Set(rows.map(telOf).filter(t=>t&&!isBaja(t)))];
+    const conPromo=new Set(ents.filter(e=>(e.tpl==="promo"||e.tpl==="codigoCliente")&&ymOf(new Date(e.fecha))===ym).map(e=>e.tel));
+    add("Alguna promoción este mes",[telsOk.filter(t=>conPromo.has(t)).length,telsOk.length]);
+  }
+  $("#cAvSub").textContent=`Enviados contra pacientes elegibles en ${MESES[now.getMonth()]}.`;
+  progRows($("#cAv"),av,"Aparece cuando haya expedientes con fecha de nacimiento, de entrega o de consulta.");
+
+  const prox=[0,1,2].map(k=>{ const d=new Date(now.getFullYear(),now.getMonth()+k,1); return {d,label:MES3[d.getMonth()]+" "+String(d.getFullYear()).slice(2)}; });
+  const etapaEn=(b,d)=>(d.getFullYear()*12+d.getMonth())-(b.getFullYear()*12+b.getMonth());
+  const vivos=rows.filter(x=>!isBaja(telOf(x))).map(baseExamen).filter(Boolean);
+  colChart($("#cExam"),{labels:prox.map(p=>p.label),stacked:true,aria:"Próximos exámenes anuales",h:190,empty:"Ningún paciente llega a 11, 12 o 13 meses en los próximos 3 meses.",
+    series:[["Aviso (11 meses)",11],["Aniversario (12 meses)",12],["Recordatorio (13 meses)",13]].map(([nm,m],k)=>({name:nm,color:SC[k],values:prox.map(p=>vivos.filter(b=>etapaEn(b,p.d)===m).length)}))});
+
+  colChart($("#cCons"),{labels:ms.map(m=>m.label),stacked:true,aria:"Consultas por mes",h:190,empty:"Aparece cuando los expedientes tengan fecha de consulta.",
+    series:[{name:"Consultas",color:SC[0],values:ms.map(m=>rows.filter(x=>(x.fechaConsulta||"").slice(0,7)===m.ym).length)}]});
+
+  const cum=Array(12).fill(0); rows.forEach(x=>{ const d=parseFecha(x.fechaNacimiento); if(d) cum[d.getMonth()]++; });
+  const sinNac=rows.filter(x=>!x.fechaNacimiento).length;
+  colChart($("#cCump"),{labels:MES3,stacked:true,aria:"Pacientes por mes de cumpleaños",h:190,hl:now.getMonth(),
+    empty:rows.length?`Ningún expediente tiene fecha de nacimiento todavía (${sinNac} sin capturar).`:"Aparece cuando haya expedientes con fecha de nacimiento.",
+    series:[{name:"Cumpleañeros",color:SC[0],values:cum}],tipLabel:j=>MESES[j][0].toUpperCase()+MESES[j].slice(1)});
+
+  const dx={}; rows.forEach(x=>dxDe(x).forEach(d=>dx[d]=(dx[d]||0)+1));
+  hbars($("#cDx"),Object.entries(dx).sort((a,b)=>b[1]-a[1]),"Aparece cuando haya expedientes con receta.");
+  const N=rows.length;
+  hbars($("#cCal"),N?FALTA_CHIP.concat([["cons","fecha de consulta"]]).map(([k,l])=>["Sin "+l,rows.filter(EXF[k][1]).length,` / ${N}`]):[],"Aparece cuando haya expedientes.");
+
+  const byU={}; ents.forEach(m=>byU[m.por]=(byU[m.por]||0)+1);
   hbars($("#dUser"),Object.entries(byU).sort((a,b)=>b[1]-a[1]),"Cuando el equipo envíe mensajes verás aquí quién envió cuántos.");
-  const byC={}; cargasList.forEach(c=>{ const k=c.categoriaNombre||c.categoria; byC[k]=byC[k]||{t:0,f:0}; byC[k].t+=c.totalFilas||0; byC[k].f+=(c.conFaltantes||0); });
-  hbars($("#dData"),Object.entries(byC).map(([k,v])=>[k+(v.f?` (${v.f} incompletas)`:""),v.t]),"Sube tu primera carga para ver aquí cuántas filas tiene cada tipo.");
+
+  const d30=new Date(); d30.setDate(d30.getDate()-29); d30.setHours(0,0,0,0);
+  const days=[]; for(let i=0;i<30;i++){ const d=new Date(d30); d.setDate(d30.getDate()+i); days.push(d); }
+  const cnt=days.map(d=>ents.filter(m=>{ const x=new Date(m.fecha); return x.getFullYear()===d.getFullYear()&&x.getMonth()===d.getMonth()&&x.getDate()===d.getDate(); }).length);
+  const mx=Math.max(1,...cnt);
+  $("#dDays").innerHTML=days.map((d,i)=>`<div class="d" data-tip="${d.toLocaleDateString("es-MX")}: ${cnt[i]} envío${cnt[i]===1?"":"s"}"><div class="b" style="height:${cnt[i]/mx*100}%;opacity:${cnt[i]?1:.25}"></div>${i%5===0||i===29?`<span class="k">${d.getDate()}/${d.getMonth()+1}</span>`:""}</div>`).join("");
+}
+
+/* ================= Gráficas de NPS ================= */
+function npsStats(list){ const n=list.length, p=list.filter(x=>x.calificacion>=9).length, d=list.filter(x=>x.calificacion<=6).length; return {n,p,pa:n-p-d,d,nps:n?Math.round((p-d)/n*100):null}; }
+function tipoLente(x){
+  if(!x) return "Sin expediente";
+  const t=norm([x.material,x.armazon].filter(Boolean).join(" "));
+  if(/contacto|\bl c\b|\blc\b|soflens|optima|desechable|acuvue/.test(t)) return "Lentes de contacto";
+  if(/progres/.test(t)) return "Progresivo";
+  if(/bifocal|blended|invisible/.test(t)) return "Bifocal";
+  if(/monofocal|vision sencilla|cr39|policarbonato|poly|hi index|alto indice/.test(t)) return "Monofocal";
+  return t?"Otro material":"Sin material capturado";
+}
+function renderNpsCharts(all){
+  if(!$("#nLine")) return;
+  const ms=last12(); const mesDe=x=>(toISO(x.fecha)||String(x.fecha||"")).slice(0,7);
+  const byM=ms.map(m=>npsStats(all.filter(x=>mesDe(x)===m.ym)));
+  npsLine($("#nLine"),ms.map(m=>m.label),byM.map(s=>s.nps),byM.map(s=>s.n));
+  colChart($("#nStack"),{labels:ms.map(m=>m.label),stacked:true,aria:"Promotores, pasivos y detractores por mes",h:200,empty:"Aparece cuando haya respuestas.",
+    series:[{name:"Promotores (9-10)",color:"var(--ok)",values:byM.map(s=>s.p)},{name:"Pasivos (7-8)",color:"var(--warn)",values:byM.map(s=>s.pa)},{name:"Detractores (0-6)",color:"var(--bad)",values:byM.map(s=>s.d)}]});
+  const env=envEntries().filter(e=>e.tpl==="nps"); const envM=ms.map(m=>env.filter(e=>ymOf(new Date(e.fecha))===m.ym).length);
+  colChart($("#nRate"),{labels:ms.map(m=>m.label),stacked:false,aria:"Encuestas enviadas y respondidas por mes",h:200,empty:"Aparece cuando envíes la encuesta desde «Mensajes WhatsApp».",
+    series:[{name:"Enviadas",color:SC[0],values:envM},{name:"Respondidas",color:SC[2],values:byM.map(s=>s.n)}],
+    tipExtra:j=>envM[j]?`\nTasa de respuesta: ${Math.round(byM[j].n/envM[j]*100)}%`:""});
+  const src={}; all.forEach(x=>{ const k=x.fuente==="encuesta"?"Encuesta web":x.fuente==="carga"?"Carga de Excel":"Capturadas a mano"; src[k]=(src[k]||0)+1; });
+  hbars($("#nSrc"),Object.entries(src).sort((a,b)=>b[1]-a[1]),"Aparece cuando haya respuestas.");
+  const withCom=all.filter(x=>x.comentario);
+  const th=Object.entries(THEMES).map(([k,re])=>{ const m=withCom.filter(x=>re.test(x.comentario)); return {k,d:m.filter(x=>grupo(x.calificacion)==="detractor").length,pa:m.filter(x=>grupo(x.calificacion)==="pasivo").length,p:m.filter(x=>grupo(x.calificacion)==="promotor").length,n:m.length}; }).filter(x=>x.n).sort((a,b)=>b.n-a.n);
+  const tmx=Math.max(1,...th.map(x=>x.n));
+  $("#nTheme").innerHTML=th.length?`<div class="sbars">${th.map(x=>`<div class="sb"><span>${esc(x.k)}</span><div class="tr" style="width:${x.n/tmx*100}%">${[["d","Detractores","var(--bad)"],["pa","Pasivos","var(--warn)"],["p","Promotores","var(--ok)"]].filter(([k])=>x[k]).map(([k,l,c])=>`<div style="flex:${x[k]};background:${c}" data-tip="${esc(x.k)} · ${l}: ${x[k]}"></div>`).join("")}</div><span class="mono">${x.n}</span></div>`).join("")}</div>${legendHTML([{name:"Detractores",color:"var(--bad)"},{name:"Pasivos",color:"var(--warn)"},{name:"Promotores",color:"var(--ok)"}])}`
+    :`<p class="small muted">${withCom.length?"Los comentarios no mencionan temas reconocibles todavía.":"Aparece cuando haya comentarios."}</p>`;
+  const porTel={}; expList.forEach(x=>{ const t=telOf(x); if(t&&!porTel[t]) porTel[t]=x; });
+  const lens={}; all.forEach(x=>{ const k=tipoLente(x.telefono?porTel[x.telefono]:null); (lens[k]=lens[k]||[]).push(x); });
+  const lr=Object.entries(lens).map(([k,l])=>[k,npsStats(l)]).sort((a,b)=>b[1].n-a[1].n);
+  $("#nLens").innerHTML=lr.length?`<table><thead><tr><th>Tipo de lente</th><th>Respuestas</th><th>Promotores</th><th>Detractores</th><th>NPS</th></tr></thead><tbody>${lr.map(([k,s])=>`<tr><td>${esc(k)}</td><td class="mono">${s.n}</td><td class="mono">${s.p}</td><td class="mono">${s.d}</td><td class="mono"><b>${s.nps>0?"+":""}${s.nps}</b></td></tr>`).join("")}</tbody></table>`
+    :`<p class="small muted" style="padding:10px">Aparece cuando haya respuestas.</p>`;
 }
 
 /* ================= Encuesta web (Supabase vía conector) ================= */
@@ -1451,11 +1822,250 @@ $("#encSave").onclick=async()=>{
   try{ await db.doc("config/encuesta").set({url:v||null,actualizado:new Date().toISOString(),por:quien()}); $("#encMsg").textContent="Link guardado."; }catch(e){ $("#encMsg").textContent="No se pudo guardar el link."; }
 };
 
+/* ================= Expedientes ================= */
+const EXP_FIELDS=[["nombre","Nombre"],["telefono","Teléfono"],["fechaNacimiento","Fecha de nacimiento"],["folio","Folio"],["fechaConsulta","Fecha de consulta"],
+  ...["od","oi"].flatMap(e=>[["esf","ESF"],["cil","CIL"],["eje","EJE"],["di","D.I."],["add","ADD"],["aco","ACO"]].map(([k,l])=>["rx."+e+"."+k,(e==="od"?"OD ":"OS ")+l])),
+  ["material","Material"],["fechaEntrega","Fecha de entrega"],["armazon","Armazón o L/C"]];
+const FECHAS=new Set(["fechaNacimiento","fechaConsulta","fechaEntrega"]);
+const getP=(o,p)=>p.split(".").reduce((a,k)=>a==null?null:a[k],o)??null;
+function setP(o,p,v){ const ks=p.split("."); let a=o; ks.slice(0,-1).forEach(k=>{ if(a[k]==null||typeof a[k]!=="object") a[k]={}; a=a[k]; }); a[ks[ks.length-1]]=v; }
+const showVal=(p,v)=>v==null||v===""?"—":FECHAS.has(p)?fmtDMY(v):String(v);
+function rowToExp(r){
+  const eye=e=>{ const x=r.receta&&r.receta[e==="od"?"ojo_derecho":"ojo_izquierdo"]; if(!x) return null;
+    const st=v=>{ if(v==null) return null; const s=String(v).replace(/°/g,"").replace(/\s*mm$/i,"").trim(); return s||null; };
+    return {esf:st(x.esfera),cil:st(x.cilindro),eje:st(x.eje),di:st(x.di),add:st(x.adicion),aco:st(x.aco)}; };
+  return {folio:r.folio?String(r.folio).trim():null,nombre:r.nombre||null,telefono:telOf(r),fechaNacimiento:toISO(r.fechaNacimiento),fechaConsulta:toISO(r.fechaConsulta),
+    fechaEntrega:toISO(r.fechaEntrega),material:r.material||null,armazon:r.armazon||null,rx:{od:eye("od"),oi:eye("oi")}};
+}
+function diffExp(prev,next,soloLlenos){
+  const out=[];
+  EXP_FIELDS.forEach(([p,l])=>{ const a=getP(prev,p), b=getP(next,p); if(soloLlenos&&(b==null||b==="")) return; if((a??"")!==(b??"")) out.push({campo:p,label:l,antes:a,despues:b}); });
+  return out;
+}
+function aplicar(prev,cambios){ const d=JSON.parse(JSON.stringify(prev||{})); delete d.id; cambios.forEach(c=>setP(d,c.campo,c.despues)); return d; }
+const hasRx=x=>["od","oi"].some(e=>x.rx&&x.rx[e]&&Object.values(x.rx[e]).some(v=>v!=null&&v!==""));
+
+let integrando=false;
+async function integrarCargas(){
+  if(integrando||!db||!expLoaded) return;
+  const pend=cargasList.filter(c=>c.categoria==="pacientes"&&!c.expIntegrada&&c.parser===2);
+  if(!pend.length) return;
+  integrando=true; const box=$("#exSync"); box.className="msg info"; box.hidden=false;
+  try{
+    for(const c of pend){
+      box.textContent=`Integrando «${c.archivo}» a Expedientes…`;
+      const rows=await loadCargaRows(c.id); let nuevos=0, act=0;
+      const fuente=`Carga de Excel: ${c.archivo}`;
+      for(const r of rows){
+        const x=rowToExp(r); if(!x.nombre&&!x.folio) continue;
+        const id=pidOf(x); const prev=expMap[id]; const now=new Date().toISOString();
+        const ref=db.collection("expedientes").doc(id);
+        if(!prev){
+          const doc={...x,creado:now,actualizado:now,por:fuente,origen:c.id};
+          await ref.set(doc); expMap[id]={id,...doc};
+          await ref.collection("historial").add({fecha:now,por:quien(),fuente,tipo:"alta",cambios:[]}); nuevos++;
+        } else {
+          const ch=diffExp(prev,x,true); if(!ch.length) continue;
+          const doc={...aplicar(prev,ch),actualizado:now,por:fuente};
+          await ref.set(doc); expMap[id]={id,...doc};
+          await ref.collection("historial").add({fecha:now,por:quien(),fuente,tipo:"carga",cambios:ch.map(({campo,label,antes,despues})=>({campo,label,antes,despues}))}); act++;
+        }
+      }
+      await db.collection("cargas").doc(c.id).update({expIntegrada:true,estado:"integrada",expResumen:{nuevos,actualizados:act,fecha:new Date().toISOString()}});
+      box.className="msg ok"; box.textContent=`«${c.archivo}» integrada: ${nuevos} expedientes nuevos y ${act} actualizados.`;
+    }
+  }catch(e){ box.className="msg bad"; box.textContent="No se pudo terminar de integrar la carga. Se reintentará la próxima vez que abras el Asistente."; }
+  integrando=false; setTimeout(()=>{ if(!integrando) box.hidden=true; },8000);
+}
+
+const EXF={todos:["Todos",()=>true],nac:["Sin fecha de nacimiento",x=>!x.fechaNacimiento],tel:["Sin teléfono",x=>!telOf(x)],rx:["Sin receta",x=>!hasRx(x)],
+  mat:["Sin material",x=>!x.material],ent:["Sin fecha de entrega",x=>!x.fechaEntrega],arm:["Sin armazón o L/C",x=>!x.armazon],cons:["Sin fecha de consulta",x=>!x.fechaConsulta],baja:["Dados de baja",x=>isBaja(telOf(x))]};
+const FALTA_CHIP=[["nac","nacimiento"],["tel","teléfono"],["rx","receta"],["mat","material"],["ent","entrega"],["arm","armazón o L/C"]];
+let exPage=40, exCur=null, exDirty=false;
+$("#exF").innerHTML=Object.entries(EXF).map(([k,[l]])=>`<option value="${k}">${l}</option>`).join("");
+$("#exQ").addEventListener("input",()=>{ exPage=40; renderExp(); });
+$("#exF").onchange=()=>{ exPage=40; renderExp(); };
+$("#exMore").onclick=()=>{ exPage+=40; renderExp(); };
+const ordenFolio=(a,b)=>String(a.folio||"~"+a.nombre).localeCompare(String(b.folio||"~"+b.nombre),"es",{numeric:true});
+function renderExp(){
+  const el=$("#exList"); if(!el) return;
+  const all=expList.slice().sort(ordenFolio);
+  [...$("#exF").options].forEach(op=>{ const n=all.filter(EXF[op.value][1]).length; op.textContent=`${EXF[op.value][0]} (${n})`; });
+  $("#exStats").innerHTML=all.length?`<span class="chip">${all.length} expedientes</span>`+FALTA_CHIP.map(([k,l])=>{ const n=all.filter(EXF[k][1]).length; return n?`<span class="chip warn">${n} sin ${l}</span>`:""; }).join(""):"";
+  const viejas=cargasList.filter(c=>c.categoria==="pacientes"&&!c.expIntegrada&&c.parser!==2);
+  if(!all.length){ el.innerHTML=`<p class="muted small">${!expLoaded?"Cargando expedientes…":viejas.length?"Tu carga de pacientes anterior se guardó con la versión pasada, que convertía las celdas vacías de la receta en 0.00. Vuelve a subir tu Excel en «Carga de datos → Pacientes» y aquí se crearán los expedientes con las reglas nuevas.":"Aún no hay expedientes. Sube tu archivo de pacientes en «Carga de datos → Pacientes» y aparecerán aquí."}</p>`; $("#exMore").hidden=true; return; }
+  const q=norm($("#exQ").value); const f=EXF[$("#exF").value][1];
+  const list=all.filter(f).filter(x=>!q||norm([x.nombre,x.telefono,x.folio].filter(Boolean).join(" ")).includes(q));
+  if(!list.length){ el.innerHTML=`<p class="muted small">Ningún expediente coincide.</p>`; $("#exMore").hidden=true; return; }
+  const edita=puede("editarExp");
+  el.innerHTML=list.slice(0,exPage).map(x=>{ const falta=FALTA_CHIP.filter(([k])=>EXF[k][1](x)).map(([,l])=>l);
+    return `<div class="hitem${x.id===exCur?" on":""}"><div style="min-width:0"><div class="t">${esc(x.nombre||"Sin nombre")}${isBaja(telOf(x))?' <span class="chip bad">Baja</span>':""}</div>
+      <div class="s"><span class="mono">${esc(x.folio||"Sin folio")}</span> · <span class="mono">${esc(x.telefono||"Sin teléfono")}</span>${x.fechaConsulta?` · Consulta ${esc(fmtDMY(x.fechaConsulta))}`:""}</div>
+      ${falta.length?`<div class="exmiss">${falta.map(l=>`<span class="chip warn">Falta ${esc(l)}</span>`).join("")}</div>`:""}</div>
+      <div class="row"><button class="btn ${x.id===exCur?"":"ghost "}sm" type="button" data-id="${esc(x.id)}">${edita?"Abrir y editar":"Ver"}</button></div></div>`; }).join("");
+  el.querySelectorAll("button[data-id]").forEach(b=>b.onclick=()=>openExp(b.dataset.id));
+  $("#exMore").hidden=list.length<=exPage; $("#exMore").textContent=`Mostrar más (${list.length-exPage} restantes)`;
+}
+const EXI=["nombre","telefono","fechaNacimiento","folio","fechaConsulta","material","fechaEntrega","armazon"];
+const RXI=["esf","cil","eje","di","add","aco"];
+async function confirmarSalida(){
+  if(!exDirty) return true;
+  return ask("Tienes cambios sin guardar",`<p>Si sales ahora, se perderán los cambios del expediente de <b>${esc((expMap[exCur]||{}).nombre||"")}</b>.</p>`,"Salir sin guardar","Seguir editando",true);
+}
+async function openExp(id){
+  if(id!==exCur&&!(await confirmarSalida())) return;
+  const x=expMap[id]; if(!x){ aviso("No encontré ese expediente. Quizá su folio cambió.",true); return; }
+  exCur=id; exDirty=false;
+  $("#exFicha").hidden=false; $("#exTitle").textContent=x.nombre||"Expediente";
+  $("#exSub").textContent=`Folio ${x.folio||"sin folio"} · actualizado ${x.actualizado?fmtDate(x.actualizado):"—"}${x.por?" · "+x.por:""}`;
+  EXI.forEach(k=>{ $("#ex-"+k).value=x[k]||""; });
+  ["od","oi"].forEach(e=>RXI.forEach(k=>{ $(`#ex-${e}-${k}`).value=(x.rx&&x.rx[e]&&x.rx[e][k])||""; }));
+  const edita=puede("editarExp");
+  $("#exForm").querySelectorAll("input").forEach(i=>{ if(i.id!=="ex-folio") i.disabled=!edita; });
+  $("#exSave").hidden=!edita; $("#exMsg").textContent=edita?"":"Tu rol solo puede consultar expedientes.";
+  renderExp(); $("#exFicha").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+  loadHist(id);
+}
+async function loadHist(id){
+  const el=$("#exHist"); el.innerHTML=`<p class="small muted">Cargando historial…</p>`;
+  try{
+    const s=await db.collection("expedientes").doc(id).collection("historial").orderBy("fecha","desc").limit(50).get();
+    if(exCur!==id) return;
+    if(s.empty){ el.innerHTML=`<p class="small muted">Sin cambios registrados.</p>`; return; }
+    el.innerHTML=s.docs.map(d=>{ const h=d.data(); const ch=h.cambios||[];
+      return `<div class="hitem"><div style="min-width:0"><div class="t">${h.tipo==="alta"?"Alta del expediente":h.tipo==="carga"?"Actualizado por carga de Excel":"Edición manual"}</div>
+        <div class="s">${esc(fmtDate(h.fecha))} · ${esc(h.por||"Sin usuario")}${h.fuente?" · "+esc(h.fuente):""}</div>
+        ${ch.length?`<div class="s">${ch.map(c=>`${esc(c.label)}: ${esc(showVal(c.campo,c.antes))} → <b>${esc(showVal(c.campo,c.despues))}</b>`).join(" · ")}</div>`:""}</div></div>`; }).join("");
+  }catch(e){ el.innerHTML=`<p class="small muted">No se pudo leer el historial.</p>`; }
+}
+$("#exForm").addEventListener("input",()=>{ exDirty=true; $("#exMsg").textContent=""; });
+$("#exClose").onclick=async()=>{ if(!(await confirmarSalida())) return; exCur=null; exDirty=false; $("#exFicha").hidden=true; renderExp(); };
+window.addEventListener("beforeunload",e=>{ if(exDirty){ e.preventDefault(); e.returnValue=""; } });
+function leerFicha(){
+  const errs=[]; const prev=expMap[exCur]||{}; const d={};
+  d.nombre=$("#ex-nombre").value.trim().replace(/\s+/g," ")||null; if(!d.nombre) errs.push("Escribe el nombre.");
+  const tRaw=$("#ex-telefono").value.trim(); const t=tRaw?cleanPhone(tRaw):""; if(tRaw&&t.length!==10) errs.push("El teléfono debe tener 10 dígitos."); d.telefono=t||null;
+  d.folio=prev.folio||null;
+  ["fechaNacimiento","fechaConsulta","fechaEntrega"].forEach(k=>d[k]=$("#ex-"+k).value||null);
+  ["material","armazon"].forEach(k=>d[k]=$("#ex-"+k).value.trim()||null);
+  d.rx={};
+  ["od","oi"].forEach(e=>{ const lab=e==="od"?"OD":"OS"; const o={};
+    const f={esf:nEsf,cil:nCil,eje:nEje,add:nAdd,di:nMm,aco:nMm};
+    RXI.forEach(k=>{ const inp=$(`#ex-${e}-${k}`); const r=f[k](inp.value); if(r.err) errs.push(`${lab} ${k.toUpperCase()}: ${r.err}.`); o[k]=r.v??null; if(!r.err) inp.value=r.v??""; });
+    if(o.cil&&o.cil!=="0.00"&&o.eje==null) errs.push(`${lab}: falta el EJE del cilindro.`);
+    d.rx[e]=Object.values(o).some(v=>v!=null)?o:null; });
+  return {d,errs};
+}
+$("#exForm").addEventListener("submit",async e=>{
+  e.preventDefault(); if(!exCur||!puede("editarExp")) return;
+  if(!db){ $("#exMsg").textContent="Para guardar abre la página con tu cuenta de Claude."; return; }
+  const {d,errs}=leerFicha();
+  if(errs.length){ $("#exMsg").style.color="var(--bad)"; $("#exMsg").textContent=errs.join(" "); return; }
+  const prev=expMap[exCur]; const ch=diffExp(prev,d,false);
+  if(!ch.length){ aviso("No hay cambios que guardar"); exDirty=false; return; }
+  const tabla=`<div class="chg"><table><thead><tr><th>Dato</th><th>Antes</th><th>Ahora</th></tr></thead><tbody>${ch.map(c=>`<tr><td>${esc(c.label)}</td><td class="antes">${esc(showVal(c.campo,c.antes))}</td><td><b>${esc(showVal(c.campo,c.despues))}</b></td></tr>`).join("")}</tbody></table></div>`;
+  const ok=await ask(`¿Guardar cambios en el expediente de ${prev.nombre||"este paciente"}?`,`<p>Vas a cambiar ${ch.length} ${ch.length===1?"dato":"datos"}:</p>${tabla}`,"Guardar cambios");
+  if(!ok) return;
+  $("#exSave").disabled=true;
+  try{
+    const now=new Date().toISOString(); const id=exCur;
+    const doc={...aplicar(prev,ch),actualizado:now,por:quien()};
+    await db.collection("expedientes").doc(id).set(doc); expMap[id]={id,...doc};
+    await db.collection("expedientes").doc(id).collection("historial").add({fecha:now,por:quien(),tipo:"manual",cambios:ch.map(({campo,label,antes,despues})=>({campo,label,antes,despues}))});
+    exDirty=false; $("#exMsg").style.color="var(--ok)"; $("#exMsg").textContent="Expediente actualizado.";
+    aviso("Expediente actualizado"); $("#exTitle").textContent=doc.nombre; $("#exSub").textContent=`Folio ${doc.folio||"sin folio"} · actualizado ${fmtDate(now)} · ${quien()}`;
+    loadHist(id);
+  }catch(err){ $("#exMsg").style.color="var(--bad)"; $("#exMsg").textContent="No se guardó. Revisa tu conexión y vuelve a intentarlo."; aviso("No se pudo guardar el expediente",true); }
+  $("#exSave").disabled=false;
+});
+$("#exDl").onclick=async()=>{
+  if(!downloads){ aviso("La descarga no está disponible en esta vista.",true); return; }
+  if(!expList.length){ aviso("Todavía no hay expedientes para descargar.",true); return; }
+  const num=v=>v!=null&&/^[+-]?\d+(\.\d+)?$/.test(v)?Number(v):(v??"");
+  const fecha=v=>parseFecha(v)||"";
+  const rxc=(x,e)=>RXI.map(k=>num(x.rx&&x.rx[e]&&x.rx[e][k]));
+  const aoa=[["Nombre","Teléfono / WhatsApp","Fecha de nacimiento","Folio","OD ESF","OD CIL","OD EJE","OD D.I.","OD ADD","OD ACO","OS ESF","OS CIL","OS EJE","OS D.I.","OS ADD","OS ACO","Material","Fecha de entrega","Armazón o L/C","Fecha de consulta"],
+    ...expList.slice().sort(ordenFolio).map(x=>[x.nombre||"",x.telefono||"",fecha(x.fechaNacimiento),x.folio||"",...rxc(x,"od"),...rxc(x,"oi"),x.material||"",fecha(x.fechaEntrega),x.armazon||"",fecha(x.fechaConsulta)])];
+  const ws=XLSX.utils.aoa_to_sheet(aoa,{cellDates:true,dateNF:"dd/mm/yyyy"});
+  ws["!cols"]=[{wch:38},{wch:16},{wch:14},{wch:10},...Array(12).fill({wch:8}),{wch:18},{wch:14},{wch:18},{wch:14}];
+  const book=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(book,ws,"Pacientes");
+  try{ await downloads.save({filename:`Pacientes - Opticas del Valle ${ymdOf(new Date())}.xlsx`,data:XLSX.write(book,{type:"array",bookType:"xlsx",cellDates:true})}); }catch(e){}
+};
+function renderAll(){ if(tpl) renderSend(); renderDash(); renderExp(); renderNps(); }
+
+/* ================= Gráficas (SVG a escala, colores por token) ================= */
+const tipEl=$("#tip");
+document.addEventListener("pointermove",e=>{
+  const t=e.target&&e.target.closest?e.target.closest("[data-tip]"):null;
+  if(!t){ tipEl.hidden=true; return; }
+  tipEl.textContent=t.getAttribute("data-tip"); tipEl.hidden=false;
+  const w=tipEl.offsetWidth,h=tipEl.offsetHeight; let x=e.clientX+14,y=e.clientY-h-10;
+  if(x+w>innerWidth-8) x=e.clientX-w-14; if(y<8) y=e.clientY+16; tipEl.style.left=x+"px"; tipEl.style.top=y+"px";
+});
+document.addEventListener("pointerdown",e=>{ if(!(e.target.closest&&e.target.closest("[data-tip]"))) tipEl.hidden=true; });
+const SC=["var(--s1)","var(--s2)","var(--s3)","var(--s4)","var(--s5)","var(--s6)"];
+function niceMax(v){ if(v<=4) return Math.max(2,Math.ceil(v)); const p=10**Math.floor(Math.log10(v)); for(const m of [1,1.5,2,2.5,3,4,5,6,8,10]) if(m*p>=v) return m*p; return 10*p; }
+const legendHTML=S=>S.length>1?`<div class="legend">${S.map(s=>`<span><i style="background:${s.color}"></i>${esc(s.name)}</span>`).join("")}</div>`:"";
+function topRound(x,y,w,h,r){ r=Math.min(r,w/2,h); return `M${x},${y+h}V${y+r}Q${x},${y} ${x+r},${y}H${x+w-r}Q${x+w},${y} ${x+w},${y+r}V${y+h}Z`; }
+function last12(){ const out=[]; const d=new Date(); d.setDate(1); d.setMonth(d.getMonth()-11); for(let k=0;k<12;k++){ out.push({ym:ymOf(d),label:MES3[d.getMonth()]+(d.getMonth()===0||k===0?" "+String(d.getFullYear()).slice(2):"")}); d.setMonth(d.getMonth()+1); } return out; }
+/* Columnas apiladas o agrupadas */
+function colChart(el,cfg){
+  if(!el) return;
+  const S=cfg.series, n=cfg.labels.length;
+  const total=j=>S.reduce((a,s)=>a+(s.values[j]||0),0);
+  if(!S.some(s=>s.values.some(v=>v>0))){ el.innerHTML=`<p class="small muted">${esc(cfg.empty||"Sin datos todavía.")}</p>`; return; }
+  const W=Math.max(280,Math.round(el.clientWidth||560)), H=cfg.h||210, L=34, R=6, T=14, B=24;
+  const tops=cfg.labels.map((_,j)=>cfg.stacked?total(j):Math.max(...S.map(s=>s.values[j]||0)));
+  const mx=niceMax(Math.max(1,...tops)); const y=v=>T+(H-T-B)*(1-v/mx); const fmt=cfg.fmt||(v=>v.toLocaleString("es-MX"));
+  let g=""; const ticks=mx%2===0||mx>4?[0,mx/2,mx]:[0,mx];
+  ticks.forEach(t=>{ g+=`<line class="gl" x1="${L}" x2="${W-R}" y1="${y(t)}" y2="${y(t)}"/><text x="${L-6}" y="${y(t)+4}" text-anchor="end">${fmt(t)}</text>`; });
+  const bw=(W-L-R)/n, gap=Math.max(3,Math.min(12,bw*.28)), step=Math.ceil(n*46/(W-L-R));
+  cfg.labels.forEach((lab,j)=>{
+    const x0=L+j*bw+gap/2, w=bw-gap;
+    if(cfg.stacked){
+      let acc=0; const vis=S.map((s,k)=>({s,k,v:s.values[j]||0})).filter(o=>o.v>0);
+      vis.forEach((o,idx)=>{ const y1=y(acc+o.v), y0=y(acc)-(acc>0?2:0); const h=Math.max(1,y0-y1);
+        const tipTxt=`${cfg.tipLabel?cfg.tipLabel(j):lab}\n${o.s.name}: ${fmt(o.v)}`+(vis.length>1?`\nTotal: ${fmt(total(j))}`:"")+(cfg.tipExtra?cfg.tipExtra(j):"");
+        g+= idx===vis.length-1 ? `<path d="${topRound(x0,y1,w,h,4)}" style="fill:${o.s.color}" data-tip="${esc(tipTxt)}"><title>${esc(tipTxt)}</title></path>` : `<rect x="${x0}" y="${y1}" width="${w}" height="${h}" style="fill:${o.s.color}" data-tip="${esc(tipTxt)}"><title>${esc(tipTxt)}</title></rect>`;
+        acc+=o.v; });
+    } else {
+      const sw=(w-(S.length-1)*2)/S.length;
+      S.forEach((s,k)=>{ const v=s.values[j]||0; if(!v) return; const y1=y(v); const tipTxt=`${cfg.tipLabel?cfg.tipLabel(j):lab}\n${s.name}: ${fmt(v)}`+(cfg.tipExtra?cfg.tipExtra(j):"");
+        g+=`<path d="${topRound(x0+k*(sw+2),y1,sw,y(0)-y1,4)}" style="fill:${s.color}" data-tip="${esc(tipTxt)}"><title>${esc(tipTxt)}</title></path>`; });
+    }
+    if(cfg.marks&&cfg.marks[j]) g+=`<text class="val" x="${x0+w/2}" y="${y(tops[j])-5}" text-anchor="middle">${esc(cfg.marks[j])}</text>`;
+    if(j%step===0||j===n-1) g+=`<text x="${x0+w/2}" y="${H-6}" text-anchor="middle"${cfg.hl===j?' class="val"':""}>${esc(lab)}</text>`;
+  });
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(cfg.aria||"")}">${g}</svg>`+legendHTML(S);
+}
+/* Línea de -100 a +100 con huecos donde no hay datos */
+function npsLine(el,labels,vals,ns){
+  if(!el) return;
+  if(!vals.some(v=>v!=null)){ el.innerHTML=`<p class="small muted">La línea aparece cuando haya respuestas.</p>`; return; }
+  const W=Math.max(280,Math.round(el.clientWidth||560)), H=210, L=40, R=34, T=14, B=24;
+  const y=v=>T+(H-T-B)*(1-(v+100)/200); const n=labels.length; const x=j=>L+(W-L-R)*(n===1?.5:j/(n-1));
+  let g=""; [-100,-50,0,50,100].forEach(t=>{ g+=`<line class="${t===0?"zl":"gl"}" x1="${L}" x2="${W-R}" y1="${y(t)}" y2="${y(t)}"/><text x="${L-6}" y="${y(t)+4}" text-anchor="end">${t>0?"+"+t:t}</text>`; });
+  let d="", pen=false; vals.forEach((v,j)=>{ if(v==null){ pen=false; return; } d+=(pen?"L":"M")+x(j)+","+y(v); pen=true; });
+  g+=`<path d="${d}" fill="none" style="stroke:var(--s1)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  let lastJ=-1; vals.forEach((v,j)=>{ if(v==null) return; lastJ=j; const tt=`${labels[j]}\nNPS ${v>0?"+":""}${v} · ${ns[j]} respuesta${ns[j]===1?"":"s"}`;
+    g+=`<circle cx="${x(j)}" cy="${y(v)}" r="4.5" style="fill:var(--s1);stroke:var(--surface)" stroke-width="2"/><circle cx="${x(j)}" cy="${y(v)}" r="13" style="fill:transparent" data-tip="${esc(tt)}"><title>${esc(tt)}</title></circle>`; });
+  if(lastJ>=0) g+=`<text class="val" x="${x(lastJ)+8}" y="${y(vals[lastJ])-8}">${vals[lastJ]>0?"+":""}${vals[lastJ]}</text>`;
+  const step=Math.ceil(n*46/(W-L-R)); labels.forEach((l,j)=>{ if(j%step===0||j===n-1) g+=`<text x="${x(j)}" y="${H-6}" text-anchor="middle">${esc(l)}</text>`; });
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Evolución mensual del NPS">${g}</svg>`;
+}
+function progRows(el,rows,empty){
+  if(!rows.length){ el.innerHTML=`<p class="small muted">${empty}</p>`; return; }
+  el.innerHTML=rows.map(([l,s,t])=>{ const p=t?Math.min(100,s/t*100):0; const tt=`${l}: ${s} de ${t} enviados (${Math.round(p)}%)`;
+    return `<div class="pr" data-tip="${esc(tt)}"><span title="${esc(l)}">${esc(l)}</span><div class="tr"><div style="width:${p}%"></div></div><span class="mono">${s}/${t}</span></div>`; }).join("");
+}
+let rzT=null; window.addEventListener("resize",()=>{ clearTimeout(rzT); rzT=setTimeout(()=>{ renderDash(); renderNps(); },200); });
+
 /* ================= Pestañas ================= */
 function showTab(k){
-  const all=["dashboard","carga","mensajes","nps","usuarios"]; if(!all.includes(k)) k="dashboard";
+  const all=["dashboard","carga","expedientes","mensajes","nps","usuarios"]; if(!all.includes(k)) k="dashboard";
   document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===k)));
   all.forEach(x=>$("#panel-"+x).hidden=x!==k);
+  if(k==="dashboard") renderDash(); if(k==="nps") renderNps();
   try{ window.scrollTo({top:0}); }catch(e){}
 }
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{ showTab(b.dataset.tab); try{ history.replaceState(null,"","#"+b.dataset.tab); }catch(e){} });
@@ -1463,7 +2073,7 @@ showTab((location.hash||"").slice(1));
 
 function onCargas(snap){
   cargasList=snap.docs.map(d=>({id:d.id,...d.data()}));
-  renderHist(snap); if(tpl) fillSrc(); refreshNpsCargas(); renderDash();
+  renderHist(snap); if(tpl) fillSrc(); refreshNpsCargas(); renderDash(); integrarCargas(); renderExp();
 }
 
 /* ================= Arranque con Supabase ================= */
@@ -1520,7 +2130,11 @@ function iniciarDatos(){
   db.collection("nps").orderBy("fecha","desc").limit(1000).onSnapshot(s=>{ npsManual=s.docs.map(d=>({_id:d.id,...d.data()})); renderNps(); renderDash(); },()=>{});
   db.doc("config/encuesta").onSnapshot(s=>{ encuestaUrl=(s.exists&&s.data().url)||""; if(document.activeElement!==$("#encLink")) $("#encLink").value=encuestaUrl; if(tpl) renderSend(); },()=>{});
   db.collection("npsTokens").limit(5000).onSnapshot(s=>{ npsTokMap={}; s.docs.forEach(d=>npsTokMap[d.id]=d.data()); rebuildWeb(); renderNps(); },()=>{});
-  db.collection("envios").limit(2000).onSnapshot(s=>{ envios=s.docs.map(d=>d.data()); renderDash(); },()=>{});
+  db.collection("envios").limit(2000).onSnapshot(s=>{ envOld=s.docs.map(d=>({_id:d.id,...d.data()})); migrarEnvios(); },()=>{});
+  db.collection("contactos").limit(5000).onSnapshot(s=>{ const m={}; s.docs.forEach(d=>m[d.id]=d.data()); contactos=m; ctLoaded=true; renderAll(); migrarEnvios(); },()=>{ ctLoaded=true; });
+  db.collection("expedientes").limit(5000).onSnapshot(s=>{ expList=s.docs.map(d=>({id:d.id,...d.data()})); expMap=Object.fromEntries(expList.map(x=>[x.id,x])); expLoaded=true;
+    const op=document.querySelector('#srcSel option[value="__exp"]'); if(op) op.textContent=`Expedientes · ${expList.length} pacientes`;
+    if(srcId==="__exp") srcRows=expRows(); renderAll(); integrarCargas(); },()=>{ expLoaded=true; renderExp(); });
   db.doc("config/marca").onSnapshot(s=>showLogo(s.exists?s.data().logoUrl:null),()=>{});
   setTimeout(()=>syncEncuesta(false),600);
   setInterval(()=>{ if(document.visibilityState==="visible") syncEncuesta(false); },30000);
