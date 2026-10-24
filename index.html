@@ -61,6 +61,7 @@ p{margin:0}
 .step-head{display:flex;gap:12px;align-items:baseline}
 .num{font-family:var(--f-display);font-weight:700;color:var(--accent);font-size:1.05rem;min-width:1.4em}
 .step[aria-disabled="true"]{opacity:.55}
+.step-head .num:empty{display:none}
 .cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
 .cat{border:1.5px solid var(--line);border-radius:var(--r);padding:12px;background:var(--bg);cursor:pointer;text-align:left;font:inherit;color:inherit;display:flex;flex-direction:column;gap:2px}
 .cat b{font-size:.95rem}
@@ -151,7 +152,8 @@ a.btn[aria-disabled="true"]{opacity:.45;pointer-events:none}
 .theme button{font:inherit;font-size:.82rem;font-weight:700;border:0;background:none;color:var(--muted);padding:6px 12px;cursor:pointer}
 .theme button[aria-checked="true"]{background:var(--accent);color:var(--accent-ink)}
 .theme button:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+@media (max-width:1000px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:2px}
 .kpi b{font-family:var(--f-display);font-size:1.9rem;line-height:1.1;font-variant-numeric:tabular-nums}
 .kpi.hl{background:var(--accent-soft);border-color:transparent}.kpi.hl b{color:var(--accent)}
@@ -198,6 +200,69 @@ body{margin:0;font-size:14px}
 img{max-width:100%}
 [hidden]{display:none!important}
 .installbtn{white-space:nowrap}
+/* ===== Barra de app ===== */
+.appbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line);box-shadow:0 1px 0 rgba(0,0,0,.02)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:21;background:var(--surface)}
+.appbar-in{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brandmark{display:flex;align-items:center;gap:12px;min-width:0}
+.brandmark img{height:44px;width:auto;max-width:200px;object-fit:contain;background:#fff;border-radius:8px;padding:4px 8px;display:block}
+.brandtxt{font-family:var(--f-display);font-size:1.15rem;white-space:nowrap;display:inline-flex;align-items:center;gap:10px}
+.brandtxt .hdricon{height:34px;width:34px;border-radius:8px;background:#fff;padding:0;max-width:none}
+.dgrid{align-items:start}
+.appname{font-size:.68rem;line-height:1.2;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;border-left:1.5px solid var(--line);padding-left:12px}
+.appbar-actions{display:flex;align-items:center;gap:6px;flex:none}
+.iconbtn{display:inline-flex;align-items:center;gap:6px;height:40px;min-width:40px;justify-content:center;padding:0 10px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:700;font-size:.85rem;cursor:pointer}
+.iconbtn svg{width:20px;height:20px}
+.iconbtn:focus-visible,.avatar:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.usermenu{position:relative}
+.avatar{width:40px;height:40px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-ink);font:700 .9rem var(--f-body);cursor:pointer}
+.menu{position:absolute;right:0;top:48px;width:min(290px,calc(100vw - 32px));background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:14px;display:flex;flex-direction:column;gap:12px;z-index:30}
+.menu-who{display:flex;flex-direction:column;gap:2px}
+.menu-sec{display:flex;flex-direction:column;gap:6px}
+.menu .btn{width:100%}
+.menu .theme{display:flex}.menu .theme button{flex:1}
+.tabs{max-width:1040px;margin:0 auto;padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px));display:flex;gap:2px;border-bottom:0;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;padding:12px 14px}
+.tab svg{width:18px;height:18px;flex:none}
+.tab .ts{display:none}
+.wrap{padding-block:22px 40px}
+.appfoot{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;font-size:.82rem;color:var(--muted);padding-top:18px;border-top:1px solid var(--line);margin-top:10px}
+.appfoot .links{display:flex;gap:6px 14px;flex-wrap:wrap;justify-content:center}
+.appfoot a{color:var(--accent)}
+.marca{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.marca .logo-box.has{width:240px;height:90px}
+.marca .logo-actions{margin-top:0;align-items:center}
+/* ===== Celular ===== */
+@media (max-width:720px){
+  .appname,.iconbtn .lbl{display:none}
+  .brandmark img{height:40px;max-width:170px}
+  .appbar-in{padding-block:8px}
+  .tabs{position:fixed;left:0;right:0;bottom:0;z-index:25;max-width:none;justify-content:space-around;gap:0;background:var(--surface);border-top:1px solid var(--line);padding:4px max(4px,env(safe-area-inset-right,0px)) calc(4px + env(safe-area-inset-bottom,0px)) max(4px,env(safe-area-inset-left,0px));box-shadow:0 -4px 16px rgba(0,0,0,.08)}
+  .tab{flex:1 1 0;flex-direction:column;gap:2px;padding:6px 2px;border-bottom:0;margin:0;font-size:.72rem;border-radius:10px;min-width:0}
+  .tab svg{width:22px;height:22px}
+  .tab .tl{display:none}.tab .ts{display:block}
+  .tab[aria-selected="true"]{background:var(--accent-soft);color:var(--accent);border-bottom:0}
+  .wrap{padding-block:16px calc(96px + env(safe-area-inset-bottom,0px))}
+  h2{font-size:1.05rem}
+  .step{padding:14px}
+  .step-head{gap:8px}
+  .step-head .num:empty{display:none}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .kpi{padding:12px}
+  .kpi b{font-size:1.5rem}
+  .map{grid-template-columns:1fr}
+  .cats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .row{gap:8px}
+  .hb{grid-template-columns:minmax(0,110px) 1fr 40px}
+  .dgrid{grid-template-columns:1fr}
+  .npsgrid{grid-template-columns:1fr}
+  .bar{grid-template-columns:auto 1fr auto;gap:8px}.bar>span:first-child{white-space:nowrap;font-size:.8rem}
+}
+.loginmodo{display:flex;width:100%}.loginmodo button{flex:1;padding:8px 10px}
+@media (max-width:720px){ .brandmark img{height:44px} }
+@media (max-width:360px){ .brandmark img{max-width:130px} .cats{grid-template-columns:1fr} }
+
 #whoBox{max-width:440px;width:100%;margin:12px auto 0;align-items:stretch;text-align:center}
 #whoBox .map{grid-template-columns:1fr;text-align:left}
 #whoBox .loginicon{width:76px;height:76px;border-radius:18px;margin:0 auto;display:block;background:#fff;box-shadow:0 4px 16px rgba(20,35,46,.12)}
@@ -208,63 +273,63 @@ img{max-width:100%}
 <body>
 
 
-<div class="wrap">
-  <header class="brand">
-    <div class="logo-box" id="logoBox" role="button" tabindex="0" aria-label="Cargar logotipo de la óptica">
-      <span class="ph" id="logoPh">Toca para<br>subir tu logo</span>
-      <img id="logoImg" alt="Logotipo de Ópticas del Valle" hidden>
+<header class="appbar">
+  <div class="appbar-in">
+    <div class="brandmark">
+      <img id="hdrLogo" alt="Ópticas del Valle" hidden>
+      <span class="brandtxt" id="hdrTxt"><img src="/icon-192.png" alt="" width="34" height="34" class="hdricon"><b>Ópticas del Valle</b></span>
+      <span class="appname">Asistente de<br>Comunicación</span>
     </div>
-    <input type="file" id="logoInput" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden>
-    <div class="brand-txt">
-      <span class="label">Asistente de Comunicación</span>
-      <h1>Ópticas del Valle</h1>
-      <div class="brand-meta">
-        <span>Blvd. Atlixco 3507, Local 18, Reserva Territorial Atlixcayotl, Puebla 72197</span>
-        <span class="mono">WhatsApp 221 110 8551</span>
-        <a href="https://www.instagram.com/opticasdelvallepuebla" target="_blank" rel="noopener">Instagram</a>
-        <a href="https://www.facebook.com/profile.php?id=61592258716035" target="_blank" rel="noopener">Facebook</a>
-      </div>
-      <div class="logo-actions">
-        <button class="btn ghost sm" id="logoBtn" type="button">Subir logo</button>
-        <button class="btn danger sm" id="logoDel" type="button" hidden>Quitar logo</button>
-        <span class="small muted" id="logoMsg">PNG, JPG, WEBP o SVG · máx. 2 MB</span>
+    <div class="appbar-actions">
+      <button class="iconbtn" id="installBtn" type="button" hidden aria-label="Instalar app" title="Instalar app"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="lbl">Instalar</span></button>
+      <button class="iconbtn" id="themeBtn" type="button" aria-label="Modo de color: automático" title="Modo de color"><svg viewBox="0 0 24 24" aria-hidden="true"><path id="themeIco" d="M12 3a9 9 0 1 0 0 18V3z" fill="currentColor"/><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+      <div class="usermenu" id="sesionBox" hidden>
+        <button class="avatar" id="userBtn" type="button" aria-haspopup="true" aria-expanded="false"><span id="userIni">OV</span></button>
+        <div class="menu" id="userMenu" hidden role="menu">
+          <div class="menu-who"><b id="userName"></b><span id="sesionName" class="small muted"></span></div>
+          <div class="menu-sec"><span class="label">Modo de color</span>
+            <div class="theme" role="radiogroup" aria-label="Modo de color">
+              <button type="button" role="radio" data-theme-opt="light" aria-checked="false">Claro</button>
+              <button type="button" role="radio" data-theme-opt="dark" aria-checked="false">Oscuro</button>
+              <button type="button" role="radio" data-theme-opt="system" aria-checked="true">Auto</button>
+            </div>
+          </div>
+          <button class="btn ghost sm" type="button" id="logoutBtn" role="menuitem">Cerrar sesión</button>
+        </div>
       </div>
     </div>
-    <div class="hdr-side">
-      <div class="theme" role="radiogroup" aria-label="Modo de color">
-        <button type="button" role="radio" data-theme-opt="light" aria-checked="false">☀️ Claro</button>
-        <button type="button" role="radio" data-theme-opt="dark" aria-checked="false">🌙 Oscuro</button>
-        <button type="button" role="radio" data-theme-opt="system" aria-checked="true">Auto</button>
-      </div>
-      <button class="btn ghost sm installbtn" id="installBtn" type="button" hidden>📲 Instalar app</button>
-      <div class="row sesion" id="sesionBox" hidden><span class="chip" id="sesionName"></span><button class="btn ghost sm" type="button" id="logoutBtn">Cerrar sesión</button></div>
-    </div>
-  </header>
-
+  </div>
   <nav class="tabs" role="tablist" aria-label="Secciones">
-    <button class="tab" role="tab" id="tab-dashboard" data-tab="dashboard" aria-selected="true" type="button">Dashboard</button>
-    <button class="tab" role="tab" id="tab-carga" data-tab="carga" aria-selected="false" type="button">Carga de datos</button>
-    <button class="tab" role="tab" id="tab-mensajes" data-tab="mensajes" aria-selected="false" type="button">Mensajes WhatsApp</button>
-    <button class="tab" role="tab" id="tab-nps" data-tab="nps" aria-selected="false" type="button">Encuesta NPS</button>
-    <button class="tab" role="tab" id="tab-usuarios" data-tab="usuarios" aria-selected="false" type="button">Usuarios</button>
+    <button class="tab" role="tab" id="tab-dashboard" data-tab="dashboard" aria-selected="true" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h6V4H4zM14 20h6v-9h-6zM4 20h6v-4H4zM14 7h6V4h-6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span class="tl">Dashboard</span><span class="ts">Inicio</span></button>
+    <button class="tab" role="tab" id="tab-carga" data-tab="carga" aria-selected="false" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 15v4h14v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tl">Carga de datos</span><span class="ts">Cargar</span></button>
+    <button class="tab" role="tab" id="tab-mensajes" data-tab="mensajes" aria-selected="false" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18.5 5.3 15A7.5 7.5 0 1 1 9 18.6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span class="tl">Mensajes WhatsApp</span><span class="ts">Mensajes</span></button>
+    <button class="tab" role="tab" id="tab-nps" data-tab="nps" aria-selected="false" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 4 2.4 5 5.4.6-4 3.7 1.1 5.4L12 16l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span class="tl">Encuesta NPS</span><span class="ts">NPS</span></button>
+    <button class="tab" role="tab" id="tab-usuarios" data-tab="usuarios" aria-selected="false" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 4.5a3.5 3.5 0 0 1 0 7M18 14c2 .6 3.5 2.6 3.5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="tl">Usuarios</span><span class="ts">Equipo</span></button>
   </nav>
+</header>
 
+<div class="wrap">
   <div class="msg info" id="envMsg" hidden></div>
 
   <section class="step" id="whoBox" hidden>
     <img class="loginicon" src="/icon-192.png" alt="" width="76" height="76">
     <h2 id="loginTitle">Iniciar sesión</h2>
-    <p class="small muted" id="loginLead">Escribe tu ID de usuario (por ejemplo OV-001) y tu contraseña.</p>
-    <form id="loginForm" class="map">
-      <label>ID de usuario<input type="text" id="loginId" autocomplete="username" placeholder="OV-001" autocapitalize="characters" spellcheck="false"></label>
-      <label>Contraseña<span class="pw"><input type="password" id="loginPass" autocomplete="current-password"><button type="button" class="eye" aria-label="Mostrar contraseña" aria-pressed="false"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M1.5 12S5.5 4.5 12 4.5 22.5 12 22.5 12 18.5 19.5 12 19.5 1.5 12 1.5 12Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path class="slash" d="M3 21 21 3" stroke="currentColor" stroke-width="1.8"/></svg></button></span></label>
-      <label class="check"><span><input type="checkbox" id="loginRemember" checked> Recordar mi sesión en este dispositivo</span></label>
+    <p class="small muted" id="loginLead">Entra con tu nombre o con tu ID de usuario, como prefieras.</p>
+    <form id="loginForm" class="map" method="post" action="#" autocomplete="on">
+      <div class="theme loginmodo" role="radiogroup" aria-label="Entrar con">
+        <button type="button" role="radio" data-modo="nombre" aria-checked="true">Con mi nombre</button>
+        <button type="button" role="radio" data-modo="id" aria-checked="false">Con mi ID</button>
+      </div>
+      <label><span id="loginIdLbl">Nombre</span><input type="text" id="loginId" name="username" autocomplete="username" autocorrect="off" placeholder="Como te dio de alta el administrador" spellcheck="false"></label>
+      <label>Contraseña<span class="pw"><input type="password" id="loginPass" name="password" autocomplete="current-password"><button type="button" class="eye" aria-label="Mostrar contraseña" aria-pressed="false"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M1.5 12S5.5 4.5 12 4.5 22.5 12 22.5 12 18.5 19.5 12 19.5 1.5 12 1.5 12Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path class="slash" d="M3 21 21 3" stroke="currentColor" stroke-width="1.8"/></svg></button></span></label>
+      <label class="check"><span><input type="checkbox" id="loginRemember"> Mantener mi sesión abierta en este equipo (hasta 8 horas)</span></label>
+      <p class="small muted wide" id="loginNota">Si guardaste tu contraseña en Google, toca el campo y elige tu cuenta. Por seguridad, la sesión se cierra sola tras 15 minutos sin uso.</p>
       <div class="row wide"><button class="btn" type="submit" id="loginBtn">Entrar</button><span class="small" id="loginMsg" style="color:var(--bad)"></span></div>
     </form>
     <form id="setupForm" class="map" hidden>
       <label>Tu nombre <em>*</em><input type="text" id="setupNombre" autocomplete="name"></label>
       <label>Teléfono<input type="tel" id="setupTel" placeholder="10 dígitos"></label>
-      <label>Contraseña <em>*</em><span class="pw"><input type="password" id="setupPass" autocomplete="new-password" placeholder="Mínimo 6 caracteres"><button type="button" class="eye" aria-label="Mostrar contraseña" aria-pressed="false"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M1.5 12S5.5 4.5 12 4.5 22.5 12 22.5 12 18.5 19.5 12 19.5 1.5 12 1.5 12Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path class="slash" d="M3 21 21 3" stroke="currentColor" stroke-width="1.8"/></svg></button></span></label>
+      <label>Contraseña <em>*</em><span class="pw"><input type="password" id="setupPass" name="new-password" autocomplete="new-password" placeholder="Mínimo 6 caracteres"><button type="button" class="eye" aria-label="Mostrar contraseña" aria-pressed="false"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M1.5 12S5.5 4.5 12 4.5 22.5 12 22.5 12 18.5 19.5 12 19.5 1.5 12 1.5 12Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path class="slash" d="M3 21 21 3" stroke="currentColor" stroke-width="1.8"/></svg></button></span></label>
       <label>Confirmar contraseña<span class="pw"><input type="password" id="setupPass2" autocomplete="new-password"><button type="button" class="eye" aria-label="Mostrar contraseña" aria-pressed="false"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M1.5 12S5.5 4.5 12 4.5 22.5 12 22.5 12 18.5 19.5 12 19.5 1.5 12 1.5 12Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path class="slash" d="M3 21 21 3" stroke="currentColor" stroke-width="1.8"/></svg></button></span></label>
       <div class="row wide"><button class="btn" type="submit" id="setupBtn">Crear administrador</button><span class="small" id="setupMsg" style="color:var(--bad)"></span></div>
     </form>
@@ -396,6 +461,21 @@ img{max-width:100%}
   </div>
 
   <div class="panel" id="panel-usuarios" role="tabpanel" aria-labelledby="tab-usuarios" hidden>
+  <section class="step" id="marcaBox">
+    <div class="step-head"><span class="num"></span><div><h2>Logotipo</h2><p class="small muted">Aparece en el encabezado y en las fichas de receta.</p></div></div>
+    <div class="marca">
+      <div class="logo-box" id="logoBox" role="button" tabindex="0" aria-label="Cambiar logotipo de la óptica">
+        <span class="ph" id="logoPh">Toca para<br>subir tu logo</span>
+        <img id="logoImg" alt="Logotipo de Ópticas del Valle" hidden>
+      </div>
+      <input type="file" id="logoInput" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden>
+      <div class="logo-actions">
+        <button class="btn ghost sm" id="logoBtn" type="button">Cambiar logo</button>
+        <button class="btn danger sm" id="logoDel" type="button" hidden>Quitar logo</button>
+        <span class="small muted" id="logoMsg">PNG, JPG, WEBP o SVG · máx. 2 MB</span>
+      </div>
+    </div>
+  </section>
   <section class="step">
     <div class="step-head"><span class="num"></span><div><h2>Equipo de Ópticas del Valle</h2><p class="small muted">Cambia el rol, pausa o da de baja a cada persona. Puede haber varios administradores; siempre debe quedar al menos uno activo.</p></div></div>
     <div class="hist" id="uList"><p class="muted small">Aún no hay usuarios. Da de alta al primero con el formulario de abajo.</p></div>
@@ -417,6 +497,13 @@ img{max-width:100%}
     <div class="tablebox"><table id="rolesTable"></table></div>
   </section>
   </div>
+  <footer class="appfoot">
+    <b>Ópticas del Valle</b>
+    <span>Blvd. Atlixco 3507, Local 18, Reserva Territorial Atlixcayotl, Puebla 72197</span>
+    <span class="links"><span class="mono">WhatsApp 221 110 8551</span>
+      <a href="https://www.instagram.com/opticasdelvallepuebla" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.facebook.com/profile.php?id=61592258716035" target="_blank" rel="noopener">Facebook</a></span>
+  </footer>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
@@ -426,7 +513,7 @@ img{max-width:100%}
 const $ = s => document.querySelector(s);
 /* ================= Supabase: sesión y almacén ================= */
 const SB_URL="https://mxlmobpziadhpxwpxerr.supabase.co", SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14bG1vYnB6aWFkaHB4d3B4ZXJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5MzU3MDUsImV4cCI6MjEwMDUxMTcwNX0.MUd_qyCv7cxOwOBLF_m-awL6HhE2fEYblI9G5JhY5aY", FN_URL=SB_URL+"/functions/v1/odv-admin";
-let rememberSession=true; try{ rememberSession=localStorage.getItem("ov-recordar")!=="0"; }catch(e){}
+let rememberSession=false; try{ rememberSession=localStorage.getItem("ov-recordar")==="1"; }catch(e){}
 const sbStorage={ getItem:k=>{ try{ return localStorage.getItem(k) ?? sessionStorage.getItem(k); }catch(e){ return null; } },
   setItem:(k,v)=>{ try{ (rememberSession?localStorage:sessionStorage).setItem(k,v); (rememberSession?sessionStorage:localStorage).removeItem(k); }catch(e){} },
   removeItem:k=>{ try{ localStorage.removeItem(k); sessionStorage.removeItem(k); }catch(e){} } };
@@ -791,7 +878,8 @@ function renderHist(snap){
 
 /* Logo */
 const logoInput=$("#logoInput");
-function showLogo(url){ const img=$("#logoImg"); if(url){ img.src=url; img.hidden=false; $("#logoPh").hidden=true; $("#logoDel").hidden=!puede("logo"); $("#logoBox").style.borderStyle="solid"; $("#logoBox").classList.add("has"); } else { img.hidden=true; img.removeAttribute("src"); $("#logoPh").hidden=false; $("#logoDel").hidden=true; $("#logoBox").style.borderStyle="dashed"; $("#logoBox").classList.remove("has"); } if(cat==="pacientes"&&headers.length) renderPreview(); }
+function showLogo(url){ const h=$("#hdrLogo"); if(url){ h.src=url; h.hidden=false; $("#hdrTxt").hidden=true; } else { h.hidden=true; h.removeAttribute("src"); $("#hdrTxt").hidden=false; }
+  const img=$("#logoImg"); if(url){ img.src=url; img.hidden=false; $("#logoPh").hidden=true; $("#logoDel").hidden=!puede("logo"); $("#logoBox").style.borderStyle="solid"; $("#logoBox").classList.add("has"); } else { img.hidden=true; img.removeAttribute("src"); $("#logoPh").hidden=false; $("#logoDel").hidden=true; $("#logoBox").style.borderStyle="dashed"; $("#logoBox").classList.remove("has"); } if(cat==="pacientes"&&headers.length) renderPreview(); }
 function pickLogo(){ if(!puede("logo")||!db) return; logoInput.click(); }
 $("#logoBox").onclick=pickLogo; $("#logoBtn").onclick=pickLogo;
 $("#logoBox").onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();pickLogo();} };
@@ -1127,8 +1215,14 @@ $("#npsForm").addEventListener("submit",async e=>{
 function setTheme(t){
   if(t==="light"||t==="dark") document.documentElement.setAttribute("data-theme",t); else document.documentElement.removeAttribute("data-theme");
   document.querySelectorAll("[data-theme-opt]").forEach(b=>b.setAttribute("aria-checked",String(b.dataset.themeOpt===(t||"system"))));
+  if(typeof pintaTemaBtn==="function") pintaTemaBtn(t==="light"||t==="dark"?t:"system");
 }
 document.querySelectorAll("[data-theme-opt]").forEach(b=>b.onclick=()=>{ setTheme(b.dataset.themeOpt); try{ localStorage.setItem("ov-tema",b.dataset.themeOpt);}catch(e){} });
+let temaActual="system";
+const ICO={system:"M12 3a9 9 0 1 0 0 18V3z",light:"M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z",dark:"M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"};
+const NOM={system:"automático",light:"claro",dark:"oscuro"};
+function pintaTemaBtn(t){ temaActual=t||"system"; const i=document.getElementById("themeIco"); if(i) i.setAttribute("d",ICO[temaActual]); const b=document.getElementById("themeBtn"); if(b){ b.setAttribute("aria-label","Modo de color: "+NOM[temaActual]); b.title="Modo de color: "+NOM[temaActual]; } }
+document.getElementById("themeBtn").onclick=()=>{ const sig={system:"light",light:"dark",dark:"system"}[temaActual]; setTheme(sig); try{ localStorage.setItem("ov-tema",sig);}catch(e){} };
 try{ setTheme(localStorage.getItem("ov-tema")||"system"); }catch(e){ setTheme("system"); }
 
 /* ================= Usuarios y permisos ================= */
@@ -1151,16 +1245,43 @@ function ocultarPw(){ document.querySelectorAll(".pw input").forEach(i=>i.type="
 let sesion=null, modoSetup=false;
 $("#loginForm").addEventListener("submit",async e=>{
   e.preventDefault(); if(!sb){ $("#loginMsg").textContent="No se pudo cargar el sistema. Recarga la página."; return; }
-  const id=normId($("#loginId").value), pass=$("#loginPass").value;
-  if(!/^OV-\d{3,}$/.test(id)){ $("#loginMsg").textContent="Escribe tu ID, por ejemplo OV-001."; return; }
+  const val=$("#loginId").value.trim(), pass=$("#loginPass").value;
+  if(!val){ $("#loginMsg").textContent=loginModo==="id"?"Escribe tu ID, por ejemplo OV-001.":"Escribe tu nombre."; return; }
   if(!pass){ $("#loginMsg").textContent="Escribe tu contraseña."; return; }
+  let id=normId(val);
+  if(loginModo==="nombre"&&!/^OV-\d{3,}$/.test(id)){
+    $("#loginBtn").disabled=true; $("#loginMsg").textContent="";
+    try{ id=(await adminFn({action:"resolver",nombre:val},true)).id; }catch(err){ $("#loginBtn").disabled=false; $("#loginMsg").textContent=err.message; return; }
+  }
+  if(!/^OV-\d{3,}$/.test(id)){ $("#loginMsg").textContent="Escribe tu ID, por ejemplo OV-001."; return; }
   rememberSession=$("#loginRemember").checked; try{ localStorage.setItem("ov-recordar",rememberSession?"1":"0"); }catch(err){}
   $("#loginBtn").disabled=true; $("#loginMsg").textContent="";
+  marcarActividad(true);
+  marcarActividad(true);
   const {error}=await sb.auth.signInWithPassword({email:emailDe(id),password:pass});
   $("#loginBtn").disabled=false;
-  if(error){ $("#loginMsg").textContent=/banned/i.test(error.message)?"Tu usuario está en pausa o dado de baja. Habla con el administrador.":/invalid/i.test(error.message)?"ID o contraseña incorrectos.":"No se pudo iniciar sesión. Revisa tu conexión."; return; }
-  ocultarPw(); $("#loginPass").value="";
+  if(error){ $("#loginMsg").textContent=/banned/i.test(error.message)?"Tu usuario está en pausa o dado de baja. Habla con el administrador.":/invalid/i.test(error.message)?(loginModo==="id"?"ID o contraseña incorrectos.":"Nombre o contraseña incorrectos."):"No se pudo iniciar sesión. Revisa tu conexión."; return; }
+  try{ if(window.PasswordCredential&&navigator.credentials){ await navigator.credentials.store(new PasswordCredential({id:val,password:pass,name:val})); } }catch(e){}
+  ocultarPw(); $("#loginPass").value=""; $("#loginId").value=""; $("#loginRemember").checked=false; marcarActividad(true);
 });
+/* ===== Cierre automático por inactividad ===== */
+const LIM_NORMAL=15*60*1000, LIM_RECORDAR=8*60*60*1000;
+function limiteSesion(){ return rememberSession?LIM_RECORDAR:LIM_NORMAL; }
+let ultimaMarca=0;
+function marcarActividad(forzar){ const t=Date.now(); if(!forzar&&t-ultimaMarca<20000) return; ultimaMarca=t; try{ localStorage.setItem("ov-actividad",String(t)); }catch(e){} }
+function sesionVencida(){ let t=0; try{ t=+localStorage.getItem("ov-actividad")||0; }catch(e){} return t&&Date.now()-t>limiteSesion(); }
+["pointerdown","keydown","scroll","touchstart"].forEach(ev=>window.addEventListener(ev,()=>{ if(current) marcarActividad(false); },{passive:true}));
+async function cerrarPorInactividad(){ try{ await sb.auth.signOut(); }catch(e){} try{ localStorage.removeItem("ov-actividad"); }catch(e){} location.replace(location.pathname+"?expirada=1"); }
+setInterval(()=>{ if(current&&sesionVencida()) cerrarPorInactividad(); },30000);
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"&&current&&sesionVencida()) cerrarPorInactividad(); });
+if(/[?&]expirada=1/.test(location.search)){ setTimeout(()=>{ const m=$("#loginMsg"); if(m) m.textContent="Tu sesión se cerró por inactividad. Vuelve a entrar."; },300); try{ history.replaceState(null,"",location.pathname); }catch(e){} }
+let loginModo="nombre"; try{ loginModo=localStorage.getItem("ov-login-modo")||"nombre"; }catch(e){}
+function setLoginModo(m){ loginModo=m; document.querySelectorAll("[data-modo]").forEach(b=>b.setAttribute("aria-checked",String(b.dataset.modo===m)));
+  const i=$("#loginId"); $("#loginIdLbl").textContent=m==="id"?"ID de usuario":"Nombre";
+  i.placeholder=m==="id"?"OV-001":"Como te dio de alta el administrador"; i.autocapitalize=m==="id"?"characters":"words"; $("#loginMsg").textContent="";
+  try{ localStorage.setItem("ov-login-modo",m); }catch(e){} }
+document.querySelectorAll("[data-modo]").forEach(b=>b.onclick=()=>{ setLoginModo(b.dataset.modo); $("#loginId").focus(); });
+setLoginModo(loginModo);
 $("#setupForm").addEventListener("submit",async e=>{
   e.preventDefault();
   const nombre=$("#setupNombre").value.trim(), tel=cleanPhone($("#setupTel").value), p1=$("#setupPass").value, p2=$("#setupPass2").value;
@@ -1170,6 +1291,8 @@ $("#setupForm").addEventListener("submit",async e=>{
   if(p1!==p2){ $("#setupMsg").textContent="Las contraseñas no coinciden."; return; }
   $("#setupBtn").disabled=true; $("#setupMsg").textContent="";
   try{ const j=await adminFn({action:"bootstrap",nombre,telefono:tel||null,password:p1},true);
+    marcarActividad(true);
+    marcarActividad(true);
     const {error}=await sb.auth.signInWithPassword({email:emailDe(j.id),password:p1});
     flashOk(`Listo. Tu ID para entrar es ${j.id}. Guárdalo junto con tu contraseña.`);
     if(error) $("#setupMsg").textContent="Administrador creado. Inicia sesión con "+j.id+".";
@@ -1177,7 +1300,10 @@ $("#setupForm").addEventListener("submit",async e=>{
   $("#setupBtn").disabled=false;
 });
 function flashOk(t){ const m=$("#envMsg"); m.textContent=t; m.className="msg ok"; m.hidden=false; setTimeout(()=>{m.hidden=true;},12000); }
-$("#logoutBtn").onclick=async()=>{ try{ await sb.auth.signOut(); }catch(e){} location.reload(); };
+$("#userBtn").onclick=e=>{ e.stopPropagation(); const m=$("#userMenu"); m.hidden=!m.hidden; $("#userBtn").setAttribute("aria-expanded",String(!m.hidden)); };
+document.addEventListener("click",e=>{ const m=$("#userMenu"); if(!m.hidden&&!m.contains(e.target)){ m.hidden=true; $("#userBtn").setAttribute("aria-expanded","false"); } });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ $("#userMenu").hidden=true; $("#userBtn").setAttribute("aria-expanded","false"); } });
+$("#logoutBtn").onclick=async()=>{ try{ await sb.auth.signOut(); }catch(e){} try{ localStorage.removeItem("ov-actividad"); localStorage.setItem("ov-recordar","0"); }catch(e){} location.replace(location.pathname); };
 function applyAccess(){
   const all=SECCIONES.map(s=>s[0]);
   const perms=current?(ROLES[current.rol]||[]):[];
@@ -1186,8 +1312,10 @@ function applyAccess(){
   $("#whoBox").hidden=!!current;
   $("#loginForm").hidden=modoSetup; $("#setupForm").hidden=!modoSetup;
   $("#loginTitle").textContent=modoSetup?"Crear el primer administrador":"Iniciar sesión";
-  $("#loginLead").textContent=modoSetup?"Todavía no hay usuarios. Crea la cuenta del administrador; recibirás tu ID (OV-001) para entrar.":"Escribe tu ID de usuario (por ejemplo OV-001) y tu contraseña.";
-  $("#sesionBox").hidden=!current; if(current) $("#sesionName").textContent=`${current.id} · ${current.nombre} · ${current.rol}`;
+  $("#loginLead").textContent=modoSetup?"Todavía no hay usuarios. Crea la cuenta del administrador; recibirás tu ID (OV-001) para entrar.":"Entra con tu nombre o con tu ID de usuario, como prefieras.";
+  $("#sesionBox").hidden=!current; $("#themeBtn").hidden=!!current;
+  if(current){ $("#sesionName").textContent=`${current.id} · ${current.rol}`; $("#userName").textContent=current.nombre; $("#userIni").textContent=(current.nombre||"OV").split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase(); }
+  $("#marcaBox").hidden=!puede("logo");
   const lg=puede("logo"); $("#logoBtn").hidden=!lg; $("#logoMsg").hidden=!lg; $("#logoBox").style.cursor=lg?"pointer":"default"; $("#logoBox").tabIndex=lg?0:-1;
   $("#logoBox").hidden=!current;
   if(!lg) $("#logoDel").hidden=true; else $("#logoDel").hidden=$("#logoImg").hidden;
@@ -1255,7 +1383,7 @@ $("#uForm").addEventListener("submit",async e=>{
   $("#uSave").disabled=true; $("#uMsg").textContent="Guardando…";
   try{
     if(editId){ await adminFn({action:"update",id:editId,nombre,rol:$("#uRol").value,telefono:tel||null,...(p1?{password:p1}:{})}); $("#uMsg").textContent=`Usuario ${editId} actualizado.`; }
-    else { const j=await adminFn({action:"create",nombre,rol:$("#uRol").value,telefono:tel||null,password:p1}); $("#uMsg").textContent=`Usuario creado. Su ID para entrar es ${j.id}.`; }
+    else { const j=await adminFn({action:"create",nombre,rol:$("#uRol").value,telefono:tel||null,password:p1}); $("#uMsg").textContent=`Usuario creado. Puede entrar con su nombre «${nombre}» o con su ID ${j.id}.`; }
     resetUserForm(); await cargarUsuarios();
   }catch(err){ $("#uMsg").textContent=err.message; }
   $("#uSave").disabled=false;
@@ -1320,6 +1448,7 @@ function showTab(k){
   const all=["dashboard","carga","mensajes","nps","usuarios"]; if(!all.includes(k)) k="dashboard";
   document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===k)));
   all.forEach(x=>$("#panel-"+x).hidden=x!==k);
+  try{ window.scrollTo({top:0}); }catch(e){}
 }
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{ showTab(b.dataset.tab); try{ history.replaceState(null,"","#"+b.dataset.tab); }catch(e){} });
 showTab((location.hash||"").slice(1));
@@ -1351,6 +1480,7 @@ function iniciarDatos(){
   setInterval(()=>{ if(document.visibilityState==="visible") cargarUsuarios(); },60000);
 }
 async function alCambiarSesion(session){
+  if(session&&sesionVencida()){ await cerrarPorInactividad(); return; }
   sesion=session||null; me=sesion?sesion.user:null;
   if(!me){ current=null; datosIniciados&&location.reload();
     try{ const j=await adminFn({action:"status"},true); modoSetup=!j.hayUsuarios; }catch(e){ modoSetup=false; }
