@@ -534,7 +534,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       <label data-f="cond" hidden>Condiciones<input type="text" id="in-cond" value="Aplican restricciones."></label>
       <label data-f="agenda" hidden>Link de agenda<input type="url" id="in-agenda" placeholder="Pégalo aquí (opcional)"></label>
       <label data-f="desc" hidden>Descuento de cumpleaños<input type="text" id="in-desc" placeholder="Ej. 20%"></label>
-      <label data-f="promo" hidden>Link para agendar visita<input type="url" id="in-promo" placeholder="Pégalo aquí (opcional)"></label>
+      <label data-f="promo" hidden>Link para agendar visita<input type="url" id="in-promo" placeholder="Opcional: si lo dejas vacío no se menciona"></label>
       <label data-f="mesCumple" hidden>Cumpleañeros de<select id="in-mesCumple"><option value="">Todos los pacientes</option></select></label>
       <label data-f="filtro" class="check" hidden><span><input type="checkbox" id="in-filtro" checked> Filtrar por meses desde su entrega (o su consulta, si no hay fecha de entrega)</span></label>
     </div>
@@ -1146,7 +1146,7 @@ Respóndenos con el día que te acomode y te apartamos tu lugar. ¡Cuidamos tu m
 
 Como regalo especial, tienes un *${o.desc||"[__% de descuento]"}* de descuento exclusivo en todo nuestro catálogo de armazones y lentes de sol durante todo este mes. 🛍️🕶️
 
-Presenta este mensaje en tu sucursal o agenda tu visita aquí: ${o.promo||"[Link]"}`},
+Presenta este mensaje en tu sucursal${o.promo?" o agenda tu visita aquí: "+o.promo:"."}`},
   promo:{t:"Promociones del año",d:"Buen Fin, MSI y temporadas",src:["pacientes","ventas"],fields:["temp","benef","pct","msi","libre","minimo","aplica","vig","cond","promo"],optout:1,build:(r,o)=>{
     const T=TEMPORADAS[o.temp]||TEMPORADAS.libre;
     return `${T.abre(nom(r))}
@@ -1154,7 +1154,7 @@ Presenta este mensaje en tu sucursal o agenda tu visita aquí: ${o.promo||"[Link
 ${T.lead} ${beneficio(o)}${minimo(o)} en ${o.aplica||"[Aplica en]"}. ${T.emoji}
 📅 Vigencia: *${o.vig||"[Vigencia]"}*
 
-Visítanos en sucursal o aparta tu visita aquí: ${o.promo||"[Link]"}
+Visítanos en sucursal${o.promo?" o aparta tu visita aquí: "+o.promo:"."}
 _${o.cond||"Aplican restricciones."}_`}},
   codigoCliente:{t:"Promo con código",d:"Código de influencer a clientes",src:["pacientes","ventas"],fields:["influ","codigo","benef","pct","msi","libre","minimo","aplica","vig","cond","promo"],optout:1,build:(r,o)=>
 `¡Hola, *${nom(r)}*! 👋 Gracias a *${o.influ||"[Influencer]"}* tienes un beneficio exclusivo en *Ópticas del Valle*. 🎁
@@ -1162,7 +1162,7 @@ _${o.cond||"Aplican restricciones."}_`}},
 🔑 Usa el código *${o.codigo||"[Código]"}* y obtén ${beneficio(o)}${minimo(o)} en ${o.aplica||"[Aplica en]"}.
 📅 Válido: *${o.vig||"[Vigencia]"}*
 
-Menciona tu código en sucursal o agenda tu visita aquí: ${o.promo||"[Link]"}
+Menciona tu código en sucursal${o.promo?" o agenda tu visita aquí: "+o.promo:"."}
 _${o.cond||"Aplican restricciones."}_`},
   codigoInflu:{t:"Código para influencer",d:"Entrega de su código",src:["influencers"],fields:[],build:r=>
 `¡Hola, *${nom(r)}*! 👋 Nos da mucho gusto colaborar contigo. Este es tu código exclusivo de *Ópticas del Valle* para compartir con tu comunidad: 🎟️
