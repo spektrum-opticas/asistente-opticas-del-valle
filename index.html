@@ -153,7 +153,9 @@ a.btn[aria-disabled="true"]{opacity:.45;pointer-events:none}
 .theme button[aria-checked="true"]{background:var(--accent);color:var(--accent-ink)}
 .theme button:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
 .kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.kpis.kpis4{grid-template-columns:repeat(4,minmax(0,1fr))}
 @media (max-width:1000px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:1000px){.kpis.kpis4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:2px}
 .kpi b{font-family:var(--f-display);font-size:1.9rem;line-height:1.1;font-variant-numeric:tabular-nums}
 .kpi.hl{background:var(--accent-soft);border-color:transparent}.kpi.hl b{color:var(--accent)}
@@ -356,7 +358,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     -webkit-print-color-adjust:exact;print-color-adjust:exact;color-scheme:light}
   #printArea *{box-sizing:border-box;max-width:100%}
   .pr-head{display:flex;align-items:center;gap:10px;border-bottom:1.5pt solid #1c5d8a;padding-bottom:6pt;margin-bottom:10pt}
-  .pr-head img{max-height:14mm;max-width:40mm;object-fit:contain}
+  .pr-head img{max-height:18mm;max-width:55mm;object-fit:contain}
   .pr-brand{display:flex;flex-direction:column;flex:1;min-width:0}
   .pr-brand b{font-family:var(--f-display);font-size:13pt}
   .pr-brand span,.pr-meta span{font-size:8pt;color:#555}
@@ -459,12 +461,18 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 
   <div class="panel" id="panel-dashboard" role="tabpanel" aria-labelledby="tab-dashboard">
     <div class="kpis" id="kpis"></div>
+    <div class="kpis kpis4" id="kpisTr"></div>
     <div class="dgrid">
       <section class="step dwide"><div><h2>Envíos por mes y tipo de mensaje</h2><p class="small muted">Últimos 12 meses. Pasa el cursor por una barra para ver el detalle.</p></div><div class="chart" id="cMes"></div></section>
       <section class="step"><div><h2>Avance del mes por campaña</h2><p class="small muted" id="cAvSub">Enviados contra pacientes elegibles este mes.</p></div><div class="prog" id="cAv"></div></section>
       <section class="step"><div><h2>Próximos exámenes anuales</h2><p class="small muted">Pacientes que cumplen 11, 12 y 13 meses desde su entrega o consulta.</p></div><div class="chart" id="cExam"></div></section>
       <section class="step"><h2>Mensajes enviados, últimos 30 días</h2><div class="days" id="dDays"></div></section>
-      <section class="step"><div><h2>Consultas por mes</h2><p class="small muted">Según la fecha de consulta del expediente.</p></div><div class="chart" id="cCons"></div></section>
+      <section class="step dwide"><div><h2>Consultas y trabajos por mes</h2><p class="small muted">Consultas por su fecha; trabajos por su fecha de entrega. Últimos 12 meses.</p></div><div class="chart" id="cCons"></div></section>
+      <section class="step"><div><h2>¿Cuántas consultas terminan en compra?</h2><p class="small muted">Consultas de cada mes que tienen al menos un trabajo.</p></div><div class="chart" id="cConv"></div></section>
+      <section class="step"><div><h2>Entregas programadas</h2><p class="small muted">Trabajos por entregar en las próximas 4 semanas.</p></div><div class="chart" id="cEnt"></div></section>
+      <section class="step"><div><h2>Qué se vende</h2><p class="small muted">Trabajos por tipo de lente o producto.</p></div><div class="hbars" id="cTipo"></div></section>
+      <section class="step"><div><h2>Materiales más vendidos</h2><p class="small muted">Los 8 con más trabajos.</p></div><div class="hbars" id="cMat"></div></section>
+      <section class="step"><div><h2>Clientes por número de trabajos</h2><p class="small muted">Cuántos han comprado una, dos o más veces.</p></div><div class="hbars" id="cRep"></div></section>
       <section class="step"><h2>Pacientes por mes de cumpleaños</h2><div class="chart" id="cCump"></div></section>
       <section class="step"><div><h2>Diagnósticos estimados</h2><p class="small muted">Calculados con la graduación; un paciente puede tener más de uno.</p></div><div class="hbars" id="cDx"></div></section>
       <section class="step"><div><h2>Calidad de la base</h2><p class="small muted">Expedientes a los que les falta cada dato.</p></div><div class="hbars" id="cCal"></div></section>
@@ -548,6 +556,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       <label>Armazón o L/C<input type="text" id="ex-armazon" autocomplete="off"></label>
       <div class="row wide"><button class="btn" type="submit" id="exSave">Guardar cambios</button><button class="btn ghost" type="button" id="exClose">Cerrar expediente</button><span class="small" id="exMsg"></span></div>
     </form>
+    <div class="hist" id="exVis"></div>
     <div><span class="label">Mensajes de WhatsApp de este paciente</span><div class="hist" id="exMsgs"></div></div>
     <div><span class="label">Mensajes registrados para este número</span><div class="hist" id="exEnv"></div></div>
     <div class="row" id="exAcc"></div>
@@ -1747,7 +1756,7 @@ const ROL_ACC={"Administrador":"Usuarios, logo, borrar cargas y respuestas, edit
 $("#rolesTable").innerHTML=`<thead><tr><th>Rol</th>${SECCIONES.map(s=>`<th>${s[1]}</th>`).join("")}<th>Acciones especiales</th></tr></thead><tbody>`+
   Object.entries(ROLES).map(([r,ps])=>`<tr><td><b>${esc(r)}</b></td>${SECCIONES.map(([k])=>`<td>${ps.includes(k)?"✔":"—"}</td>`).join("")}<td>${esc(ROL_ACC[r]||"—")}</td></tr>`).join("")+`</tbody>`;
 const quien=()=> current ? current.nombre : "Sin usuario";
-const ACCIONES={encuesta:["Administrador"],logo:["Administrador"],borrarCarga:["Administrador","Gerente"],borrarNps:["Administrador","Gerente"],editarExp:["Administrador","Gerente","Recepción / Ventas","Optometrista"],reactivarBaja:["Administrador"],eliminarExp:["Administrador"]};
+const ACCIONES={encuesta:["Administrador"],logo:["Administrador"],borrarCarga:["Administrador","Gerente"],borrarNps:["Administrador","Gerente"],editarExp:["Administrador","Gerente","Recepción / Ventas","Optometrista"],reactivarBaja:["Administrador"],eliminarExp:["Administrador"],borrarRegistro:["Administrador","Gerente"]};
 function puede(a){ return !!current&&(ACCIONES[a]||[]).includes(current.rol); }
 const estadoDe=u=>u.estado||"activo";
 const normRol=r=>(r==="Recepción"||r==="Vendedor")?"Recepción / Ventas":r;
@@ -1955,8 +1964,7 @@ function renderDash(){
   colChart($("#cExam"),{labels:prox.map(p=>p.label),stacked:true,aria:"Próximos exámenes anuales",h:190,empty:"Ningún paciente llega a 11, 12 o 13 meses en los próximos 3 meses.",
     series:[["Aviso (11 meses)",11],["Aniversario (12 meses)",12],["Recordatorio (13 meses)",13]].map(([nm,m],k)=>({name:nm,color:SC[k],values:prox.map(p=>vivos.filter(b=>etapaEn(b,p.d)===m).length)}))});
 
-  colChart($("#cCons"),{labels:ms.map(m=>m.label),stacked:true,aria:"Consultas por mes",h:190,empty:"Aparece cuando los expedientes tengan fecha de consulta.",
-    series:[{name:"Consultas",color:SC[0],values:ms.map(m=>rows.filter(x=>(x.fechaConsulta||"").slice(0,7)===m.ym).length)}]});
+  renderDashTr(rows,ms,now);
 
   const cum=Array(12).fill(0); rows.forEach(x=>{ const d=parseFecha(x.fechaNacimiento); if(d) cum[d.getMonth()]++; });
   const sinNac=rows.filter(x=>!x.fechaNacimiento).length;
@@ -1977,6 +1985,47 @@ function renderDash(){
   const cnt=days.map(d=>ents.filter(m=>{ const x=new Date(m.fecha); return x.getFullYear()===d.getFullYear()&&x.getMonth()===d.getMonth()&&x.getDate()===d.getDate(); }).length);
   const mx=Math.max(1,...cnt);
   $("#dDays").innerHTML=days.map((d,i)=>`<div class="d" data-tip="${d.toLocaleDateString("es-MX")}: ${cnt[i]} envío${cnt[i]===1?"":"s"}"><div class="b" style="height:${cnt[i]/mx*100}%;opacity:${cnt[i]?1:.25}"></div>${i%5===0||i===29?`<span class="k">${d.getDate()}/${d.getMonth()+1}</span>`:""}</div>`).join("");
+}
+
+/* ================= Dashboard: consultas y trabajos ================= */
+const visDe=x=>Array.isArray(x.visitas)&&x.visitas.length?x.visitas:(x.fechaConsulta?[{fechaConsulta:x.fechaConsulta}]:[]);
+const trDe=x=>Array.isArray(x.trabajos)?x.trabajos:((matN(x.material)||armN(x.armazon))?[{fechaEntrega:x.fechaEntrega,material:x.material,armazon:x.armazon,fechaConsulta:x.fechaConsulta}]:[]);
+function tipoTrabajo(t){
+  if(!matN(t.material)){ const a=norm(t.armazon||""); return /contacto|\bl c\b|soflens|optima|desechable|acuvue/.test(a)?"Lentes de contacto":/estuche|solucion|pano|liquido|cordon/.test(a)?"Accesorios":"Solo armazón"; }
+  if(/soldadura|ajuste|reparac/.test(norm(t.material))) return "Reparaciones";
+  return tipoLente(t);
+}
+function renderDashTr(rows,ms,now){
+  const hoy=ymdOf(now);
+  const V=[],T=[]; rows.forEach(x=>{ visDe(x).forEach(v=>V.push({x,v})); trDe(x).forEach(t=>T.push({x,t})); });
+  const conTr=rows.filter(x=>trDe(x).length).length, rep=rows.filter(x=>trDe(x).length>1).length;
+  const lim=new Date(now); lim.setDate(lim.getDate()+14); const lim14=ymdOf(lim);
+  const prox=T.filter(({t})=>t.fechaEntrega&&t.fechaEntrega>=hoy&&t.fechaEntrega<=lim14).length;
+  const compro=({x,v})=>trDe(x).some(t=>t.fechaConsulta?t.fechaConsulta===v.fechaConsulta:true);
+  const conV=V.filter(o=>o.v.fechaConsulta); const pct=conV.length?Math.round(conV.filter(compro).length/conV.length*100):null;
+  $("#kpisTr").innerHTML=[
+    ["Trabajos registrados",T.length.toLocaleString("es-MX"),`de ${conTr} paciente${conTr===1?"":"s"}`,""],
+    ["Consultas que compraron",pct==null?"—":pct+"%",`${conV.filter(compro).length} de ${conV.length} consultas`,"hl"],
+    ["Clientes que repiten",rep.toLocaleString("es-MX"),"con 2 o más trabajos",""],
+    ["Entregas próximas",prox.toLocaleString("es-MX"),"en los próximos 14 días",""]
+  ].map(([l,v,s,c])=>`<div class="kpi ${c}"><span class="label">${l}</span><b>${v}</b><small>${esc(s)}</small></div>`).join("");
+  colChart($("#cCons"),{labels:ms.map(m=>m.label),aria:"Consultas y trabajos por mes",h:200,empty:"Aparece cuando los expedientes tengan consultas o trabajos con fecha.",
+    series:[{name:"Consultas",color:SC[0],values:ms.map(m=>V.filter(o=>(o.v.fechaConsulta||"").slice(0,7)===m.ym).length)},
+            {name:"Trabajos (por fecha de entrega)",color:SC[1],values:ms.map(m=>T.filter(o=>(o.t.fechaEntrega||"").slice(0,7)===m.ym).length)}]});
+  const si=ms.map(m=>conV.filter(o=>o.v.fechaConsulta.slice(0,7)===m.ym&&compro(o)).length), no=ms.map(m=>conV.filter(o=>o.v.fechaConsulta.slice(0,7)===m.ym&&!compro(o)).length);
+  colChart($("#cConv"),{labels:ms.map(m=>m.label),stacked:true,aria:"Consultas que terminaron en compra",h:200,empty:"Aparece cuando haya consultas con fecha.",
+    tipExtra:j=>{ const t=si[j]+no[j]; return t?`\nCompraron: ${Math.round(si[j]/t*100)}%`:""; },
+    series:[{name:"Compraron",color:SC[2],values:si},{name:"Sin compra",color:SC[3],values:no}]});
+  const tipos={}; T.forEach(({t})=>{ const k=tipoTrabajo(t); tipos[k]=(tipos[k]||0)+1; });
+  hbars($("#cTipo"),Object.entries(tipos).sort((a,b)=>b[1]-a[1]),"Aparece cuando haya trabajos registrados.");
+  const mats={}; T.forEach(({t})=>{ const m=matN(t.material); if(m) mats[m]=(mats[m]||0)+1; });
+  hbars($("#cMat"),Object.entries(mats).sort((a,b)=>b[1]-a[1]).slice(0,8),"Aparece cuando los trabajos tengan material.");
+  const sem=[0,1,2,3].map(k=>{ const a=new Date(now); a.setHours(0,0,0,0); a.setDate(a.getDate()+k*7); const b=new Date(a); b.setDate(a.getDate()+6); return {a:ymdOf(a),b:ymdOf(b),label:k===0?"Esta semana":`${a.getDate()} ${MES3[a.getMonth()]}`}; });
+  colChart($("#cEnt"),{labels:sem.map(s=>s.label),aria:"Entregas programadas",h:190,empty:"No hay entregas programadas en las próximas 4 semanas.",
+    tipLabel:j=>`Del ${fmtDMY(sem[j].a)} al ${fmtDMY(sem[j].b)}`,
+    series:[{name:"Entregas",color:SC[0],values:sem.map(s=>T.filter(({t})=>t.fechaEntrega&&t.fechaEntrega>=s.a&&t.fechaEntrega<=s.b).length)}]});
+  const dist={"Sin trabajos":0,"1 trabajo":0,"2 trabajos":0,"3 o más":0}; rows.forEach(x=>{ const n=trDe(x).length; dist[n===0?"Sin trabajos":n===1?"1 trabajo":n===2?"2 trabajos":"3 o más"]++; });
+  hbars($("#cRep"),rows.length?Object.entries(dist):[],"Aparece cuando haya expedientes.");
 }
 
 /* ================= Gráficas de NPS ================= */
@@ -2082,13 +2131,14 @@ async function integrarCargas(){
         const id=pidOf(x); const prev=expMap[id]; const now=new Date().toISOString();
         const ref=db.collection("expedientes").doc(id);
         if(!prev){
-          const doc={...x,creado:now,actualizado:now,por:fuente,origen:c.id};
+          const doc={...x,creado:now,actualizado:now,por:fuente,origen:c.id}; acumular(doc,x,fuente,now);
           await ref.set(doc); expMap[id]={id,...doc};
           await ref.collection("historial").add({fecha:now,por:quien(),fuente,tipo:"alta",cambios:[]}); nuevos++;
         } else {
-          const ch=diffExp(prev,x,true); if(!ch.length) continue;
-          const doc={...aplicar(prev,ch),actualizado:now,por:fuente};
-          await ref.set(doc); expMap[id]={id,...doc};
+          const ch=diffExp(prev,x,true);
+          const doc=ch.length?{...aplicar(prev,ch),actualizado:now,por:fuente}:aplicar(prev,[]);
+          const acc=acumular(doc,x,fuente,now); if(!ch.length&&!acc) continue;
+          await ref.set(doc); expMap[id]={id,...doc}; if(!ch.length) continue;
           await ref.collection("historial").add({fecha:now,por:quien(),fuente,tipo:"carga",cambios:ch.map(({campo,label,antes,despues})=>({campo,label,antes,despues}))}); act++;
         }
       }
@@ -2147,7 +2197,7 @@ async function openExp(id){
   $("#exForm").querySelectorAll("input").forEach(i=>{ if(i.id!=="ex-folio") i.disabled=!edita; });
   $("#exSave").hidden=!edita; $("#exMsg").textContent=edita?"":"Tu rol solo puede consultar expedientes.";
   renderExp(); $("#exFicha").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
-  loadHist(id); renderFichaMsgs();
+  loadHist(id); renderFichaMsgs(); renderHistVis();
 }
 async function loadHist(id){
   const el=$("#exHist"); el.innerHTML=`<p class="small muted">Cargando historial…</p>`;
@@ -2192,8 +2242,8 @@ $("#exForm").addEventListener("submit",async e=>{
   $("#exSave").disabled=true;
   try{
     const now=new Date().toISOString(); const id=exCur;
-    const doc={...aplicar(prev,ch),actualizado:now,por:quien()};
-    await db.collection("expedientes").doc(id).set(doc); expMap[id]={id,...doc};
+    const doc={...aplicar(prev,ch),actualizado:now,por:quien()}; corregirVigente(prev,doc,"Edición manual · "+quien(),now);
+    await db.collection("expedientes").doc(id).set(doc); expMap[id]={id,...doc}; renderHistVis();
     await db.collection("expedientes").doc(id).collection("historial").add({fecha:now,por:quien(),tipo:"manual",cambios:ch.map(({campo,label,antes,despues})=>({campo,label,antes,despues}))});
     exDirty=false; $("#exMsg").style.color="var(--ok)"; $("#exMsg").textContent="Expediente actualizado.";
     aviso("Expediente actualizado"); $("#exTitle").textContent=doc.nombre; $("#exSub").textContent=`Folio ${doc.folio||"sin folio"} · actualizado ${fmtDate(now)} · ${quien()}`;
@@ -2214,6 +2264,78 @@ $("#exDl").onclick=async()=>{
   const book=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(book,ws,"Pacientes");
   try{ await downloads.save({filename:`Pacientes - Opticas del Valle ${ymdOf(new Date())}.xlsx`,data:XLSX.write(book,{type:"array",bookType:"xlsx",cellDates:true})}); }catch(e){}
 };
+/* ================= Historial de consultas y trabajos (no se borra nada) ================= */
+const nzv=v=>{ if(v==null) return null; const s=String(v).trim(); return s&&s!=="None"&&s!=="—"?s:null; };
+const armN=a=>{ const s=nzv(a); return !s||/^sin armaz/i.test(s)?null:s; };
+const matN=m=>{ const s=nzv(m); return !s||/^sin mica/i.test(s)?null:s; };
+const feN=v=>toISO(v)||nzv(v);
+const tKey=(fe,m,a)=>[feN(fe)||"",norm(matN(m)||""),norm(armN(a)||"")].join("|");
+const rid=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+/* Agrega a d.visitas / d.trabajos lo que traiga s (consulta, receta, material, armazón, entrega). Devuelve true si cambió algo. */
+function acumular(d,s,fuente,ahora){
+  let cambio=false;
+  const fc=toISO(s.fechaConsulta)||null; const rx=s.rx||{};
+  const tieneRx=["od","oi"].some(e=>rx[e]&&RXI.some(k=>nzv(rx[e][k])));
+  if(fc||tieneRx){
+    d.visitas=Array.isArray(d.visitas)?d.visitas:[];
+    let v=d.visitas.find(v=>(v.fechaConsulta||null)===fc);
+    if(!v&&!fc&&d.visitas.length) v=d.visitas[d.visitas.length-1];
+    if(!v){ v={id:rid("v"),fechaConsulta:fc,rx:{od:{},oi:{}},registrado:ahora,fuente}; d.visitas.push(v); cambio=true; }
+    ["od","oi"].forEach(e=>RXI.forEach(k=>{ const val=nzv(rx[e]&&rx[e][k]); if(val==null) return; v.rx=v.rx||{}; v.rx[e]=v.rx[e]||{};
+      if(v.rx[e][k]!==val){ v.rx[e][k]=val; v.actualizado=ahora; cambio=true; } }));
+  }
+  const mat=matN(s.material), arm=armN(s.armazon), fe=feN(s.fechaEntrega);
+  if(mat||arm){
+    d.trabajos=Array.isArray(d.trabajos)?d.trabajos:[];
+    const k=tKey(fe,mat,arm);
+    if(!d.trabajos.some(t=>tKey(t.fechaEntrega,t.material,t.armazon)===k)){
+      const t=d.trabajos.find(t=>(t.fechaEntrega||"")===(fe||"")&&((mat&&norm(t.material||"")===norm(mat))||(arm&&norm(t.armazon||"")===norm(arm))));
+      if(t){ if(mat) t.material=mat; if(arm) t.armazon=arm; t.actualizado=ahora; }
+      else d.trabajos.push({id:rid("t"),fechaEntrega:fe,material:mat,armazon:arm,fechaConsulta:fc,registrado:ahora,fuente});
+      cambio=true;
+    }
+  }
+  return cambio;
+}
+/* Edición manual en la ficha: corrige la consulta y el trabajo vigentes en lugar de crear otros */
+function corregirVigente(prev,d,fuente,ahora){
+  const v=(d.visitas||[]).find(v=>(v.fechaConsulta||null)===(toISO(prev.fechaConsulta)||null));
+  if(v){ v.fechaConsulta=toISO(d.fechaConsulta)||null; v.rx=JSON.parse(JSON.stringify(d.rx||{od:{},oi:{}})); v.actualizado=ahora; }
+  const k=tKey(prev.fechaEntrega,prev.material,prev.armazon);
+  const t=(d.trabajos||[]).find(t=>tKey(t.fechaEntrega,t.material,t.armazon)===k);
+  if(t&&(matN(d.material)||armN(d.armazon))){ t.fechaEntrega=feN(d.fechaEntrega); t.material=matN(d.material); t.armazon=armN(d.armazon); t.actualizado=ahora; }
+  acumular(d,d,fuente,ahora);
+}
+const porFecha=(k,desc=true)=>(a,b)=>{ const x=String(a[k]||""), y=String(b[k]||""); return (desc?-1:1)*(x<y?-1:x>y?1:String(a.registrado||"").localeCompare(String(b.registrado||""))); };
+const rxCorta=rx=>["od","oi"].map(e=>{ const o=(rx&&rx[e])||{}; const p=[o.esf,o.cil,o.eje&&("x"+o.eje),o.add&&("ADD "+o.add),o.di&&("D.I. "+o.di),o.aco&&("ACO "+o.aco)].filter(Boolean);
+  return `${e==="od"?"OD":"OS"} ${p.length?p.join(" "):"—"}`; }).join(" · ");
+function renderHistVis(){
+  const el=$("#exVis"); const x=exCur&&expMap[exCur]; if(!el) return;
+  if(!x){ el.innerHTML=""; return; }
+  const borra=puede("borrarRegistro");
+  const vis=(x.visitas||[]).slice().sort(porFecha("fechaConsulta")); const tr=(x.trabajos||[]).slice().sort(porFecha("fechaEntrega"));
+  el.innerHTML=`<span class="label">Consultas (${vis.length})</span>`+(vis.length?vis.map((v,n)=>`<div class="hitem" data-v="${esc(v.id)}"><div style="min-width:0"><div class="t">Consulta ${v.fechaConsulta?esc(fmtDMY(v.fechaConsulta)):"sin fecha"}${n===0?' <span class="chip ok">Vigente</span>':""}</div><div class="s mono">${esc(rxCorta(v.rx))}</div></div><div class="row">${borra&&vis.length>1?'<button class="btn danger sm" type="button">Quitar</button>':""}</div></div>`).join(""):`<p class="small muted">Sin consultas registradas.</p>`)+
+    `<span class="label" style="margin-top:12px">Trabajos y compras (${tr.length})</span>`+(tr.length?tr.map((t,n)=>`<div class="hitem" data-t="${esc(t.id)}"><div style="min-width:0"><div class="t">${t.fechaEntrega?"Entrega "+esc(fmtDMY(t.fechaEntrega)||t.fechaEntrega):"Sin fecha de entrega"}${n===0?' <span class="chip">Más reciente</span>':""}</div><div class="s">${esc([t.material,t.armazon].filter(Boolean).join(" · ")||"—")}</div><div class="s small muted">${esc((t.fuente||"").replace("Sincronización automática con optivalle.pythonanywhere.com","Sincronización automática"))}${t.registrado?" · "+esc(fechaCorta(t.registrado)):""}</div></div><div class="row">${borra?'<button class="btn danger sm" type="button">Quitar</button>':""}</div></div>`).join(""):`<p class="small muted">Sin trabajos registrados.</p>`);
+  const quitar=async(campo,id,txt)=>{
+    if(!(await ask("¿Quitar este registro del historial?",`<p>${esc(txt)}</p><p>Úsalo solo si está duplicado o fue un error. El cambio queda anotado en el historial de cambios.</p>`,"Quitar","Cancelar",true))) return;
+    try{ const now=new Date().toISOString(); const d=JSON.parse(JSON.stringify(expMap[x.id])); delete d.id; const it=(d[campo]||[]).find(o=>o.id===id);
+      d[campo]=(d[campo]||[]).filter(o=>o.id!==id); d.actualizado=now;
+      await db.collection("expedientes").doc(x.id).set(d); expMap[x.id]={id:x.id,...d};
+      await db.collection("expedientes").doc(x.id).collection("historial").add({fecha:now,por:quien(),tipo:"manual",cambios:[{campo,label:campo==="visitas"?"Consulta quitada":"Trabajo quitado",antes:txt,despues:null}]});
+      aviso("Registro quitado"); renderHistVis(); loadHist(x.id);
+    }catch(e){ aviso("No se pudo quitar.",true); } };
+  el.querySelectorAll("[data-v] .btn").forEach(b=>{ const v=vis.find(o=>o.id===b.closest("[data-v]").dataset.v); b.onclick=()=>quitar("visitas",v.id,`Consulta ${v.fechaConsulta?fmtDMY(v.fechaConsulta):"sin fecha"} · ${rxCorta(v.rx)}`); });
+  el.querySelectorAll("[data-t] .btn").forEach(b=>{ const t=tr.find(o=>o.id===b.closest("[data-t]").dataset.t); b.onclick=()=>quitar("trabajos",t.id,`Entrega ${t.fechaEntrega?fmtDMY(t.fechaEntrega):"sin fecha"} · ${[t.material,t.armazon].filter(Boolean).join(" · ")}`); });
+}
+function htmlHistVis(x){
+  const vis=(x.visitas||[]).slice().sort(porFecha("fechaConsulta")); const tr=(x.trabajos||[]).slice().sort(porFecha("fechaEntrega"));
+  let h="";
+  if(vis.length){ h+=`<h2>Consultas (${vis.length})</h2><table class="pr-t prx"><thead><tr><th style="width:18%">Consulta</th><th style="width:8%">Ojo</th><th>ESF</th><th>CIL</th><th>EJE</th><th>D.I.</th><th>ADD</th><th>ACO</th></tr></thead><tbody>`+
+    vis.map((v,n)=>["od","oi"].map((e,i)=>`<tr>${i===0?`<td rowspan="2">${v.fechaConsulta?esc(fmtDMY(v.fechaConsulta)):"Sin fecha"}${n===0?"<br><b>Vigente</b>":""}</td>`:""}<th>${e==="od"?"OD":"OS"}</th>${RXI.map(k=>`<td>${pv(v.rx&&v.rx[e]&&v.rx[e][k])}</td>`).join("")}</tr>`).join("")).join("")+`</tbody></table>`; }
+  if(tr.length) h+=`<h2>Trabajos y compras (${tr.length})</h2>`+prTable([{l:"Entrega",w:"14%",f:t=>t.fechaEntrega?esc(fmtDMY(t.fechaEntrega)||t.fechaEntrega):"—"},{l:"Material",k:"material"},{l:"Armazón o L/C",k:"armazon"}],tr);
+  return h;
+}
+
 /* ================= Impresión: por panel y por acción ================= */
 const PR_ICON=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>`;
 const prBtn=(txt,attrs="")=>`<button class="btn ghost sm prbtn" type="button" ${attrs}>${PR_ICON}${esc(txt)}</button>`;
@@ -2224,7 +2346,8 @@ function prTable(cols,rows,cls=""){
 }
 function printDoc(titulo,html,{sub="",landscape=false}={}){
   let pa=$("#printArea"); if(!pa){ pa=document.createElement("div"); pa.id="printArea"; document.body.appendChild(pa); }
-  const lg=$("#logoImg"); const logo=lg&&!lg.hidden&&lg.getAttribute("src")?`<img src="${esc(lg.getAttribute("src"))}" alt="">`:"";
+  const src=[$("#hdrLogo"),$("#logoImg")].map(i=>i&&!i.hidden&&i.getAttribute("src")).find(Boolean)||"/icon-192.png";
+  const logo=`<img src="${esc(src)}" alt="Ópticas del Valle">`;
   pa.innerHTML=(landscape?`<style>@page{size:letter landscape;margin:10mm}</style>`:"")+
     `<div class="pr-head">${logo}<div class="pr-brand"><b>Ópticas del Valle</b><span>Blvd. Atlixco 3507, Local 18, Reserva Territorial Atlixcayotl, Puebla 72197 · WhatsApp 221 110 8551</span></div>
     <div class="pr-meta"><b>${esc(titulo)}</b>${sub?`<span>${esc(sub)}</span>`:""}<span>Impreso el ${esc(fmtDate(new Date().toISOString()))} · ${esc(quien())}</span></div></div>`+html;
@@ -2264,8 +2387,8 @@ function htmlExp(x){
   h+=`</tbody></table>`;
   if(isBaja(tel)) h+=`<p class="pr-note">Dado de baja de promociones, cumpleaños, examen anual y NPS desde el ${esc(fechaCorta(contactos[tel].baja.f))}.</p>`;
   const rx=e=>(x.rx&&x.rx[e])||{};
-  h+=`<h2>Receta</h2><table class="pr-t prx"><thead><tr><th>RX</th><th>ESF</th><th>CIL</th><th>EJE</th><th>D.I.</th><th>ADD</th><th>ACO</th></tr></thead><tbody>`+
-    [["od","OD"],["oi","OS"]].map(([e,l])=>`<tr><th>${l}</th>${RXI.map(k=>`<td>${pv(rx(e)[k])}</td>`).join("")}</tr>`).join("")+`</tbody></table>`;
+  h+=`<h2>Receta vigente</h2><table class="pr-t prx"><thead><tr><th>RX</th><th>ESF</th><th>CIL</th><th>EJE</th><th>D.I.</th><th>ADD</th><th>ACO</th></tr></thead><tbody>`+
+    [["od","OD"],["oi","OS"]].map(([e,l])=>`<tr><th>${l}</th>${RXI.map(k=>`<td>${pv(rx(e)[k])}</td>`).join("")}</tr>`).join("")+`</tbody></table>`+htmlHistVis(x);
   Object.entries(ITEM_TXT).forEach(([k,t])=>{ const its=x[k]||[]; if(!its.length) return;
     const cat=ITEM_CAT_INV[k]; h+=`<h2>${esc(CATS[cat].t)} (${its.length})</h2>`+prTable(colsDe(cat,its,["nombre","telefono"]),its); });
   const rows=fichaRows(x);
@@ -2329,7 +2452,7 @@ Object.keys(PR_PANEL).forEach(k=>{ const p=$("#panel-"+k); if(!p) return;
 $("#exClose").insertAdjacentHTML("afterend",`<button class="btn ghost prbtn" type="button" id="exPrint">${PR_ICON}Imprimir expediente</button>`);
 $("#exPrint").onclick=()=>{ if(exCur) printExp(exCur); };
 
-function renderAll(){ if(tpl) renderSend(); renderDash(); renderExp(); renderNps(); renderFichaMsgs(); renderSin(); }
+function renderAll(){ if(tpl) renderSend(); renderDash(); renderExp(); renderNps(); renderFichaMsgs(); renderSin(); renderHistVis(); }
 
 /* ================= Gráficas (SVG a escala, colores por token) ================= */
 const tipEl=$("#tip");
