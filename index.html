@@ -712,8 +712,12 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     </form>
   </section>
   <section class="step">
-    <div class="step-head"><span class="num"></span><div><h2>Roles y permisos sugeridos</h2><p class="small muted">Lo que puede ver cada rol.</p></div></div>
+    <div class="step-head"><span class="num"></span><div><h2>Roles y permisos</h2><p class="small muted" id="permNota">Lo que puede ver y hacer cada rol.</p></div></div>
+    <span class="label">Secciones que ve cada rol</span>
     <div class="tablebox"><table id="rolesTable"></table></div>
+    <span class="label">Acciones especiales</span>
+    <div class="tablebox"><table id="accTable"></table></div>
+    <div class="row" id="permBar" hidden><button class="btn" type="button" id="permSave">Guardar permisos</button><button class="btn ghost" type="button" id="permUndo">Descartar cambios</button><button class="btn ghost" type="button" id="permReset">Regresar a los sugeridos</button><span class="small" id="permMsg"></span></div>
   </section>
   </div>
   <footer class="appfoot">
@@ -1783,11 +1787,59 @@ const ROLES={"Administrador":["dashboard","carga","expedientes","mensajes","nps"
 let usuarios=[], me=null, current=null, editId=null, usuariosListos=false;
 $("#uRol").innerHTML=Object.keys(ROLES).map(r=>`<option>${esc(r)}</option>`).join("");
 const ROL_ACC={"Administrador":"Usuarios, logo, borrar cargas y respuestas, editar expedientes, reactivar bajas","Gerente":"Borrar cargas y respuestas, editar expedientes","Comunicación / CRM":"Solo consulta expedientes","Recepción / Ventas":"Editar expedientes","Optometrista":"Editar expedientes"};
-$("#rolesTable").innerHTML=`<thead><tr><th>Rol</th>${SECCIONES.map(s=>`<th>${s[1]}</th>`).join("")}<th>Acciones especiales</th></tr></thead><tbody>`+
-  Object.entries(ROLES).map(([r,ps])=>`<tr><td><b>${esc(r)}</b></td>${SECCIONES.map(([k])=>`<td>${ps.includes(k)?"✔":"—"}</td>`).join("")}<td>${esc(ROL_ACC[r]||"—")}</td></tr>`).join("")+`</tbody>`;
 const quien=()=> current ? current.nombre : "Sin usuario";
 const ACCIONES={encuesta:["Administrador"],logo:["Administrador"],borrarCarga:["Administrador","Gerente"],borrarNps:["Administrador","Gerente"],editarExp:["Administrador","Gerente","Recepción / Ventas","Optometrista"],reactivarBaja:["Administrador"],eliminarExp:["Administrador"],borrarRegistro:["Administrador","Gerente"]};
 function puede(a){ return !!current&&(ACCIONES[a]||[]).includes(current.rol); }
+/* ================= Roles y permisos editables por el Administrador ================= */
+const ACC_TXT=[["editarExp","Editar expedientes"],["borrarRegistro","Quitar consultas o trabajos duplicados"],["reactivarBaja","Reactivar bajas"],["borrarCarga","Borrar cargas"],["borrarNps","Borrar respuestas NPS"],["eliminarExp","Eliminar expedientes"]];
+const SOLO_GERENTE=new Set(["borrarCarga","borrarNps","eliminarExp"]); // la base de datos solo deja borrar a Administrador y Gerente
+const SECC_EDIT=SECCIONES.filter(([k])=>k!=="usuarios");
+const PERM_DEF={roles:JSON.parse(JSON.stringify(ROLES)),acciones:JSON.parse(JSON.stringify(ACCIONES))};
+let permInfo=null, permBorrador=null;
+const esAdmin=()=>!!current&&current.rol==="Administrador";
+function aplicarPermisos(cfg){
+  const r=(cfg&&cfg.roles)||PERM_DEF.roles, a=(cfg&&cfg.acciones)||PERM_DEF.acciones;
+  Object.keys(ROLES).forEach(rol=>{ if(rol==="Administrador") return; ROLES[rol]=(r[rol]||PERM_DEF.roles[rol]||[]).filter(k=>k!=="usuarios"); });
+  ACC_TXT.forEach(([k])=>{ const l=(a[k]||PERM_DEF.acciones[k]||[]).filter(rol=>rol!=="Administrador"&&(!SOLO_GERENTE.has(k)||rol==="Gerente")); ACCIONES[k]=["Administrador",...l]; });
+}
+function permActual(){ return {roles:JSON.parse(JSON.stringify(ROLES)),acciones:Object.fromEntries(ACC_TXT.map(([k])=>[k,[...(ACCIONES[k]||[])]]))}; }
+function renderRoles(){
+  const ed=esAdmin(); const p=permBorrador||permActual(); const rolesNo=Object.keys(ROLES).filter(r=>r!=="Administrador");
+  const chk=(on,dis,attrs,label)=>ed?`<input type="checkbox" ${attrs} ${on?"checked":""} ${dis?"disabled":""} aria-label="${esc(label)}">`:(on?"✔":"—");
+  $("#rolesTable").innerHTML=`<thead><tr><th>Rol</th>${SECCIONES.map(s=>`<th>${s[1]}</th>`).join("")}</tr></thead><tbody>`+
+    Object.keys(ROLES).map(r=>`<tr><td><b>${esc(r)}</b></td>${SECCIONES.map(([k])=>`<td style="text-align:center">${chk((p.roles[r]||[]).includes(k),r==="Administrador"||k==="usuarios",`data-r="${esc(r)}" data-s="${k}"`,r+" · "+k)}</td>`).join("")}</tr>`).join("")+`</tbody>`;
+  $("#accTable").innerHTML=`<thead><tr><th>Rol</th>${ACC_TXT.map(([,l])=>`<th>${esc(l)}</th>`).join("")}</tr></thead><tbody>`+
+    Object.keys(ROLES).map(r=>`<tr><td><b>${esc(r)}</b></td>${ACC_TXT.map(([k,l])=>`<td style="text-align:center">${chk((p.acciones[k]||[]).includes(r),r==="Administrador"||(SOLO_GERENTE.has(k)&&r!=="Gerente"),`data-r="${esc(r)}" data-a="${k}"`,r+" · "+l)}</td>`).join("")}</tr>`).join("")+`</tbody>`;
+  $("#permBar").hidden=!ed;
+  $("#permNota").textContent=(ed?"Marca o desmarca y guarda. El Administrador siempre tiene todo, para que nadie se quede sin acceso. Usuarios, logo y encuesta son solo del Administrador; borrar cargas, respuestas o expedientes solo puede darse al Gerente, porque la base de datos no deja borrar a otros roles.":"Solo el Administrador puede cambiar estos permisos.")+
+    (permInfo&&permInfo.por?` Última modificación: ${fmtDate(permInfo.actualizado)} · ${permInfo.por}.`:" Por ahora son los sugeridos.");
+  if(!ed) return;
+  const leer=()=>{ const n={roles:{},acciones:{}}; Object.keys(ROLES).forEach(r=>n.roles[r]=r==="Administrador"?[...ROLES[r]]:[]);
+    $("#rolesTable").querySelectorAll("input[data-s]").forEach(i=>{ if(i.checked&&i.dataset.r!=="Administrador") n.roles[i.dataset.r].push(i.dataset.s); });
+    ACC_TXT.forEach(([k])=>n.acciones[k]=["Administrador"]);
+    $("#accTable").querySelectorAll("input[data-a]").forEach(i=>{ if(i.checked&&i.dataset.r!=="Administrador") n.acciones[i.dataset.a].push(i.dataset.r); });
+    return n; };
+  [$("#rolesTable"),$("#accTable")].forEach(t=>t.onchange=()=>{ permBorrador=leer(); $("#permMsg").textContent="Hay cambios sin guardar."; });
+}
+function difPermisos(a,b){
+  const out=[]; const sl=Object.fromEntries(SECCIONES); const al=Object.fromEntries(ACC_TXT);
+  Object.keys(ROLES).forEach(r=>{ SECCIONES.forEach(([k])=>{ const x=(a.roles[r]||[]).includes(k), y=(b.roles[r]||[]).includes(k); if(x!==y) out.push(`${r}: ${y?"puede ver":"ya no ve"} «${sl[k]}»`); });
+    ACC_TXT.forEach(([k])=>{ const x=(a.acciones[k]||[]).includes(r), y=(b.acciones[k]||[]).includes(r); if(x!==y) out.push(`${r}: ${y?"puede":"ya no puede"} ${al[k].toLowerCase()}`); }); });
+  return out;
+}
+async function guardarPermisos(nuevo,titulo){
+  const cambios=difPermisos(permActual(),nuevo);
+  if(!cambios.length){ aviso("No hay cambios que guardar"); return; }
+  if(!(await ask(titulo,`<p>Estos cambios aplican a todos los usuarios de cada rol en menos de un minuto:</p><ul>${cambios.map(c=>`<li>${esc(c)}</li>`).join("")}</ul>`,"Guardar permisos"))) return;
+  try{ await db.doc("config/permisos").set({roles:nuevo.roles,acciones:nuevo.acciones,actualizado:new Date().toISOString(),por:quien()});
+    permBorrador=null; $("#permMsg").textContent="Permisos guardados."; aviso("Permisos guardados");
+  }catch(e){ aviso("No se pudieron guardar. Solo el Administrador puede cambiar permisos.",true); }
+}
+$("#permSave").onclick=()=>guardarPermisos(permBorrador||permActual(),"¿Guardar los nuevos permisos?");
+$("#permReset").onclick=()=>guardarPermisos(JSON.parse(JSON.stringify(PERM_DEF)),"¿Regresar a los permisos sugeridos?");
+$("#permUndo").onclick=()=>{ permBorrador=null; $("#permMsg").textContent=""; renderRoles(); };
+renderRoles();
+
 const estadoDe=u=>u.estado||"activo";
 const normRol=r=>(r==="Recepción"||r==="Vendedor")?"Recepción / Ventas":r;
 const adminsActivos=()=>usuarios.filter(u=>u.rol==="Administrador"&&estadoDe(u)==="activo");
@@ -1861,7 +1913,7 @@ function applyAccess(){
   $("#logoBox").hidden=!current;
   if(!lg) $("#logoDel").hidden=true; else $("#logoDel").hidden=$("#logoImg").hidden;
   const enc=puede("encuesta"); $("#encLinkBox").hidden=!enc; $("#encSave").hidden=!enc;
-  renderUsers(); if(lastHist) renderHist(lastHist); if(typeof renderNps==="function") renderNps(); renderExp(); if(exCur&&!$("#exFicha").hidden){ const ed=puede("editarExp"); $("#exForm").querySelectorAll("input").forEach(i=>{ if(i.id!=="ex-folio") i.disabled=!ed; }); $("#exSave").hidden=!ed; }
+  renderRoles(); renderUsers(); if(lastHist) renderHist(lastHist); if(typeof renderNps==="function") renderNps(); renderExp(); if(exCur&&!$("#exFicha").hidden){ const ed=puede("editarExp"); $("#exForm").querySelectorAll("input").forEach(i=>{ if(i.id!=="ex-folio") i.disabled=!ed; }); $("#exSave").hidden=!ed; }
   const on=document.querySelector('.tab[aria-selected="true"]');
   if(!perms.length){ all.forEach(x=>$("#panel-"+x).hidden=true); }
   else if(!on||on.hidden||$("#panel-"+on.dataset.tab).hidden) showTab(perms.includes((on||{}).dataset?.tab)?on.dataset.tab:perms[0]);
@@ -2636,6 +2688,7 @@ function iniciarDatos(){
     const op=document.querySelector('#srcSel option[value="__exp"]'); if(op) op.textContent=`Expedientes · ${expList.length} pacientes`;
     if(srcId==="__exp"&&tpl) srcRows=rowsFor(tpl); renderAll(); integrarCargas(); },()=>{ expLoaded=true; renderExp(); });
   db.doc("config/marca").onSnapshot(s=>showLogo(s.exists?s.data().logoUrl:null),()=>{});
+  db.doc("config/permisos").onSnapshot(s=>{ const d=s.exists?s.data():null; if(JSON.stringify(d)===JSON.stringify(permInfo)) return; permInfo=d; aplicarPermisos(permInfo); permBorrador=null; applyAccess(); },()=>{});
   setTimeout(()=>syncEncuesta(false),600);
   setInterval(()=>{ if(document.visibilityState==="visible") syncEncuesta(false); },30000);
   document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") syncEncuesta(false); });
