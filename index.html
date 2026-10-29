@@ -532,7 +532,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       <label data-f="codigo" hidden>Código<input type="text" id="in-codigo" placeholder="Ej. VALLE15"></label>
       <label data-f="influ" hidden>Influencer<input type="text" id="in-influ" placeholder="Ej. @nombre"></label>
       <label data-f="cond" hidden>Condiciones<input type="text" id="in-cond" value="Aplican restricciones."></label>
-      <label data-f="agenda" hidden>Link de agenda<input type="url" id="in-agenda" placeholder="Pégalo aquí (opcional)"></label>
+      <label data-f="agenda" hidden>Link de agenda<input type="url" id="in-agenda" placeholder="Opcional: si lo dejas vacío no se menciona"></label>
       <label data-f="desc" hidden>Descuento de cumpleaños<input type="text" id="in-desc" placeholder="Ej. 20%"></label>
       <label data-f="promo" hidden>Link para agendar visita<input type="url" id="in-promo" placeholder="Opcional: si lo dejas vacío no se menciona"></label>
       <label data-f="mesCumple" hidden>Cumpleañeros de<select id="in-mesCumple"><option value="">Todos los pacientes</option></select></label>
@@ -1128,17 +1128,13 @@ Tu comprobante digital está guardado en tu expediente. ¡Gracias por tu pago!`}
   examen:{t:"Examen anual",d:"Aviso, aniversario y recordatorio",src:["pacientes"],fields:["etapa","agenda","filtro"],build:(r,o)=>({
 aviso:`¡Hola, *${nom(r)}*! 👋 En un mes se cumple un año de tu último examen de la vista con nosotros. 👁️
 
-Te recomendamos revisar tu graduación una vez al año para que tus lentes sigan siendo los ideales. Puedes apartar desde ahora tu cita de seguimiento *sin costo* aquí: ${o.agenda||"[Link de Agenda]"}
-
-O respóndenos este mensaje con el día y la hora que prefieras. ¡Te esperamos!`,
+Te recomendamos revisar tu graduación una vez al año para que tus lentes sigan siendo los ideales. ${o.agenda?"Puedes apartar desde ahora tu cita de seguimiento *sin costo* aquí: "+o.agenda+"\n\nO respóndenos":"Tu cita de seguimiento es *sin costo*.\n\nRespóndenos"} este mensaje con el día y la hora que prefieras. ¡Te esperamos!`,
 anual:`¡Hola, *${nom(r)}*! 👋 Ha pasado un año desde tu último examen de la vista. Para nosotros, tu salud visual es lo primero y es momento de revisar si tu graduación sigue siendo la ideal. 👁️✨
 
-Te invitamos a agendar tu cita de seguimiento anual *sin costo* en el siguiente enlace: ${o.agenda||"[Link de Agenda]"}
-
-O si lo prefieres, respóndenos a este mensaje indicándonos qué día y hora te queda mejor. ¡Te esperamos!`,
+${o.agenda?"Te invitamos a agendar tu cita de seguimiento anual *sin costo* en el siguiente enlace: "+o.agenda+"\n\nO si lo prefieres, respóndenos":"Te invitamos a agendar tu cita de seguimiento anual *sin costo*. Respóndenos"} a este mensaje indicándonos qué día y hora te queda mejor. ¡Te esperamos!`,
 recordatorio:`Hola, *${nom(r)}*. 😊 Te recordamos que tu revisión anual de la vista sigue pendiente. Si has notado vista cansada, dolor de cabeza o que ya no ves igual de nítido, puede ser momento de ajustar tu graduación. 👓
 
-Tu cita de seguimiento sigue siendo *sin costo*: ${o.agenda||"[Link de Agenda]"}
+Tu cita de seguimiento sigue siendo *sin costo*${o.agenda?": "+o.agenda:"."}
 
 Respóndenos con el día que te acomode y te apartamos tu lugar. ¡Cuidamos tu mirada!`})[o.etapa]},
   cumple:{t:"Cumpleaños",d:"Descuento del mes",src:["pacientes"],fields:["mesCumple","desc","promo"],optout:1,build:(r,o)=>
