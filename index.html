@@ -336,6 +336,53 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 #whoBox .loginicon{width:76px;height:76px;border-radius:18px;margin:0 auto;display:block;background:#fff;box-shadow:0 4px 16px rgba(20,35,46,.12)}
 #whoBox .btn{width:100%}
 #whoBox .row.wide{flex-direction:column;align-items:stretch}
+/* ===== Impresión ===== */
+.prbar{display:flex;justify-content:flex-end;margin-bottom:-6px}
+.prbtn{display:inline-flex;align-items:center;gap:6px}
+.prbtn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#printArea{display:none}
+@page{size:letter;margin:12mm}
+@media print{
+  :root,:root[data-theme="dark"]{color-scheme:light!important}
+  html,body{background:#fff!important}
+  body.printing>*:not(#printArea){display:none!important}
+  body.printing #printArea{display:block!important}
+  #printArea{
+    --bg:#fff;--surface:#fff;--ink:#111;--muted:#555;--line:#c4ccd2;--accent:#1c5d8a;--accent-ink:#fff;--accent-soft:#e2eef6;
+    --ok:#1f7a4d;--ok-soft:#e1f3ea;--warn:#8a5700;--warn-soft:#fbf0d9;--bad:#b3261e;--bad-soft:#fbe4e2;
+    --rx-bg:#fff;--rx-line:#9aa5ad;--rx-head:#e6e9eb;--rx-head-ink:#2b3338;--rx-blue:#1f3fd1;--rx-red:#d11a1a;
+    --s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;--s6:#6250d6;--grid:#e3e9ed;
+    color:#111;font-family:var(--f-body);font-size:10pt;line-height:1.35;width:100%;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;color-scheme:light}
+  #printArea *{box-sizing:border-box;max-width:100%}
+  .pr-head{display:flex;align-items:center;gap:10px;border-bottom:1.5pt solid #1c5d8a;padding-bottom:6pt;margin-bottom:10pt}
+  .pr-head img{max-height:14mm;max-width:40mm;object-fit:contain}
+  .pr-brand{display:flex;flex-direction:column;flex:1;min-width:0}
+  .pr-brand b{font-family:var(--f-display);font-size:13pt}
+  .pr-brand span,.pr-meta span{font-size:8pt;color:#555}
+  .pr-meta{display:flex;flex-direction:column;text-align:right}
+  .pr-meta b{font-size:11pt}
+  #printArea h2,.pr-h2{font-family:var(--f-display);font-size:11pt;margin:10pt 0 4pt;break-after:avoid}
+  .pr-t{width:100%;border-collapse:collapse;table-layout:fixed;margin:0 0 6pt}
+  .pr-t th,.pr-t td{border:.6pt solid #9aa5ad;padding:3pt 5pt;font-size:8.5pt;text-align:left;vertical-align:top;white-space:normal;overflow-wrap:anywhere}
+  .pr-t th{background:#e6e9eb;font-weight:700}
+  .pr-t thead{display:table-header-group}
+  .pr-t tr{break-inside:avoid}
+  .pr-t.prx td,.pr-t.prx th{text-align:center;font-size:10pt}
+  .pr-t.kv th{width:22%}
+  .pr-msg{border:.6pt solid #9aa5ad;border-radius:4pt;padding:6pt 8pt;margin:0 0 8pt;break-inside:avoid}
+  .pr-msg .pr-who{font-weight:700;margin-bottom:3pt}
+  .pr-msg .pr-who span{font-weight:400;color:#555}
+  .pr-msg pre{white-space:pre-wrap;font-family:var(--f-body);font-size:9.5pt;margin:0}
+  .pr-note{font-size:8.5pt;color:#555;margin:2pt 0 6pt}
+  .pr-clone .step,.pr-clone section{break-inside:avoid;border:.6pt solid #c4ccd2;box-shadow:none;margin:0 0 8pt;padding:8pt;background:#fff}
+  .pr-clone .dgrid,.pr-clone .kpis,.pr-clone .npsgrid{display:grid;gap:6pt}
+  .pr-clone .dgrid{grid-template-columns:1fr 1fr}
+  .pr-clone .dwide{grid-column:1/-1}
+  .pr-clone .chart svg{width:100%;height:auto}
+  .pr-clone .hitem{grid-template-columns:1fr auto;break-inside:avoid;padding:4pt 0}
+  .pr-clone .num{display:none}
+}
 </style>
 </head>
 <body>
@@ -569,14 +616,14 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     <section class="step"><div><h2>Temas de los comentarios por grupo</h2><p class="small muted">Qué mencionan detractores, pasivos y promotores.</p></div><div id="nTheme"></div></section>
     <section class="step"><div><h2>NPS por tipo de lente</h2><p class="small muted">Cruza el teléfono de cada respuesta con el material del expediente.</p></div><div class="tablebox" id="nLens"></div></section>
   </div>
-  <section class="step">
+  <section class="step noprint">
     <div class="step-head"><span class="num"></span><div><h2>Encuesta web</h2><p class="small muted">Las calificaciones que los clientes dejan en la encuesta llegan aquí solas. Cada mensaje lleva un link personal para saber quién respondió.</p></div></div>
     <div class="map">
       <label class="wide" id="encLinkBox">Link público de la encuesta<input type="url" id="encLink" placeholder="https://tu-encuesta.vercel.app"></label>
       <div class="row wide"><button class="btn ghost sm" type="button" id="encSave">Guardar link</button><button class="btn sm" type="button" id="encSync">Actualizar respuestas</button><span class="small muted" id="encMsg"></span></div>
     </div>
   </section>
-  <section class="step">
+  <section class="step noprint">
     <div class="step-head"><span class="num"></span><div><h2>Registrar una respuesta</h2><p class="small muted">Captura lo que te contestaron por WhatsApp. También puedes subir muchas a la vez en «Carga de datos → Respuestas NPS».</p></div></div>
     <form id="npsForm" class="map">
       <label>Nombre<input type="text" id="npsNombre" placeholder="Opcional"></label>
@@ -588,7 +635,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   </section>
   <section class="step">
     <div class="step-head"><span class="num"></span><div><h2>Comentarios</h2></div></div>
-    <div class="row"><label class="small">Mostrar <select id="npsFilter"><option value="todos">Todos</option><option value="detractor">Detractores (0-6)</option><option value="pasivo">Pasivos (7-8)</option><option value="promotor">Promotores (9-10)</option></select></label></div>
+    <div class="row noprint"><label class="small">Mostrar <select id="npsFilter"><option value="todos">Todos</option><option value="detractor">Detractores (0-6)</option><option value="pasivo">Pasivos (7-8)</option><option value="promotor">Promotores (9-10)</option></select></label></div>
     <div class="hist" id="npsList"><p class="muted small">Sin respuestas todavía.</p></div>
   </section>
   </div>
@@ -1007,7 +1054,8 @@ function renderHist(snap){
     const est = c.estado==="integrada" ? `<span class="chip ok">Integrada a Expedientes</span>` : `<span class="chip">Lista para mensajes</span>`;
     it.innerHTML=`<div style="min-width:0"><div class="t">${esc(c.categoriaNombre||c.categoria)} · ${esc(c.archivo)}</div>
       <div class="s"><span class="mono">${c.totalFilas} filas</span>${c.conFaltantes?` · ${c.conFaltantes} con faltantes`:""}${c.aRevisar?` · ${c.aRevisar} a revisar`:""} · ${esc(fmtDate(c.fecha))}</div></div>
-      <div class="row">${est}${puede("borrarCarga")?`<button class="btn danger sm" type="button">Eliminar</button>`:""}</div>`;
+      <div class="row">${est}${prBtn("Imprimir",'data-a="prc"')}${puede("borrarCarga")?`<button class="btn danger sm" type="button">Eliminar</button>`:""}</div>`;
+    it.querySelector('[data-a="prc"]').onclick=()=>printCarga({id:d.id,...c});
     const del=it.querySelector(".btn.danger");
     if(del) del.onclick=async()=>{
       if(del.dataset.confirm!=="1"){ del.dataset.confirm="1"; del.textContent="¿Seguro? Toca otra vez"; setTimeout(()=>{del.dataset.confirm="";del.textContent="Eliminar";},4000); return; }
@@ -1351,7 +1399,7 @@ function renderFichaMsgs(){
   el.innerHTML=rows.map((row,n)=>{ const {tk,it,sub}=row; const t=TPLS[tk];
     const st=it.sent?`<span class="chip ok">✅ Enviado ${esc(fechaCorta(it.sent.f))}${it.sent.por?" · "+esc(it.sent.por):""}</span>`:it.motivo?`<span class="chip">⚪ No aplica</span> <span class="why">${esc(it.motivo)}</span>`:`<span class="chip warn">🟡 Pendiente</span>`;
     let act="";
-    if(!it.sent&&!it.motivo&&it.key&&tel) act=`<a class="btn sm" data-a="wa" target="_blank" rel="noopener" href="https://wa.me/52${esc(tel)}?text=${encodeURIComponent(buildMsgT(tk,it.r,row.oo||readOpts()))}">Abrir WhatsApp</a><button class="btn ghost sm" type="button" data-a="mark">Marcar enviado</button>`;
+    if(!it.sent&&!it.motivo&&it.key&&tel) act=`<a class="btn sm" data-a="wa" target="_blank" rel="noopener" href="https://api.whatsapp.com/send/?phone=52${esc(tel)}&text=${encodeURIComponent(buildMsgT(tk,it.r,row.oo||readOpts()))}">Abrir WhatsApp</a><button class="btn ghost sm" type="button" data-a="mark">Marcar enviado</button>`;
     if(it.sent) act=`<button class="btn ghost sm" type="button" data-a="undo">Quitar envío</button>`;
     if(tk==="entrega"&&it.key&&tel) act+= it.motivo==="Ya se entregó" ? `<button class="btn ghost sm" type="button" data-a="noent">Quitar «entregado»</button>` : `<button class="btn ghost sm" type="button" data-a="ent">Marcar entregado</button>`;
     if(tk==="promo"||tk==="codigoCliente") act+=`<button class="btn ghost sm" type="button" data-a="ir">Configurar en Mensajes</button>`;
@@ -1541,7 +1589,7 @@ function renderSend(){
       ${it.motivo&&!it.sent?`<span class="why">${esc(it.motivo)}</span>`:""}</div>`;
     let act="";
     if(mView==="pend"){
-      act=`<button class="btn ghost sm" type="button" data-a="copy">Copiar</button><a class="btn sm" data-a="wa" target="_blank" rel="noopener" href="https://wa.me/52${esc(tel)}?text=${encodeURIComponent(msg)}">Abrir WhatsApp</a><button class="btn ghost sm" type="button" data-a="mark">Marcar enviado</button>`+
+      act=`<button class="btn ghost sm" type="button" data-a="copy">Copiar</button><a class="btn sm" data-a="wa" target="_blank" rel="noopener" href="https://api.whatsapp.com/send/?phone=52${esc(tel)}&text=${encodeURIComponent(msg)}">Abrir WhatsApp</a><button class="btn ghost sm" type="button" data-a="mark">Marcar enviado</button>`+
         (tpl==="entrega"?`<button class="btn ghost sm" type="button" data-a="entregado">Marcar entregado</button>`:"")+(esPac?`<button class="btn danger sm" type="button" data-a="baja">Dar de baja</button>`:"");
     } else if(mView==="sent"){
       act=`<button class="btn ghost sm" type="button" data-a="undo">Desmarcar</button>`+(tpl==="entrega"&&!it.motivo?`<button class="btn ghost sm" type="button" data-a="entregado">Marcar entregado</button>`:"");
@@ -1550,6 +1598,7 @@ function renderSend(){
       if(it.motivo==="Ya se entregó") act=`<button class="btn ghost sm" type="button" data-a="noentregado">Quitar «entregado»</button>`;
     }
     if(srcId==="__exp"&&expMap[it.pid]) act+=`<button class="btn ghost sm" type="button" data-a="ficha">${it.motivo&&it.motivo.startsWith("Sin ")&&puede("editarExp")?"Completar expediente":"Ver expediente"}</button>`;
+    act+=prBtn("Imprimir",'data-a="print"');
     div.innerHTML=who+`<div class="act">${act}</div>`+(mView==="pend"?`<pre>${esc(msg)}</pre>`:mView==="sent"?`<details><summary>Ver mensaje</summary><pre>${esc(msg)}</pre></details>`:"");
     const q1=a=>div.querySelector(`[data-a="${a}"]`);
     if(q1("copy")) q1("copy").onclick=async e=>{ const b=e.currentTarget; try{ await navigator.clipboard.writeText(msg); b.textContent="Copiado"; }catch(err){ const sel=window.getSelection(); const rg=document.createRange(); rg.selectNodeContents(div.querySelector("pre")); sel.removeAllRanges(); sel.addRange(rg); b.textContent="Texto seleccionado"; } setTimeout(()=>b.textContent="Copiar",2000); };
@@ -1560,6 +1609,7 @@ function renderSend(){
     if(q1("noentregado")) q1("noentregado").onclick=()=>{ ctSave(tel,d=>{ delete d.env["entregado|"+entRef(r,it.i)]; }); renderSend(); };
     if(q1("baja")) q1("baja").onclick=()=>darBaja(tel,nom(r));
     if(q1("reactivar")) q1("reactivar").onclick=async()=>{ if(await ask("¿Reactivar este número?",`<p>El ${esc(tel)} volverá a recibir promociones, cumpleaños, examen anual y encuesta NPS. Hazlo solo si el paciente lo pidió.</p>`,"Reactivar")){ ctSave(tel,d=>{ d.baja=null; d.reactivado={f:new Date().toISOString(),por:quien()}; }); aviso("Número reactivado"); renderAll(); } };
+    if(q1("print")) q1("print").onclick=()=>printDoc("Mensaje · "+TPLS[tpl].t,msgBloque(it,o),{sub:nom(r)});
     if(q1("ficha")) q1("ficha").onclick=()=>{ showTab("expedientes"); openExp(it.pid); };
     el.appendChild(div);
   });
@@ -2074,8 +2124,9 @@ function renderExp(){
     return `<div class="hitem${x.id===exCur?" on":""}"><div style="min-width:0"><div class="t">${esc(x.nombre||"Sin nombre")}${isBaja(telOf(x))?' <span class="chip bad">Baja</span>':""}</div>
       <div class="s"><span class="mono">${esc(x.folio||"Sin folio")}</span> · <span class="mono">${esc(x.telefono||"Sin teléfono")}</span>${x.fechaConsulta?` · Consulta ${esc(fmtDMY(x.fechaConsulta))}`:""}</div>
       ${falta.length?`<div class="exmiss">${falta.map(l=>`<span class="chip warn">Falta ${esc(l)}</span>`).join("")}</div>`:""}</div>
-      <div class="row"><button class="btn ${x.id===exCur?"":"ghost "}sm" type="button" data-id="${esc(x.id)}">${edita?"Abrir y editar":"Ver"}</button></div></div>`; }).join("");
+      <div class="row">${prBtn("Imprimir",`data-pr="${esc(x.id)}"`)}<button class="btn ${x.id===exCur?"":"ghost "}sm" type="button" data-id="${esc(x.id)}">${edita?"Abrir y editar":"Ver"}</button></div></div>`; }).join("");
   el.querySelectorAll("button[data-id]").forEach(b=>b.onclick=()=>openExp(b.dataset.id));
+  el.querySelectorAll("button[data-pr]").forEach(b=>b.onclick=()=>printExp(b.dataset.pr));
   $("#exMore").hidden=list.length<=exPage; $("#exMore").textContent=`Mostrar más (${list.length-exPage} restantes)`;
 }
 const EXI=["nombre","telefono","fechaNacimiento","folio","fechaConsulta","material","fechaEntrega","armazon"];
@@ -2163,6 +2214,121 @@ $("#exDl").onclick=async()=>{
   const book=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(book,ws,"Pacientes");
   try{ await downloads.save({filename:`Pacientes - Opticas del Valle ${ymdOf(new Date())}.xlsx`,data:XLSX.write(book,{type:"array",bookType:"xlsx",cellDates:true})}); }catch(e){}
 };
+/* ================= Impresión: por panel y por acción ================= */
+const PR_ICON=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>`;
+const prBtn=(txt,attrs="")=>`<button class="btn ghost sm prbtn" type="button" ${attrs}>${PR_ICON}${esc(txt)}</button>`;
+const pv=v=>(v===null||v===undefined||v==="")?"—":esc(String(v));
+function prTable(cols,rows,cls=""){
+  return `<table class="pr-t ${cls}"><thead><tr>${cols.map(c=>`<th${c.w?` style="width:${c.w}"`:""}>${esc(c.l)}</th>`).join("")}</tr></thead><tbody>${
+    rows.map(r=>`<tr>${cols.map(c=>`<td>${c.f?c.f(r):pv(r[c.k])}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+}
+function printDoc(titulo,html,{sub="",landscape=false}={}){
+  let pa=$("#printArea"); if(!pa){ pa=document.createElement("div"); pa.id="printArea"; document.body.appendChild(pa); }
+  const lg=$("#logoImg"); const logo=lg&&!lg.hidden&&lg.getAttribute("src")?`<img src="${esc(lg.getAttribute("src"))}" alt="">`:"";
+  pa.innerHTML=(landscape?`<style>@page{size:letter landscape;margin:10mm}</style>`:"")+
+    `<div class="pr-head">${logo}<div class="pr-brand"><b>Ópticas del Valle</b><span>Blvd. Atlixco 3507, Local 18, Reserva Territorial Atlixcayotl, Puebla 72197 · WhatsApp 221 110 8551</span></div>
+    <div class="pr-meta"><b>${esc(titulo)}</b>${sub?`<span>${esc(sub)}</span>`:""}<span>Impreso el ${esc(fmtDate(new Date().toISOString()))} · ${esc(quien())}</span></div></div>`+html;
+  document.body.classList.add("printing");
+  const go=()=>{ try{ window.print(); }catch(e){} };
+  const imgs=[...pa.querySelectorAll("img")].filter(i=>!i.complete);
+  if(imgs.length) Promise.race([Promise.all(imgs.map(i=>new Promise(r=>{ i.onload=i.onerror=r; }))),new Promise(r=>setTimeout(r,2500))]).then(go); else setTimeout(go,60);
+}
+window.addEventListener("afterprint",()=>{ document.body.classList.remove("printing"); const pa=$("#printArea"); if(pa) pa.innerHTML=""; });
+function limpio(node){
+  const c=node.cloneNode(true); c.hidden=false;
+  c.querySelectorAll("button,input,select,textarea,dialog,form,.noprint,.prbar,[hidden],details:not([open]),script").forEach(e=>e.remove());
+  [c,...c.querySelectorAll("[id]")].forEach(e=>e.removeAttribute("id"));
+  return `<div class="pr-clone">${c.innerHTML}</div>`;
+}
+/* --- Valores para tablas --- */
+const ITEM_CAT_INV={compras:"ventas",entregas:"entregas",pagos:"pagos",facturas:"facturas"};
+function fmtCampo(k,v){
+  if(v===null||v===undefined||v==="") return "—";
+  if(/fecha/i.test(k)) return esc(fmtDMY(v)||String(v));
+  if(/^(total|abono|saldo|monto|saldoRestante)$/.test(k)&&!isNaN(Number(v))) return esc(money(v));
+  if(typeof v==="object") return esc(JSON.stringify(v));
+  return esc(String(v));
+}
+function colsDe(cat,rows,omit=[]){
+  const f=(CATS[cat]&&CATS[cat].f)||[];
+  const cols=f.filter(([k])=>!omit.includes(k)&&rows.some(r=>r[k]!=null&&r[k]!==""&&typeof r[k]!=="object")).map(([k,l])=>({k,l,f:r=>fmtCampo(k,r[k])}));
+  return cols;
+}
+/* --- Expediente individual --- */
+function htmlExp(x){
+  const tel=telOf(x);
+  const datos=[["Nombre",x.nombre],["Folio",x.folio],["Teléfono / WhatsApp",x.telefono],["Fecha de nacimiento",x.fechaNacimiento&&fmtDMY(x.fechaNacimiento)],
+    ["Fecha de consulta",x.fechaConsulta&&fmtDMY(x.fechaConsulta)],["Fecha de entrega",x.fechaEntrega&&fmtDMY(x.fechaEntrega)],["Material",x.material],["Armazón o L/C",x.armazon]];
+  let h=`<h2>Datos del paciente</h2><table class="pr-t kv"><tbody>`;
+  for(let i=0;i<datos.length;i+=2) h+=`<tr><th>${esc(datos[i][0])}</th><td>${pv(datos[i][1])}</td><th>${esc(datos[i+1][0])}</th><td>${pv(datos[i+1][1])}</td></tr>`;
+  h+=`</tbody></table>`;
+  if(isBaja(tel)) h+=`<p class="pr-note">Dado de baja de promociones, cumpleaños, examen anual y NPS desde el ${esc(fechaCorta(contactos[tel].baja.f))}.</p>`;
+  const rx=e=>(x.rx&&x.rx[e])||{};
+  h+=`<h2>Receta</h2><table class="pr-t prx"><thead><tr><th>RX</th><th>ESF</th><th>CIL</th><th>EJE</th><th>D.I.</th><th>ADD</th><th>ACO</th></tr></thead><tbody>`+
+    [["od","OD"],["oi","OS"]].map(([e,l])=>`<tr><th>${l}</th>${RXI.map(k=>`<td>${pv(rx(e)[k])}</td>`).join("")}</tr>`).join("")+`</tbody></table>`;
+  Object.entries(ITEM_TXT).forEach(([k,t])=>{ const its=x[k]||[]; if(!its.length) return;
+    const cat=ITEM_CAT_INV[k]; h+=`<h2>${esc(CATS[cat].t)} (${its.length})</h2>`+prTable(colsDe(cat,its,["nombre","telefono"]),its); });
+  const rows=fichaRows(x);
+  h+=`<h2>Mensajes de WhatsApp</h2>`+prTable([{l:"Mensaje",w:"28%",f:r=>esc(TPLS[r.tk].t)+(r.sub?`<br><span class="pr-note">${esc(r.sub)}</span>`:"")},
+    {l:"Estado",f:r=>r.it.sent?`Enviado ${esc(fechaCorta(r.it.sent.f))}${r.it.sent.por?" · "+esc(r.it.sent.por):""}`:r.it.motivo?`No aplica · ${esc(r.it.motivo)}`:"Pendiente"}],rows);
+  const env=tel&&contactos[tel]&&contactos[tel].env||{};
+  const ent=Object.entries(env).filter(([,v])=>v&&v.f).sort((a,b)=>String(b[1].f).localeCompare(String(a[1].f)));
+  if(ent.length){ const nt=(k,v)=>k.startsWith("entregado|")?"Entrega marcada como entregada":(TPLS[v.tpl]||TPLS[k.split("|")[0]]||{t:k.split("|")[0]}).t;
+    h+=`<h2>Mensajes registrados para este número</h2>`+prTable([{l:"Mensaje",f:([k,v])=>esc(nt(k,v))},{l:"Fecha",w:"30%",f:([,v])=>esc(fmtDate(v.f))},{l:"Registró",w:"22%",f:([,v])=>pv(v.por)}],ent); }
+  return h;
+}
+function printExp(id){
+  const x=expMap[id]; if(!x){ aviso("No encontré ese expediente.",true); return; }
+  if(id===exCur&&exDirty) aviso("Se imprime lo último guardado. Guarda tus cambios para que salgan en la impresión.");
+  printDoc("Expediente "+(x.folio||""),htmlExp(x),{sub:x.nombre||""});
+}
+/* --- Paneles --- */
+function printExpLista(){
+  const all=expList.slice().sort(ordenFolio); const q=norm($("#exQ").value); const fk=$("#exF").value; const f=EXF[fk][1];
+  const list=all.filter(f).filter(x=>!q||norm([x.nombre,x.telefono,x.folio].filter(Boolean).join(" ")).includes(q));
+  if(!list.length){ aviso("No hay expedientes en esta vista.",true); return; }
+  const cols=[{l:"Folio",w:"8%",k:"folio"},{l:"Nombre",w:"20%",k:"nombre"},{l:"Teléfono",w:"10%",k:"telefono"},{l:"Nacimiento",w:"9%",f:x=>fmtCampo("fecha",x.fechaNacimiento)},
+    {l:"Consulta",w:"9%",f:x=>fmtCampo("fecha",x.fechaConsulta)},{l:"Entrega",w:"9%",f:x=>fmtCampo("fecha",x.fechaEntrega)},{l:"Material",k:"material"},{l:"Armazón o L/C",k:"armazon"},
+    {l:"Le falta",f:x=>esc(FALTA_CHIP.filter(([k])=>EXF[k][1](x)).map(([,l])=>l).join(", ")||"—")}];
+  printDoc("Expedientes de pacientes",prTable(cols,list),{sub:`${EXF[fk][0]}${q?" · búsqueda: "+$("#exQ").value:""} · ${list.length} expedientes`,landscape:true});
+}
+function msgBloque(it,o,tk=tpl){
+  const est=it.sent?`Enviado ${fechaCorta(it.sent.f)}${it.sent.por?" por "+it.sent.por:""}`:it.motivo?"No elegible · "+it.motivo:"Pendiente";
+  return `<div class="pr-msg"><div class="pr-who">${esc(nom(it.r))} <span>· ${esc(it.tel||"Sin teléfono")}${it.r.folio?" · "+esc(it.r.folio):""} · ${esc(est)}</span></div><pre>${esc(buildMsgT(tk,it.r,o))}</pre></div>`;
+}
+function printMensajes(){
+  if(!tpl||!shownItems.length){ aviso("Elige un mensaje con pacientes en la lista para imprimir.",true); return; }
+  const o=readOpts(); const vista={pend:"Pendientes",sent:"Ya enviados",no:"No elegibles"}[mView];
+  printDoc("Mensajes · "+TPLS[tpl].t,shownItems.map(it=>msgBloque(it,o)).join(""),{sub:`${vista} · ${shownItems.length} pacientes`});
+}
+function printCargas(){
+  if(!cargasList.length){ aviso("Aún no hay cargas guardadas.",true); return; }
+  const l=cargasList.slice().sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha)));
+  printDoc("Cargas guardadas",prTable([{l:"Tipo",w:"18%",f:c=>pv(c.categoriaNombre||c.categoria)},{l:"Archivo",f:c=>pv(c.archivo)},{l:"Fecha",w:"20%",f:c=>esc(fmtDate(c.fecha))},
+    {l:"Filas",w:"8%",f:c=>pv(c.totalFilas)},{l:"Estado",w:"20%",f:c=>c.estado==="integrada"?"Integrada a Expedientes":"Lista para mensajes"}],l),{sub:`${l.length} cargas`});
+}
+async function printCarga(c){
+  try{ const rows=await loadCargaRows(c.id); const cols=colsDe(c.categoria,rows);
+    printDoc((c.categoriaNombre||c.categoria)+" · "+(c.archivo||""),prTable([{l:"#",w:"4%",f:r=>String(rows.indexOf(r)+1)},...cols],rows),{sub:`${rows.length} filas · guardada ${fmtDate(c.fecha)}`,landscape:cols.length>6});
+  }catch(e){ aviso("No pude leer esa carga para imprimirla.",true); }
+}
+function printUsuarios(){
+  const l=usuarios.slice().sort((a,b)=>a.id<b.id?-1:1);
+  printDoc("Equipo de Ópticas del Valle",prTable([{l:"ID",w:"14%",k:"id"},{l:"Nombre",k:"nombre"},{l:"Rol",w:"22%",k:"rol"},{l:"Teléfono",w:"16%",k:"telefono"},
+    {l:"Estado",w:"14%",f:u=>({activo:"Activo",pausa:"En pausa",baja:"Dado de baja"})[estadoDe(u)]}],l),{sub:`${l.length} usuarios`});
+}
+const PR_PANEL={
+  dashboard:()=>printDoc("Dashboard",limpio($("#panel-dashboard")),{sub:"Resumen de envíos y pacientes"}),
+  carga:printCargas, expedientes:printExpLista, mensajes:printMensajes,
+  nps:()=>printDoc("Encuesta NPS",limpio($("#panel-nps")),{sub:"Resultados y comentarios"}),
+  usuarios:printUsuarios};
+const PR_TXT={dashboard:"Imprimir dashboard",carga:"Imprimir lista de cargas",expedientes:"Imprimir lista",mensajes:"Imprimir mensajes de la lista",nps:"Imprimir resultados",usuarios:"Imprimir equipo"};
+Object.keys(PR_PANEL).forEach(k=>{ const p=$("#panel-"+k); if(!p) return;
+  const bar=document.createElement("div"); bar.className="prbar"; bar.innerHTML=prBtn(PR_TXT[k]); bar.querySelector("button").onclick=()=>PR_PANEL[k]();
+  p.prepend(bar); });
+$("#exClose").insertAdjacentHTML("afterend",`<button class="btn ghost prbtn" type="button" id="exPrint">${PR_ICON}Imprimir expediente</button>`);
+$("#exPrint").onclick=()=>{ if(exCur) printExp(exCur); };
+
 function renderAll(){ if(tpl) renderSend(); renderDash(); renderExp(); renderNps(); renderFichaMsgs(); renderSin(); }
 
 /* ================= Gráficas (SVG a escala, colores por token) ================= */
