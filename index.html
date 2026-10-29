@@ -385,6 +385,36 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   .pr-clone .hitem{grid-template-columns:1fr auto;break-inside:avoid;padding:4pt 0}
   .pr-clone .num{display:none}
 }
+/* Medición para ajustar a una hoja */
+#printArea.pr-medir{display:block!important;position:absolute;left:-10000px;top:0;width:192mm;visibility:hidden;font-family:var(--f-body);font-size:10pt;line-height:1.35}
+#printArea.pr-medir *{box-sizing:border-box;max-width:100%}
+#printArea.pr-medir .pr-head{display:flex;align-items:center;gap:10px;border-bottom:1.5pt solid #1c5d8a;padding-bottom:6pt;margin-bottom:10pt}
+#printArea.pr-medir .pr-head img{max-height:18mm;max-width:55mm;object-fit:contain}
+#printArea.pr-medir .pr-brand{display:flex;flex-direction:column;flex:1;min-width:0}
+#printArea.pr-medir .pr-brand b{font-family:var(--f-display);font-size:13pt}
+#printArea.pr-medir .pr-brand span,.pr-meta span{font-size:8pt;color:#555}
+#printArea.pr-medir .pr-meta{display:flex;flex-direction:column;text-align:right}
+#printArea.pr-medir .pr-meta b{font-size:11pt}
+#printArea.pr-medir h2,.pr-h2{font-family:var(--f-display);font-size:11pt;margin:10pt 0 4pt;break-after:avoid}
+#printArea.pr-medir .pr-t{width:100%;border-collapse:collapse;table-layout:fixed;margin:0 0 6pt}
+#printArea.pr-medir .pr-t th,.pr-t td{border:.6pt solid #9aa5ad;padding:3pt 5pt;font-size:8.5pt;text-align:left;vertical-align:top;white-space:normal;overflow-wrap:anywhere}
+#printArea.pr-medir .pr-t th{background:#e6e9eb;font-weight:700}
+#printArea.pr-medir .pr-t thead{display:table-header-group}
+#printArea.pr-medir .pr-t tr{break-inside:avoid}
+#printArea.pr-medir .pr-t.prx td,.pr-t.prx th{text-align:center;font-size:10pt}
+#printArea.pr-medir .pr-t.kv th{width:22%}
+#printArea.pr-medir .pr-msg{border:.6pt solid #9aa5ad;border-radius:4pt;padding:6pt 8pt;margin:0 0 8pt;break-inside:avoid}
+#printArea.pr-medir .pr-msg .pr-who{font-weight:700;margin-bottom:3pt}
+#printArea.pr-medir .pr-msg .pr-who span{font-weight:400;color:#555}
+#printArea.pr-medir .pr-msg pre{white-space:pre-wrap;font-family:var(--f-body);font-size:9.5pt;margin:0}
+#printArea.pr-medir .pr-note{font-size:8.5pt;color:#555;margin:2pt 0 6pt}
+#printArea.pr-medir .pr-clone .step,.pr-clone section{break-inside:avoid;border:.6pt solid #c4ccd2;box-shadow:none;margin:0 0 8pt;padding:8pt;background:#fff}
+#printArea.pr-medir .pr-clone .dgrid,.pr-clone .kpis,.pr-clone .npsgrid{display:grid;gap:6pt}
+#printArea.pr-medir .pr-clone .dgrid{grid-template-columns:1fr 1fr}
+#printArea.pr-medir .pr-clone .dwide{grid-column:1/-1}
+#printArea.pr-medir .pr-clone .chart svg{width:100%;height:auto}
+#printArea.pr-medir .pr-clone .hitem{grid-template-columns:1fr auto;break-inside:avoid;padding:4pt 0}
+#printArea.pr-medir .pr-clone .num{display:none}
 </style>
 </head>
 <body>
@@ -2344,7 +2374,7 @@ function prTable(cols,rows,cls=""){
   return `<table class="pr-t ${cls}"><thead><tr>${cols.map(c=>`<th${c.w?` style="width:${c.w}"`:""}>${esc(c.l)}</th>`).join("")}</tr></thead><tbody>${
     rows.map(r=>`<tr>${cols.map(c=>`<td>${c.f?c.f(r):pv(r[c.k])}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
 }
-function printDoc(titulo,html,{sub="",landscape=false}={}){
+function printDoc(titulo,html,{sub="",landscape=false,unaHoja=false}={}){
   let pa=$("#printArea"); if(!pa){ pa=document.createElement("div"); pa.id="printArea"; document.body.appendChild(pa); }
   const src=[$("#hdrLogo"),$("#logoImg")].map(i=>i&&!i.hidden&&i.getAttribute("src")).find(Boolean)||"/icon-192.png";
   const logo=`<img src="${esc(src)}" alt="Ópticas del Valle">`;
@@ -2352,11 +2382,15 @@ function printDoc(titulo,html,{sub="",landscape=false}={}){
     `<div class="pr-head">${logo}<div class="pr-brand"><b>Ópticas del Valle</b><span>Blvd. Atlixco 3507, Local 18, Reserva Territorial Atlixcayotl, Puebla 72197 · WhatsApp 221 110 8551</span></div>
     <div class="pr-meta"><b>${esc(titulo)}</b>${sub?`<span>${esc(sub)}</span>`:""}<span>Impreso el ${esc(fmtDate(new Date().toISOString()))} · ${esc(quien())}</span></div></div>`+html;
   document.body.classList.add("printing");
-  const go=()=>{ try{ window.print(); }catch(e){} };
+  pa.style.zoom="";
+  const go=()=>{
+    if(unaHoja){ pa.classList.add("pr-medir"); const h=pa.scrollHeight; pa.classList.remove("pr-medir");
+      const disp=(279.4-24)*96/25.4*0.97; if(h>disp) pa.style.zoom=String(Math.max(0.6,disp/h)); }
+    try{ window.print(); }catch(e){} };
   const imgs=[...pa.querySelectorAll("img")].filter(i=>!i.complete);
   if(imgs.length) Promise.race([Promise.all(imgs.map(i=>new Promise(r=>{ i.onload=i.onerror=r; }))),new Promise(r=>setTimeout(r,2500))]).then(go); else setTimeout(go,60);
 }
-window.addEventListener("afterprint",()=>{ document.body.classList.remove("printing"); const pa=$("#printArea"); if(pa) pa.innerHTML=""; });
+window.addEventListener("afterprint",()=>{ document.body.classList.remove("printing"); const pa=$("#printArea"); if(pa){ pa.innerHTML=""; pa.style.zoom=""; } });
 function limpio(node){
   const c=node.cloneNode(true); c.hidden=false;
   c.querySelectorAll("button,input,select,textarea,dialog,form,.noprint,.prbar,[hidden],details:not([open]),script").forEach(e=>e.remove());
@@ -2378,6 +2412,7 @@ function colsDe(cat,rows,omit=[]){
   return cols;
 }
 /* --- Expediente individual --- */
+const unaVisita=x=>(x.visitas||[]).length<=1&&trDe(x).length<=1;
 function htmlExp(x){
   const tel=telOf(x);
   const datos=[["Nombre",x.nombre],["Folio",x.folio],["Teléfono / WhatsApp",x.telefono],["Fecha de nacimiento",x.fechaNacimiento&&fmtDMY(x.fechaNacimiento)],
@@ -2388,11 +2423,15 @@ function htmlExp(x){
   if(isBaja(tel)) h+=`<p class="pr-note">Dado de baja de promociones, cumpleaños, examen anual y NPS desde el ${esc(fechaCorta(contactos[tel].baja.f))}.</p>`;
   const rx=e=>(x.rx&&x.rx[e])||{};
   h+=`<h2>Receta vigente</h2><table class="pr-t prx"><thead><tr><th>RX</th><th>ESF</th><th>CIL</th><th>EJE</th><th>D.I.</th><th>ADD</th><th>ACO</th></tr></thead><tbody>`+
-    [["od","OD"],["oi","OS"]].map(([e,l])=>`<tr><th>${l}</th>${RXI.map(k=>`<td>${pv(rx(e)[k])}</td>`).join("")}</tr>`).join("")+`</tbody></table>`+htmlHistVis(x);
+    [["od","OD"],["oi","OS"]].map(([e,l])=>`<tr><th>${l}</th>${RXI.map(k=>`<td>${pv(rx(e)[k])}</td>`).join("")}</tr>`).join("")+`</tbody></table>`+(unaVisita(x)?"":htmlHistVis(x));
   Object.entries(ITEM_TXT).forEach(([k,t])=>{ const its=x[k]||[]; if(!its.length) return;
     const cat=ITEM_CAT_INV[k]; h+=`<h2>${esc(CATS[cat].t)} (${its.length})</h2>`+prTable(colsDe(cat,its,["nombre","telefono"]),its); });
   const rows=fichaRows(x);
-  h+=`<h2>Mensajes de WhatsApp</h2>`+prTable([{l:"Mensaje",w:"28%",f:r=>esc(TPLS[r.tk].t)+(r.sub?`<br><span class="pr-note">${esc(r.sub)}</span>`:"")},
+  const estMsg=r=>r.it.sent?`Enviado ${esc(fechaCorta(r.it.sent.f))}${r.it.sent.por?" · "+esc(r.it.sent.por):""}`:r.it.motivo?`No aplica · ${esc(r.it.motivo)}`:"Pendiente";
+  if(unaVisita(x)){ const par=[]; for(let i=0;i<rows.length;i+=2) par.push([rows[i],rows[i+1]]);
+    h+=`<h2>Mensajes de WhatsApp</h2><table class="pr-t"><thead><tr><th style="width:19%">Mensaje</th><th style="width:31%">Estado</th><th style="width:19%">Mensaje</th><th>Estado</th></tr></thead><tbody>`+
+      par.map(([a,b])=>`<tr><td>${esc(TPLS[a.tk].t)}</td><td>${estMsg(a)}</td><td>${b?esc(TPLS[b.tk].t):""}</td><td>${b?estMsg(b):""}</td></tr>`).join("")+`</tbody></table>`; }
+  else h+=`<h2>Mensajes de WhatsApp</h2>`+prTable([{l:"Mensaje",w:"28%",f:r=>esc(TPLS[r.tk].t)+(r.sub?`<br><span class="pr-note">${esc(r.sub)}</span>`:"")},
     {l:"Estado",f:r=>r.it.sent?`Enviado ${esc(fechaCorta(r.it.sent.f))}${r.it.sent.por?" · "+esc(r.it.sent.por):""}`:r.it.motivo?`No aplica · ${esc(r.it.motivo)}`:"Pendiente"}],rows);
   const env=tel&&contactos[tel]&&contactos[tel].env||{};
   const ent=Object.entries(env).filter(([,v])=>v&&v.f).sort((a,b)=>String(b[1].f).localeCompare(String(a[1].f)));
@@ -2403,7 +2442,7 @@ function htmlExp(x){
 function printExp(id){
   const x=expMap[id]; if(!x){ aviso("No encontré ese expediente.",true); return; }
   if(id===exCur&&exDirty) aviso("Se imprime lo último guardado. Guarda tus cambios para que salgan en la impresión.");
-  printDoc("Expediente "+(x.folio||""),htmlExp(x),{sub:x.nombre||""});
+  printDoc("Expediente "+(x.folio||""),htmlExp(x),{sub:x.nombre||"",unaHoja:unaVisita(x)});
 }
 /* --- Paneles --- */
 function printExpLista(){
