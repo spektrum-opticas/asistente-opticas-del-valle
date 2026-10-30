@@ -1228,12 +1228,12 @@ recordatorio:`Hola, *${nom(r)}*. 😊 Te recordamos que tu revisión anual de la
 Tu cita de seguimiento sigue siendo *sin costo*${o.agenda?": "+o.agenda:"."}
 
 Respóndenos con el día que te acomode y te apartamos tu lugar. ¡Cuidamos tu mirada!`})[o.etapa]},
-  cumple:{t:"Cumpleaños",d:"Descuento del mes",src:["pacientes"],fields:["mesCumple","desc","promo"],optout:1,build:(r,o)=>
+  cumple:{t:"Cumpleaños",d:"Regalo sorpresa en sucursal",src:["pacientes"],fields:["mesCumple"],optout:1,build:(r,o)=>
 `¡Feliz cumpleaños, *${nom(r)}*! 🎂🎈 En *Ópticas del Valle* queremos celebrar contigo.
 
-Como regalo especial, tienes un *${o.desc||"[__% de descuento]"}* de descuento exclusivo en todo nuestro catálogo de armazones y lentes de sol durante todo este mes. 🛍️🕶️
+Tenemos un presente especial esperándote en sucursal. 🎁 ¿Qué es? ¡Es sorpresa! Pasa a recogerlo cuando gustes; solo menciona este mensaje.
 
-Presenta este mensaje en tu sucursal${o.promo?" o agenda tu visita aquí: "+o.promo:"."}`},
+¡Te esperamos para festejarte! 🥳`},
   promo:{t:"Promociones del año",d:"Buen Fin, MSI y temporadas",src:["pacientes","ventas"],fields:["temp","benef","pct","msi","libre","minimo","aplica","vig","cond","promo"],optout:1,build:(r,o)=>{
     const T=TEMPORADAS[o.temp]||TEMPORADAS.libre;
     return `${T.abre(nom(r))}
