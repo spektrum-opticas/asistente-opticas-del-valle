@@ -1367,9 +1367,18 @@ async function integrarOtras(otras,box){
   }
 }
 /* Filas para Mensajes: siempre desde Expedientes */
+/* Avisos de entrega: los del Excel de entregas + los trabajos recientes que llegan de la sincronización */
+const ENT_DIAS=15;
+function entregasDe(x){
+  const ent=(x.entregas||[]).slice(); const ids=new Set(ent.map(e=>e.id)); const desde=ymdOf(new Date(Date.now()-ENT_DIAS*864e5));
+  trDe(x).forEach(t=>{ const fe=toISO(t.fechaEntrega); if(!fe||fe<desde) return; const id=(x.folio||x.id)+"~"+fe; if(ids.has(id)) return; ids.add(id);
+    const tipo=tipoTrabajo(t); ent.push({id,folio:x.folio||null,producto:tipo==="Lentes de contacto"?"lentes de contacto":tipo==="Accesorios"?"accesorios":"lentes",fechaListo:fe,material:t.material||null,armazon:t.armazon||null,trabajo:t.id}); });
+  return ent;
+}
+const itemsDe=(x,k)=>k==="entregas"?entregasDe(x):(x[k]||[]);
 function rowsFor(tk){
   const k=TPL_ITEMS[tk]; if(!k) return expRows();
-  const out=[]; expList.forEach(x=>(x[k]||[]).forEach(it=>out.push({...x,...it,nombre:x.nombre,telefono:x.telefono,_pid:x.id,_exp:x.id,_item:it.id,folioPaciente:x.folio})));
+  const out=[]; expList.forEach(x=>itemsDe(x,k).forEach(it=>out.push({...x,...it,nombre:x.nombre,telefono:x.telefono,_pid:x.id,_exp:x.id,_item:it.id,folioPaciente:x.folio})));
   return out;
 }
 const entRef=(r,i)=>r._item||keyRef(r,i,"folio",srcId);
@@ -1423,7 +1432,7 @@ function fichaRows(x){
   const o=readOpts(); const now=new Date(); const out=[]; const base={...x,_pid:x.id,_exp:x.id};
   for(const tk of TPL_FICHA){
     const k=TPL_ITEMS[tk];
-    if(k){ (x[k]||[]).forEach(it=>{ const r={...x,...it,nombre:x.nombre,telefono:x.telefono,_pid:x.id,_exp:x.id,_item:it.id}; const [e]=evalItems(tk,[r],o,"__exp",now); out.push({tk,it:e,oo:o,sub:subTxt(tk,r)}); }); continue; }
+    if(k){ itemsDe(x,k).forEach(it=>{ const r={...x,...it,nombre:x.nombre,telefono:x.telefono,_pid:x.id,_exp:x.id,_item:it.id}; const [e]=evalItems(tk,[r],o,"__exp",now); out.push({tk,it:e,oo:o,sub:subTxt(tk,r)}); }); continue; }
     const oo={...o};
     if(tk==="examen"){ const b=baseExamen(x); if(!b){ out.push({tk,it:{r:base,motivo:"Sin fecha de entrega ni de consulta"}}); continue; }
       const m=monthsSince(b,now); oo.etapa=m===11?"aviso":m===12?"anual":m>=13?"recordatorio":null; oo.filtro=true;
