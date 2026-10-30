@@ -253,6 +253,17 @@ table.rx.rxedit input:disabled{color:var(--ink)}
 .sbars .mono{text-align:right}
 dialog.dlg{border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);padding:20px;width:min(560px,calc(100vw - 32px));max-height:calc(100vh - 48px)}
 dialog.dlg::backdrop{background:var(--shade)}
+/* Ruleta de regalo de cumpleaños */
+.regalo{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rul{position:relative;width:min(300px,72vw);aspect-ratio:1;margin:6px auto 4px}
+.rul svg.rueda{width:100%;height:100%;display:block;transform:rotate(0deg)}
+.rul svg.rueda.gira{transition:transform 4.2s cubic-bezier(.12,.72,.08,1)}
+.rul .ptr{position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:13px solid transparent;border-right:13px solid transparent;border-top:24px solid var(--ink);filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+.rul text{font-family:var(--f-body);font-weight:700;fill:#fff;font-size:14px}
+.rulres{text-align:center;font-size:1.05rem;min-height:1.6em}
+.rulres b{font-family:var(--f-display);font-size:1.25rem}
+@media (prefers-reduced-motion: reduce){.rul svg.rueda.gira{transition-duration:.01s}}
+
 .dlg h2{margin-bottom:8px}
 .dlg .body{font-size:.92rem;display:flex;flex-direction:column;gap:8px}
 .dlg .chg{max-height:300px;overflow:auto;border:1px solid var(--line);border-radius:8px}
@@ -586,6 +597,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       <label>Armazón o L/C<input type="text" id="ex-armazon" autocomplete="off"></label>
       <div class="row wide"><button class="btn" type="submit" id="exSave">Guardar cambios</button><button class="btn ghost" type="button" id="exClose">Cerrar expediente</button><span class="small" id="exMsg"></span></div>
     </form>
+    <div id="exRegalo"></div>
     <div class="hist" id="exVis"></div>
     <div><span class="label">Mensajes de WhatsApp de este paciente</span><div class="hist" id="exMsgs"></div></div>
     <div><span class="label">Mensajes registrados para este número</span><div class="hist" id="exEnv"></div></div>
@@ -729,6 +741,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   </footer>
 </div>
 
+<dialog class="dlg" id="rulDlg" aria-labelledby="rulT"><h2 id="rulT">Regalo de cumpleaños</h2><div class="rul" id="rulW"></div><p class="rulres" id="rulRes" aria-live="polite"></p><div class="acts"><button class="btn ghost" id="rulOk" type="button">Cancelar</button><button class="btn" id="rulGo" type="button">Girar</button></div></dialog>
 <dialog class="dlg" id="dlg" aria-labelledby="dlgT"><h2 id="dlgT"></h2><div class="body" id="dlgB"></div><div class="acts"><button class="btn ghost" id="dlgNo" type="button">Cancelar</button><button class="btn" id="dlgOk" type="button">Confirmar</button></div></dialog>
 <div id="tip" hidden></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
@@ -2288,7 +2301,7 @@ async function openExp(id){
   $("#exForm").querySelectorAll("input").forEach(i=>{ if(i.id!=="ex-folio") i.disabled=!edita; });
   $("#exSave").hidden=!edita; $("#exMsg").textContent=edita?"":"Tu rol solo puede consultar expedientes.";
   renderExp(); $("#exFicha").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
-  loadHist(id); renderFichaMsgs(); renderHistVis();
+  loadHist(id); renderFichaMsgs(); renderHistVis(); renderRegalo();
 }
 async function loadHist(id){
   const el=$("#exHist"); el.innerHTML=`<p class="small muted">Cargando historial…</p>`;
@@ -2427,6 +2440,73 @@ function htmlHistVis(x){
   return h;
 }
 
+/* ================= Ruleta de regalo de cumpleaños ================= */
+const REGALOS=["Taza de viaje","Pastillero","Par de lapiceros"];
+const anioActual=()=>new Date().getFullYear();
+const regaloDelAnio=x=>(x.regalos||[]).find(g=>g.anio===anioActual());
+function svgRueda(){
+  const n=REGALOS.length, R=150, c=150, col=["#1c5d8a","#c2571f","#1f7a4d"];
+  const pt=a=>[c+R*Math.sin(a), c-R*Math.cos(a)];
+  let g="";
+  REGALOS.forEach((t,i)=>{ const a0=i*2*Math.PI/n, a1=(i+1)*2*Math.PI/n, [x0,y0]=pt(a0), [x1,y1]=pt(a1);
+    g+=`<path d="M${c},${c} L${x0.toFixed(1)},${y0.toFixed(1)} A${R},${R} 0 0 1 ${x1.toFixed(1)},${y1.toFixed(1)} Z" fill="${col[i%col.length]}" stroke="#fff" stroke-width="3"/>`;
+    const am=(a0+a1)/2, deg=am*180/Math.PI; const [tx,ty]=[c+R*.58*Math.sin(am), c-R*.58*Math.cos(am)];
+    g+=`<text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" transform="rotate(${deg.toFixed(1)} ${tx.toFixed(1)} ${ty.toFixed(1)})">${esc(t)}</text>`; });
+  g+=`<circle cx="${c}" cy="${c}" r="18" fill="#fff" stroke="#14232e" stroke-width="3"/>`;
+  return `<svg class="rueda" viewBox="0 0 300 300" role="img" aria-label="Ruleta con ${REGALOS.join(", ")}">${g}</svg>`;
+}
+function renderRegalo(){
+  const el=$("#exRegalo"); const x=exCur&&expMap[exCur]; if(!el) return;
+  if(!x){ el.innerHTML=""; return; }
+  const ya=regaloDelAnio(x); const puedeGirar=puede("editarExp");
+  const prev=(x.regalos||[]).filter(g=>g!==ya).sort((a,b)=>b.anio-a.anio);
+  el.innerHTML=`<span class="label">Regalo de cumpleaños</span><div class="regalo">`+
+    (ya?`<span class="chip ok">🎁 ${anioActual()}: ${esc(ya.regalo)}</span><span class="small muted">Registrado el ${esc(fechaCorta(ya.fecha))} por ${esc(ya.por||"—")}</span>${puede("borrarRegistro")?`<button class="btn danger sm" type="button" data-a="quitar">Quitar</button>`:""}`
+       :(puedeGirar?`<button class="btn sm" type="button" data-a="girar">🎁 Girar ruleta de regalo</button><span class="small muted">Para cuando pase por su presente de cumpleaños. Un regalo por año.</span>`:`<span class="small muted">Todavía no recibe su regalo de ${anioActual()}.</span>`))+
+    `</div>`+(prev.length?`<p class="small muted">Años anteriores: ${prev.map(g=>`${g.anio}: ${esc(g.regalo)}`).join(" · ")}</p>`:"");
+  const b=el.querySelector('[data-a="girar"]'); if(b) b.onclick=()=>abrirRuleta(x.id);
+  const q=el.querySelector('[data-a="quitar"]'); if(q) q.onclick=async()=>{
+    if(!(await ask("¿Quitar el regalo registrado?",`<p>Se quita «${esc(ya.regalo)}» de ${anioActual()} y se podrá girar la ruleta otra vez. Úsalo solo si fue un error.</p>`,"Quitar","Cancelar",true))) return;
+    guardarRegalo(x.id,null,ya);
+  };
+}
+async function guardarRegalo(id,regalo,quitar){
+  const now=new Date().toISOString();
+  try{
+    const d=JSON.parse(JSON.stringify(expMap[id])); delete d.id;
+    d.regalos=(d.regalos||[]).filter(g=>!(quitar&&g.anio===quitar.anio&&g.regalo===quitar.regalo));
+    if(regalo) d.regalos.push({anio:anioActual(),regalo,fecha:now,por:quien()});
+    d.actualizado=now;
+    await db.collection("expedientes").doc(id).set(d); expMap[id]={id,...d};
+    await db.collection("expedientes").doc(id).collection("historial").add({fecha:now,por:quien(),tipo:"manual",cambios:[{campo:"regalos",label:`Regalo de cumpleaños ${anioActual()}`,antes:quitar?quitar.regalo:null,despues:regalo||null}]});
+    renderRegalo(); loadHist(id); return true;
+  }catch(e){ aviso("No se pudo registrar el regalo. Revisa tu conexión.",true); return false; }
+}
+let rulGirando=false;
+function abrirRuleta(id){
+  const x=expMap[id]; if(!x||regaloDelAnio(x)) return;
+  const dlg=$("#rulDlg"); $("#rulT").textContent=`Regalo de cumpleaños de ${nom(x)}`;
+  $("#rulW").innerHTML=svgRueda()+`<div class="ptr" aria-hidden="true"></div>`;
+  $("#rulRes").innerHTML=`Presiona «Girar» y lo que salga será su regalo.`; $("#rulGo").hidden=false; $("#rulGo").disabled=false; $("#rulOk").textContent="Cancelar";
+  $("#rulGo").onclick=()=>{
+    if(rulGirando) return; rulGirando=true; $("#rulGo").disabled=true; $("#rulOk").disabled=true;
+    const n=REGALOS.length; const r=new Uint32Array(2); crypto.getRandomValues(r);
+    const i=r[0]%n; const seg=360/n; const dentro=(r[1]%1000)/1000*(seg*0.7)+seg*0.15;
+    const fin=360*6+(360-(i*seg+dentro));
+    const w=$("#rulW svg.rueda"); w.classList.add("gira"); requestAnimationFrame(()=>{ w.style.transform=`rotate(${fin}deg)`; });
+    const ms=matchMedia("(prefers-reduced-motion: reduce)").matches?60:4300;
+    setTimeout(async()=>{
+      const ok=await guardarRegalo(id,REGALOS[i]);
+      $("#rulRes").innerHTML=ok?`🎉 Le tocó: <b>${esc(REGALOS[i])}</b><br><span class="small muted">Quedó registrado en su expediente.</span>`:`Le tocó: <b>${esc(REGALOS[i])}</b>, pero no se pudo guardar. Inténtalo de nuevo.`;
+      $("#rulGo").hidden=ok; $("#rulGo").disabled=false; $("#rulOk").disabled=false; $("#rulOk").textContent="Cerrar"; rulGirando=false;
+      if(ok) aviso("Regalo registrado: "+REGALOS[i]);
+    },ms);
+  };
+  $("#rulOk").onclick=()=>{ if(!rulGirando) dlg.close(); };
+  dlg.addEventListener("cancel",e=>{ if(rulGirando) e.preventDefault(); },{once:true});
+  dlg.showModal();
+}
+
 /* ================= Impresión: por panel y por acción ================= */
 const PR_ICON=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>`;
 const prBtn=(txt,attrs="")=>`<button class="btn ghost sm prbtn" type="button" ${attrs}>${PR_ICON}${esc(txt)}</button>`;
@@ -2484,7 +2564,7 @@ function htmlExp(x){
   if(isBaja(tel)) h+=`<p class="pr-note">Dado de baja de promociones, cumpleaños, examen anual y NPS desde el ${esc(fechaCorta(contactos[tel].baja.f))}.</p>`;
   const rx=e=>(x.rx&&x.rx[e])||{};
   h+=`<h2>Receta vigente</h2><table class="pr-t prx"><thead><tr><th>RX</th><th>ESF</th><th>CIL</th><th>EJE</th><th>D.I.</th><th>ADD</th><th>ACO</th></tr></thead><tbody>`+
-    [["od","OD"],["oi","OS"]].map(([e,l])=>`<tr><th>${l}</th>${RXI.map(k=>`<td>${pv(rx(e)[k])}</td>`).join("")}</tr>`).join("")+`</tbody></table>`+(unaVisita(x)?"":htmlHistVis(x));
+    [["od","OD"],["oi","OS"]].map(([e,l])=>`<tr><th>${l}</th>${RXI.map(k=>`<td>${pv(rx(e)[k])}</td>`).join("")}</tr>`).join("")+`</tbody></table>`+(unaVisita(x)?"":htmlHistVis(x))+((x.regalos||[]).length?`<p class="pr-note"><b>Regalos de cumpleaños:</b> ${(x.regalos||[]).slice().sort((a,b)=>b.anio-a.anio).map(g=>`${g.anio}: ${esc(g.regalo)} (${esc(fechaCorta(g.fecha))})`).join(" · ")}</p>`:"");
   Object.entries(ITEM_TXT).forEach(([k,t])=>{ const its=x[k]||[]; if(!its.length) return;
     const cat=ITEM_CAT_INV[k]; h+=`<h2>${esc(CATS[cat].t)} (${its.length})</h2>`+prTable(colsDe(cat,its,["nombre","telefono"]),its); });
   const rows=fichaRows(x);
@@ -2552,7 +2632,7 @@ Object.keys(PR_PANEL).forEach(k=>{ const p=$("#panel-"+k); if(!p) return;
 $("#exClose").insertAdjacentHTML("afterend",`<button class="btn ghost prbtn" type="button" id="exPrint">${PR_ICON}Imprimir expediente</button>`);
 $("#exPrint").onclick=()=>{ if(exCur) printExp(exCur); };
 
-function renderAll(){ if(tpl) renderSend(); renderDash(); renderExp(); renderNps(); renderFichaMsgs(); renderSin(); renderHistVis(); }
+function renderAll(){ if(tpl) renderSend(); renderDash(); renderExp(); renderNps(); renderFichaMsgs(); renderSin(); renderHistVis(); renderRegalo(); }
 
 /* ================= Gráficas (SVG a escala, colores por token) ================= */
 const tipEl=$("#tip");
