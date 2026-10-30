@@ -262,6 +262,8 @@ dialog.dlg::backdrop{background:var(--shade)}
 .rul text{font-family:var(--f-body);font-weight:700;fill:#fff;font-size:14px}
 .rulres{text-align:center;font-size:1.05rem;min-height:1.6em}
 .rulres b{font-family:var(--f-display);font-size:1.25rem}
+.rulpasos{text-align:left;margin:10px 0 4px 20px;padding:0;font-size:.9rem;display:flex;flex-direction:column;gap:4px}
+.rulpasos b{font-family:inherit;font-size:inherit}
 @media (prefers-reduced-motion: reduce){.rul svg.rueda.gira{transition-duration:.01s}}
 
 .dlg h2{margin-bottom:8px}
@@ -634,6 +636,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       <label data-f="desc" hidden>Descuento de cumpleaños<input type="text" id="in-desc" placeholder="Ej. 20%"></label>
       <label data-f="promo" hidden>Link para agendar visita<input type="url" id="in-promo" placeholder="Opcional: si lo dejas vacío no se menciona"></label>
       <label data-f="mesCumple" hidden>Cumpleañeros de<select id="in-mesCumple"><option value="">Todos los pacientes</option></select></label>
+      <div data-f="mesCumple" hidden id="rulDemo" style="grid-column:1/-1"></div>
       <label data-f="filtro" class="check" hidden><span><input type="checkbox" id="in-filtro" checked> Filtrar por meses desde su entrega (o su consulta, si no hay fecha de entrega)</span></label>
     </div>
   </section>
@@ -1169,6 +1172,7 @@ $("#tplBtn").onclick=async()=>{
 
 /* ================= Mensajes WhatsApp ================= */
 const STORE_WA = "2211108551";
+const cierreDe=t=>t.sinRedes?CIERRE.split("\n").filter(l=>!/Instagram|Facebook/.test(l)).join("\n"):CIERRE;
 const CIERRE = [
  "📍 *Ópticas del Valle* · Blvd. Atlixco 3507, Local 18, Reserva Territorial Atlixcayotl, Concepción la Cruz, Puebla 72197",
  "⏰ Lun a Vie 9:00 am – 6:00 pm · Sáb 9:00 am – 2:00 pm",
@@ -1209,7 +1213,7 @@ Te compartimos el resumen de tu compra:
 💰 Total: *${V(money(r.total),"Total")}*
 
 Cualquier duda con tu pedido, estamos a un mensaje de distancia. ¡Excelente día! ✨`},
-  entrega:{t:"Aviso de entrega",d:"Producto listo en sucursal",src:["entregas"],build:r=>
+  entrega:{t:"Aviso de entrega",sinRedes:1,d:"Producto listo en sucursal",src:["entregas"],build:r=>
 `¡Buenas noticias, *${nom(r)}*! 🎉 Tus nuevos *${V(r.producto,"Producto")}* ya están listos en sucursal y te esperan para que estrenes una nueva mirada.
 
 Recuerda acudir con tu nota de compra${r.folio?` (*${r.folio}*)`:""} o una identificación. ¡Nos vemos pronto! 👓`},
@@ -1229,7 +1233,7 @@ Si tienes algún inconveniente con la descarga o tus datos, por favor avísanos 
 📉 Saldo restante: *${V(money(r.saldoRestante),"Saldo restante")}*
 
 Tu comprobante digital está guardado en tu expediente. ¡Gracias por tu pago!`},
-  examen:{t:"Examen anual",d:"Aviso, aniversario y recordatorio",src:["pacientes"],fields:["etapa","agenda","filtro"],build:(r,o)=>({
+  examen:{t:"Examen anual",sinRedes:1,d:"Aviso, aniversario y recordatorio",src:["pacientes"],fields:["etapa","agenda","filtro"],build:(r,o)=>({
 aviso:`¡Hola, *${nom(r)}*! 👋 En un mes se cumple un año de tu último examen de la vista con nosotros. 👁️
 
 Te recomendamos revisar tu graduación una vez al año para que tus lentes sigan siendo los ideales. ${o.agenda?"Puedes apartar desde ahora tu cita de seguimiento *sin costo* aquí: "+o.agenda+"\n\nO respóndenos":"Tu cita de seguimiento es *sin costo*.\n\nRespóndenos"} este mensaje con el día y la hora que prefieras. ¡Te esperamos!`,
@@ -1241,12 +1245,17 @@ recordatorio:`Hola, *${nom(r)}*. 😊 Te recordamos que tu revisión anual de la
 Tu cita de seguimiento sigue siendo *sin costo*${o.agenda?": "+o.agenda:"."}
 
 Respóndenos con el día que te acomode y te apartamos tu lugar. ¡Cuidamos tu mirada!`})[o.etapa]},
-  cumple:{t:"Cumpleaños",d:"Regalo sorpresa en sucursal",src:["pacientes"],fields:["mesCumple"],optout:1,build:(r,o)=>
+  cumple:{t:"Cumpleaños",d:"Ruleta de regalos en tienda",src:["pacientes"],fields:["mesCumple"],optout:1,sinRedes:1,build:(r,o)=>{ const vig=fechaLarga(vigenciaMsg(r))||"[fin de tu mes de cumpleaños]"; return (
 `¡Feliz cumpleaños, *${nom(r)}*! 🎂🎈 En *Ópticas del Valle* queremos celebrar contigo.
 
-Tenemos un presente especial esperándote en sucursal. 🎁 ¿Qué es? ¡Es sorpresa! Pasa a recogerlo cuando gustes; solo menciona este mensaje.
+Ven a la tienda a girar tu *Ruleta de Cumpleaños* 🎡 y llévate tu regalo:
+🎁 *Kit completo:* taza de viaje, pastillero y lapicero.
+🔄 *Catafixia:* cambia tu kit por la sorpresa escondida en la taza: ¡hasta 20% de descuento!
+🏆 *Premio mayor:* 30% de descuento + tu kit completo.
 
-¡Te esperamos para festejarte! 🥳`},
+📅 Válido hasta el *${vig}*.
+
+*Bases:* gira tu ruleta acudiendo personalmente a la tienda. Premio intransferible. Los descuentos aplican únicamente en la compra de un par de anteojos completos (armazón + micas); no aplican en lentes de contacto, solo micas, solo armazón, gafas de sol ni accesorios. Válido solo durante tu mes de cumpleaños; pasada esa fecha la promoción se pierde sin derecho a reclamarla. Con un anticipo mínimo del 50% conservas tu descuento hasta 1 mes después del apartado. Puedes aprovechar además otras promociones vigentes.`); }},
   promo:{t:"Promociones del año",d:"Buen Fin, MSI y temporadas",src:["pacientes","ventas"],fields:["temp","benef","pct","msi","libre","minimo","aplica","vig","cond","promo"],optout:1,build:(r,o)=>{
     const T=TEMPORADAS[o.temp]||TEMPORADAS.libre;
     return `${T.abre(nom(r))}
@@ -1395,7 +1404,7 @@ function rowsFor(tk){
   return out;
 }
 const entRef=(r,i)=>r._item||keyRef(r,i,"folio",srcId);
-function buildMsgT(tk,r,o){ const t=TPLS[tk]; const oo={...o,token:npsToken(r)}; return t.build(r,oo)+"\n\n"+CIERRE+(t.optout?"\n\n(Para dejar de recibir promos, responde *Baja*)":""); }
+function buildMsgT(tk,r,o){ const t=TPLS[tk]; const oo={...o,token:npsToken(r)}; return t.build(r,oo)+"\n\n"+cierreDe(t)+(t.optout?"\n\n(Para dejar de recibir promos, responde *Baja*)":""); }
 function setMarkT(tk,it,on){
   if(!db){ aviso("Para guardar el envío necesitas iniciar sesión.",true); return; }
   const {r,tel,key}=it; if(!tel||!key) return;
@@ -1577,7 +1586,7 @@ function readOpts(){
 }
 function buildMsg(r,o){
   const t=TPLS[tpl]; const oo={...o,token:npsToken(r)};
-  return t.build(r,oo)+"\n\n"+CIERRE+(t.optout?"\n\n(Para dejar de recibir promos, responde *Baja*)":"");
+  return t.build(r,oo)+"\n\n"+cierreDe(t)+(t.optout?"\n\n(Para dejar de recibir promos, responde *Baja*)":"");
 }
 const campKey=o=>o.temp==="libre" ? "libre~"+segSafe(norm(o.libre||o.pct||o.msi||o.vig||"especial").replace(/ /g,"_")) : (o.temp||"libre");
 function monthsSince(d,now){ return (now.getFullYear()-d.getFullYear())*12+(now.getMonth()-d.getMonth())-(now.getDate()<d.getDate()?1:0); }
@@ -1663,6 +1672,9 @@ function renderSend(){
       if(it.motivo==="Ya se entregó") act=`<button class="btn ghost sm" type="button" data-a="noentregado">Quitar «entregado»</button>`;
     }
     if(srcId==="__exp"&&expMap[it.pid]) act+=`<button class="btn ghost sm" type="button" data-a="ficha">${it.motivo&&it.motivo.startsWith("Sin ")&&puede("editarExp")?"Completar expediente":"Ver expediente"}</button>`;
+    if(tpl==="cumple"&&expMap[it.pid]){ const ci=cumpleInfo(expMap[it.pid]);
+      act+=ci.k==="girado"?`<span class="chip ${estadoPromo(ci.p).k==="vigente"?"warn":estadoPromo(ci.p).k==="canje"?"ok":"bad"}">🎁 ${esc(premioTxt(ci.p))} · ${esc(estadoPromo(ci.p).t)}</span>`
+        :`<button class="btn sm" type="button" data-a="ruleta" ${ci.k==="puede"&&puede("editarExp")?"":"disabled"} title="${ci.k==="puede"?"Girar en tienda con el paciente presente":"Solo para cumpleañeros del mes"}">🎡 Girar ruleta</button>`; }
     act+=prBtn("Imprimir",'data-a="print"');
     div.innerHTML=who+`<div class="act">${act}</div>`+(mView==="pend"?`<pre>${esc(msg)}</pre>`:mView==="sent"?`<details><summary>Ver mensaje</summary><pre>${esc(msg)}</pre></details>`:"");
     const q1=a=>div.querySelector(`[data-a="${a}"]`);
@@ -1674,6 +1686,7 @@ function renderSend(){
     if(q1("noentregado")) q1("noentregado").onclick=()=>{ ctSave(tel,d=>{ delete d.env["entregado|"+entRef(r,it.i)]; }); renderSend(); };
     if(q1("baja")) q1("baja").onclick=()=>darBaja(tel,nom(r));
     if(q1("reactivar")) q1("reactivar").onclick=async()=>{ if(await ask("¿Reactivar este número?",`<p>El ${esc(tel)} volverá a recibir promociones, cumpleaños, examen anual y encuesta NPS. Hazlo solo si el paciente lo pidió.</p>`,"Reactivar")){ ctSave(tel,d=>{ d.baja=null; d.reactivado={f:new Date().toISOString(),por:quien()}; }); aviso("Número reactivado"); renderAll(); } };
+    if(q1("ruleta")) q1("ruleta").onclick=()=>abrirRuleta(it.pid);
     if(q1("print")) q1("print").onclick=()=>printDoc("Mensaje · "+TPLS[tpl].t,msgBloque(it,o),{sub:nom(r)});
     if(q1("ficha")) q1("ficha").onclick=()=>{ showTab("expedientes"); openExp(it.pid); };
     el.appendChild(div);
@@ -2275,7 +2288,7 @@ function renderExp(){
   if(!list.length){ el.innerHTML=`<p class="muted small">Ningún expediente coincide.</p>`; $("#exMore").hidden=true; return; }
   const edita=puede("editarExp");
   el.innerHTML=list.slice(0,exPage).map(x=>{ const falta=FALTA_CHIP.filter(([k])=>EXF[k][1](x)).map(([,l])=>l);
-    return `<div class="hitem${x.id===exCur?" on":""}"><div style="min-width:0"><div class="t">${esc(x.nombre||"Sin nombre")}${isBaja(telOf(x))?' <span class="chip bad">Baja</span>':""}</div>
+    return `<div class="hitem${x.id===exCur?" on":""}"><div style="min-width:0"><div class="t">${esc(x.nombre||"Sin nombre")}${isBaja(telOf(x))?' <span class="chip bad">Baja</span>':""}${(()=>{ const p=promoDelAnio(x); if(!p) return ""; const st=estadoPromo(p); return st.k==="vigente"?` <span class="chip warn">🎁 ${esc(premioTxt(p).split(":")[0])} · hasta ${esc(fmtDMY(vigenciaDe(p)))}</span>`:""; })()}</div>
       <div class="s"><span class="mono">${esc(x.folio||"Sin folio")}</span> · <span class="mono">${esc(x.telefono||"Sin teléfono")}</span>${x.fechaConsulta?` · Consulta ${esc(fmtDMY(x.fechaConsulta))}`:""}</div>
       ${falta.length?`<div class="exmiss">${falta.map(l=>`<span class="chip warn">Falta ${esc(l)}</span>`).join("")}</div>`:""}</div>
       <div class="row">${prBtn("Imprimir",`data-pr="${esc(x.id)}"`)}<button class="btn ${x.id===exCur?"":"ghost "}sm" type="button" data-id="${esc(x.id)}">${edita?"Abrir y editar":"Ver"}</button></div></div>`; }).join("");
@@ -2440,71 +2453,185 @@ function htmlHistVis(x){
   return h;
 }
 
-/* ================= Ruleta de regalo de cumpleaños ================= */
-const REGALOS=["Taza de viaje","Pastillero","Par de lapiceros"];
+/* ================= Promoción de cumpleaños: ruleta, catafixia, vigencia y canje ================= */
+const KIT_TXT="taza de viaje, pastillero y lapicero";
+const PREMIOS={
+  kit:{t:"Kit completo",corto:"🎁 Kit",color:"#1c5d8a",desc:`Kit de regalo: ${KIT_TXT}. Sin descuento.`},
+  cata:{t:"Catafixia",corto:"🔄 Catafixia",color:"#c2571f",desc:"Cambia su kit por abrir la taza y descubrir su descuento: 0%, 10% o 20%."},
+  mayor:{t:"Premio mayor",corto:"🏆 30%",color:"#b8860b",desc:`30% de descuento directo en un par de anteojos completos + kit completo (${KIT_TXT}).`}};
+/* Casillas de la ruleta: el tamaño de cada una es su probabilidad (kit 47.5%, catafixia 47.5%, premio mayor 5%) */
+const CASILLAS=[["kit",57],["cata",57],["kit",57],["cata",57],["mayor",18],["kit",57],["cata",57]];
+const CATA_OPC=[[0,"0% · Gracias por participar (se lleva su kit)"],[10,"10% de descuento"],[20,"20% de descuento"]];
+const finDeMes=(y,m)=>ymdOf(new Date(y,m+1,0));
+const masUnMes=iso=>{ const d=parseFecha(iso); const t=new Date(d.getFullYear(),d.getMonth()+1,d.getDate()); if(t.getDate()!==d.getDate()) t.setDate(0); return ymdOf(t); };
+const promoDelAnio=(x,y=anioActual())=>(x.promosCumple||[]).find(p=>p.anio===y);
 const anioActual=()=>new Date().getFullYear();
-const regaloDelAnio=x=>(x.regalos||[]).find(g=>g.anio===anioActual());
+function vigenciaDe(p){ return p.apartado ? masUnMes(p.apartado.fecha) : p.vigencia; }
+function premioTxt(p){
+  if(p.resultado==="kit") return "Kit completo";
+  if(p.resultado==="mayor") return "Premio mayor: 30% de descuento + kit completo";
+  if(p.resultado==="cata") return p.catafixia==null?"Catafixia: falta abrir la taza":p.catafixia===0?"Catafixia: 0% · Gracias por participar + kit completo":`Catafixia: ${p.catafixia}% de descuento`;
+  return "—";
+}
+function estadoPromo(p){
+  if(p.canje) return {k:"canje",t:`Canjeado el ${fmtDMY(p.canje.fecha)}`};
+  if(ymdOf(new Date())>vigenciaDe(p)) return {k:"vencido",t:`Venció el ${fmtDMY(vigenciaDe(p))}`};
+  return {k:"vigente",t:`Vigente hasta el ${fmtDMY(vigenciaDe(p))}${p.apartado?" (apartado)":""}`};
+}
+/* Estado del paciente para la promoción del año en curso */
+function cumpleInfo(x){
+  const d=parseFecha(x.fechaNacimiento); if(!d) return {k:"sinfecha"};
+  const now=new Date(), y=now.getFullYear(), m=d.getMonth(), p=promoDelAnio(x,y);
+  if(p) return {k:"girado",p};
+  if(now.getMonth()===m) return {k:"puede",vig:finDeMes(y,m)};
+  if(now.getMonth()<m) return {k:"antes",mes:m};
+  return {k:"vencida",vig:finDeMes(y,m)};
+}
+/* Vigencia que se anuncia en el WhatsApp: fin de su mes de cumpleaños (este año, o el próximo si ya pasó) */
+function vigenciaMsg(r){ const d=parseFecha(r.fechaNacimiento); if(!d) return null; const now=new Date(); const y=d.getMonth()<now.getMonth()?now.getFullYear()+1:now.getFullYear(); return finDeMes(y,d.getMonth()); }
+const fechaLarga=iso=>{ const d=parseFecha(iso); return d?`${d.getDate()} de ${MESES[d.getMonth()]}`:null; };
+
 function svgRueda(){
-  const n=REGALOS.length, R=150, c=150, col=["#1c5d8a","#c2571f","#1f7a4d"];
-  const pt=a=>[c+R*Math.sin(a), c-R*Math.cos(a)];
-  let g="";
-  REGALOS.forEach((t,i)=>{ const a0=i*2*Math.PI/n, a1=(i+1)*2*Math.PI/n, [x0,y0]=pt(a0), [x1,y1]=pt(a1);
-    g+=`<path d="M${c},${c} L${x0.toFixed(1)},${y0.toFixed(1)} A${R},${R} 0 0 1 ${x1.toFixed(1)},${y1.toFixed(1)} Z" fill="${col[i%col.length]}" stroke="#fff" stroke-width="3"/>`;
-    const am=(a0+a1)/2, deg=am*180/Math.PI; const [tx,ty]=[c+R*.58*Math.sin(am), c-R*.58*Math.cos(am)];
-    g+=`<text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" transform="rotate(${deg.toFixed(1)} ${tx.toFixed(1)} ${ty.toFixed(1)})">${esc(t)}</text>`; });
-  g+=`<circle cx="${c}" cy="${c}" r="18" fill="#fff" stroke="#14232e" stroke-width="3"/>`;
-  return `<svg class="rueda" viewBox="0 0 300 300" role="img" aria-label="Ruleta con ${REGALOS.join(", ")}">${g}</svg>`;
+  const R=150,c=150; const pt=a=>[c+R*Math.sin(a),c-R*Math.cos(a)]; let g="", a=0;
+  CASILLAS.forEach(([k,deg])=>{ const a0=a*Math.PI/180, a1=(a+deg)*Math.PI/180, [x0,y0]=pt(a0), [x1,y1]=pt(a1), P=PREMIOS[k];
+    g+=`<path d="M${c},${c} L${x0.toFixed(1)},${y0.toFixed(1)} A${R},${R} 0 0 1 ${x1.toFixed(1)},${y1.toFixed(1)} Z" fill="${P.color}" stroke="#fff" stroke-width="3"/>`;
+    const am=(a0+a1)/2, dg=(a+deg/2); const rr=k==="mayor"?.74:.6; const [tx,ty]=[c+R*rr*Math.sin(am),c-R*rr*Math.cos(am)];
+    g+=`<text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" transform="rotate(${(k==="mayor"?dg-90:dg).toFixed(1)} ${tx.toFixed(1)} ${ty.toFixed(1)})"${k==="mayor"?' style="font-size:12px"':""}>${esc(P.corto)}</text>`;
+    a+=deg; });
+  g+=`<circle cx="${c}" cy="${c}" r="20" fill="#fff" stroke="#14232e" stroke-width="3"/>`;
+  return `<svg class="rueda" viewBox="0 0 300 300" role="img" aria-label="Ruleta de cumpleaños: kit completo, catafixia y premio mayor">${g}</svg>`;
+}
+async function guardarPromo(id,mut,cambio){
+  const now=new Date().toISOString();
+  try{
+    const d=JSON.parse(JSON.stringify(expMap[id])); delete d.id; d.promosCumple=Array.isArray(d.promosCumple)?d.promosCumple:[];
+    mut(d,now); d.actualizado=now;
+    await db.collection("expedientes").doc(id).set(d); expMap[id]={id,...d};
+    await db.collection("expedientes").doc(id).collection("historial").add({fecha:now,por:quien(),tipo:"manual",cambios:[{campo:"promosCumple",label:`Promoción de cumpleaños ${anioActual()}`,antes:cambio.antes??null,despues:cambio.despues??null}]});
+    renderRegalo(); renderExp(); if(tpl) renderSend(); if(exCur===id) loadHist(id); return true;
+  }catch(e){ aviso("No se pudo guardar. Revisa tu conexión.",true); return false; }
 }
 function renderRegalo(){
   const el=$("#exRegalo"); const x=exCur&&expMap[exCur]; if(!el) return;
   if(!x){ el.innerHTML=""; return; }
-  const ya=regaloDelAnio(x); const puedeGirar=puede("editarExp");
-  const prev=(x.regalos||[]).filter(g=>g!==ya).sort((a,b)=>b.anio-a.anio);
-  el.innerHTML=`<span class="label">Regalo de cumpleaños</span><div class="regalo">`+
-    (ya?`<span class="chip ok">🎁 ${anioActual()}: ${esc(ya.regalo)}</span><span class="small muted">Registrado el ${esc(fechaCorta(ya.fecha))} por ${esc(ya.por||"—")}</span>${puede("borrarRegistro")?`<button class="btn danger sm" type="button" data-a="quitar">Quitar</button>`:""}`
-       :(puedeGirar?`<button class="btn sm" type="button" data-a="girar">🎁 Girar ruleta de regalo</button><span class="small muted">Para cuando pase por su presente de cumpleaños. Un regalo por año.</span>`:`<span class="small muted">Todavía no recibe su regalo de ${anioActual()}.</span>`))+
-    `</div>`+(prev.length?`<p class="small muted">Años anteriores: ${prev.map(g=>`${g.anio}: ${esc(g.regalo)}`).join(" · ")}</p>`:"");
-  const b=el.querySelector('[data-a="girar"]'); if(b) b.onclick=()=>abrirRuleta(x.id);
-  const q=el.querySelector('[data-a="quitar"]'); if(q) q.onclick=async()=>{
-    if(!(await ask("¿Quitar el regalo registrado?",`<p>Se quita «${esc(ya.regalo)}» de ${anioActual()} y se podrá girar la ruleta otra vez. Úsalo solo si fue un error.</p>`,"Quitar","Cancelar",true))) return;
-    guardarRegalo(x.id,null,ya);
-  };
+  const ed=puede("editarExp"), y=anioActual(), info=cumpleInfo(x);
+  let h=`<span class="label">Promoción de cumpleaños ${y}</span>`;
+  const off=t=>`<div class="regalo"><button class="btn sm" type="button" disabled title="Solo para cumpleañeros del mes">🎡 Girar ruleta</button><span class="small muted">${t}</span></div>`;
+  if(info.k==="sinfecha") h+=off("Solo para cumpleañeros del mes. Captura su fecha de nacimiento para activar su promoción.");
+  else if(info.k==="antes") h+=off(`Solo para cumpleañeros del mes. Se activa en ${MESES[info.mes]}.`);
+  else if(info.k==="vencida") h+=off(`Solo para cumpleañeros del mes. Su promoción venció el ${esc(fmtDMY(info.vig))} y ya no aplica.`);
+  else if(info.k==="puede") h+=`<div class="regalo"><span class="chip warn">🎂 Cumpleañero · puede girar hasta el ${esc(fmtDMY(info.vig))}</span>${ed?`<button class="btn sm" type="button" data-a="girar">🎡 Girar ruleta</button>`:""}</div><p class="small muted">Solo en tienda y con el paciente presente. Premio intransferible.</p>`;
+  else {
+    const p=info.p, st=estadoPromo(p), activo=st.k==="vigente";
+    const chip=st.k==="canje"?"ok":st.k==="vencido"?"bad":"warn";
+    h+=`<div class="regalo"><b>${esc(premioTxt(p))}</b><span class="chip ${chip}">${esc(st.t)}</span></div>
+      <p class="small muted">Giró el ${esc(fechaCorta(p.giro.fecha))} · ${esc(p.giro.por||"—")}${p.apartado?` · Apartó con ${esc(money(p.apartado.monto)||"anticipo")} el ${esc(fmtDMY(p.apartado.fecha))} (${esc(p.apartado.por||"")})`:""}${p.canje?` · Canjeó: ${esc(p.canje.nota||"")} (${esc(p.canje.por||"")})`:""}</p>`;
+    const act=[];
+    if(ed&&activo&&p.resultado==="cata"&&p.catafixia==null) act.push(`<label class="small">Lo que salió en la taza <select data-a="cataSel">${CATA_OPC.map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join("")}</select></label><button class="btn sm" type="button" data-a="cata">Registrar</button>`);
+    const conDesc=(p.resultado==="mayor")||(p.resultado==="cata"&&p.catafixia>0);
+    if(ed&&activo&&conDesc&&!p.apartado) act.push(`<button class="btn ghost sm" type="button" data-a="apartar">Registrar apartado (anticipo 50%)</button>`);
+    if(ed&&activo&&!(p.resultado==="cata"&&p.catafixia==null)) act.push(`<button class="btn sm" type="button" data-a="canje">Marcar canjeado</button>`);
+    if(puede("borrarRegistro")) act.push(`<button class="btn danger sm" type="button" data-a="quitar">Quitar</button>`);
+    if(act.length) h+=`<div class="row">${act.join("")}</div>`;
+  }
+  const prev=(x.promosCumple||[]).filter(p=>p.anio!==y).sort((a,b)=>b.anio-a.anio);
+  const viejos=(x.regalos||[]);
+  if(prev.length||viejos.length) h+=`<p class="small muted">Años anteriores: ${[...prev.map(p=>`${p.anio}: ${premioTxt(p)}`),...viejos.map(g=>`${g.anio}: ${g.regalo}`)].map(esc).join(" · ")}</p>`;
+  el.innerHTML=h;
+  const q=a=>el.querySelector(`[data-a="${a}"]`);
+  if(q("girar")) q("girar").onclick=()=>abrirRuleta(x.id);
+  const p=info.p;
+  if(q("cata")) q("cata").onclick=async()=>{ const v=+q("cataSel").value; const txt=CATA_OPC.find(o=>o[0]===v)[1];
+    if(!(await ask("¿Registrar lo que salió en la taza?",`<p><b>${esc(nom(x))}</b>: ${esc(txt)}.</p>${v===0?"<p>Se lleva su kit completo de consolación.</p>":"<p>Cambió su kit por este descuento; no se lleva el kit.</p>"}`,"Registrar"))) return;
+    if(await guardarPromo(x.id,d=>{ const o=promoDelAnio(d); o.catafixia=v; o.cataReg={fecha:new Date().toISOString(),por:quien()}; },{antes:"Catafixia sin abrir",despues:txt})) aviso("Catafixia registrada"); };
+  if(q("apartar")) q("apartar").onclick=async()=>{
+    const ok=await ask("¿Registrar apartado?",`<p>Con un anticipo mínimo del 50%, <b>${esc(nom(x))}</b> conserva su descuento hasta el <b>${esc(fmtDMY(masUnMes(ymdOf(new Date()))))}</b> (1 mes desde hoy).</p><label class="small">Monto del anticipo (opcional)<input type="text" id="apMonto" inputmode="decimal" placeholder="$"></label>`,"Registrar apartado");
+    if(!ok) return; const m=parseFloat(String(($("#apMonto")||{}).value||"").replace(/[^0-9.]/g,""));
+    if(await guardarPromo(x.id,(d,now)=>{ promoDelAnio(d).apartado={fecha:ymdOf(new Date()),monto:isNaN(m)?null:m,por:quien(),registrado:now}; },{antes:null,despues:`Apartado; vigente hasta ${fmtDMY(masUnMes(ymdOf(new Date())))}`})) aviso("Apartado registrado"); };
+  if(q("canje")) q("canje").onclick=async()=>{
+    const nota=p.resultado==="kit"||(p.resultado==="cata"&&p.catafixia===0)?"Se entregó el kit completo":p.resultado==="mayor"?"Se aplicó 30% de descuento y se entregó el kit":`Se aplicó ${p.catafixia}% de descuento`;
+    if(!(await ask("¿Marcar como canjeado?",`<p>${esc(nota)} a <b>${esc(nom(x))}</b>.</p>${p.resultado==="mayor"||(p.resultado==="cata"&&p.catafixia>0)?`<p class="why">Verifica que la compra sea un par de anteojos completos (armazón + micas). No aplica en lentes de contacto, solo micas, solo armazón, gafas de sol ni accesorios.</p>`:""}`,"Marcar canjeado"))) return;
+    if(await guardarPromo(x.id,(d,now)=>{ promoDelAnio(d).canje={fecha:ymdOf(new Date()),nota,por:quien(),registrado:now}; },{antes:null,despues:nota})) aviso("Premio canjeado"); };
+  if(q("quitar")) q("quitar").onclick=async()=>{
+    if(!(await ask("¿Quitar la promoción de este año?",`<p>Se borra «${esc(premioTxt(p))}» y, si sigue en su mes de cumpleaños, podrá girar otra vez. Úsalo solo si fue un error.</p>`,"Quitar","Cancelar",true))) return;
+    if(await guardarPromo(x.id,d=>{ d.promosCumple=d.promosCumple.filter(o=>o.anio!==anioActual()); },{antes:premioTxt(p),despues:null})) aviso("Promoción quitada"); };
 }
-async function guardarRegalo(id,regalo,quitar){
-  const now=new Date().toISOString();
-  try{
-    const d=JSON.parse(JSON.stringify(expMap[id])); delete d.id;
-    d.regalos=(d.regalos||[]).filter(g=>!(quitar&&g.anio===quitar.anio&&g.regalo===quitar.regalo));
-    if(regalo) d.regalos.push({anio:anioActual(),regalo,fecha:now,por:quien()});
-    d.actualizado=now;
-    await db.collection("expedientes").doc(id).set(d); expMap[id]={id,...d};
-    await db.collection("expedientes").doc(id).collection("historial").add({fecha:now,por:quien(),tipo:"manual",cambios:[{campo:"regalos",label:`Regalo de cumpleaños ${anioActual()}`,antes:quitar?quitar.regalo:null,despues:regalo||null}]});
-    renderRegalo(); loadHist(id); return true;
-  }catch(e){ aviso("No se pudo registrar el regalo. Revisa tu conexión.",true); return false; }
+/* Instrucciones que aparecen al detenerse la ruleta, según el premio */
+function instruccionesPremio(k,vig){
+  const v=vig?fmtDMY(vig):"fin de su mes de cumpleaños";
+  const pasos={
+    kit:[`Entrégale su <b>kit completo</b>: ${esc(KIT_TXT)}.`,"Este premio <b>no incluye descuento</b>.",`Presiona <b>«Marcar canjeado»</b> en su expediente al entregarlo.`],
+    cata:["Dale la <b>taza</b> para que la abra y lea en voz alta el descuento que viene dentro.",
+      "Si dice <b>0%</b>: «Gracias por participar» y se lleva su <b>kit completo</b>.",
+      "Si dice <b>10% o 20%</b>: aplica ese descuento en su compra; cambió su kit por el descuento, así que <b>no se lleva el kit</b>.",
+      "El descuento aplica <b>solo en un par de anteojos completos</b> (armazón + micas). <b>No aplica</b> en lentes de contacto, solo micas, solo armazón, gafas de sol ni accesorios.",
+      `Registra lo que salió en su expediente: <b>Promoción de cumpleaños → «Lo que salió en la taza» → Registrar</b>.`,
+      `Su descuento vale hasta el <b>${esc(v)}</b>. Con anticipo mínimo del 50% lo conserva hasta 1 mes después del apartado (registra el apartado en su expediente).`],
+    mayor:["Felicítalo: ganó el <b>premio mayor</b>.","Aplica <b>30% de descuento directo</b> en su compra y entrégale su <b>kit completo</b>.","El descuento aplica <b>solo en un par de anteojos completos</b> (armazón + micas). <b>No aplica</b> en lentes de contacto, solo micas, solo armazón, gafas de sol ni accesorios.",
+      `Si hoy no compra, el premio vale hasta el <b>${esc(v)}</b>. Con anticipo mínimo del 50% lo conserva hasta 1 mes después del apartado (registra el apartado en su expediente).`,
+      `Al aplicar el descuento y entregar el kit, presiona <b>«Marcar canjeado»</b>.`]}[k];
+  return `<ol class="rulpasos">${pasos.map(x=>`<li>${x}</li>`).join("")}</ol><p class="small muted">Premio intransferible.</p>`;
 }
 let rulGirando=false;
 function abrirRuleta(id){
-  const x=expMap[id]; if(!x||regaloDelAnio(x)) return;
-  const dlg=$("#rulDlg"); $("#rulT").textContent=`Regalo de cumpleaños de ${nom(x)}`;
+  const x=expMap[id]; const info=x&&cumpleInfo(x); if(!info||info.k!=="puede") return;
+  const dlg=$("#rulDlg"); $("#rulT").textContent=`Ruleta de cumpleaños de ${nom(x)}`;
   $("#rulW").innerHTML=svgRueda()+`<div class="ptr" aria-hidden="true"></div>`;
-  $("#rulRes").innerHTML=`Presiona «Girar» y lo que salga será su regalo.`; $("#rulGo").hidden=false; $("#rulGo").disabled=false; $("#rulOk").textContent="Cancelar";
+  $("#rulRes").innerHTML=`<span class="small">🎁 Kit completo · 🔄 Catafixia · 🏆 Premio mayor 30% + kit</span><br>Gira solo con el paciente presente en tienda.`;
+  $("#rulGo").hidden=false; $("#rulGo").disabled=false; $("#rulGo").textContent="Girar"; $("#rulOk").textContent="Cancelar"; $("#rulOk").disabled=false;
   $("#rulGo").onclick=()=>{
     if(rulGirando) return; rulGirando=true; $("#rulGo").disabled=true; $("#rulOk").disabled=true;
-    const n=REGALOS.length; const r=new Uint32Array(2); crypto.getRandomValues(r);
-    const i=r[0]%n; const seg=360/n; const dentro=(r[1]%1000)/1000*(seg*0.7)+seg*0.15;
-    const fin=360*6+(360-(i*seg+dentro));
+    const r=new Uint32Array(1); crypto.getRandomValues(r); const ang=r[0]/4294967296*360;
+    let acc=0, k="kit"; for(const [kk,deg] of CASILLAS){ if(ang<acc+deg){ k=kk; break; } acc+=deg; }
+    const fin=360*6+(360-ang);
     const w=$("#rulW svg.rueda"); w.classList.add("gira"); requestAnimationFrame(()=>{ w.style.transform=`rotate(${fin}deg)`; });
     const ms=matchMedia("(prefers-reduced-motion: reduce)").matches?60:4300;
     setTimeout(async()=>{
-      const ok=await guardarRegalo(id,REGALOS[i]);
-      $("#rulRes").innerHTML=ok?`🎉 Le tocó: <b>${esc(REGALOS[i])}</b><br><span class="small muted">Quedó registrado en su expediente.</span>`:`Le tocó: <b>${esc(REGALOS[i])}</b>, pero no se pudo guardar. Inténtalo de nuevo.`;
+      const vig=info.vig; const P=PREMIOS[k];
+      const ok=await guardarPromo(id,(d,now)=>{ d.promosCumple.push({anio:anioActual(),resultado:k,catafixia:null,vigencia:vig,giro:{fecha:now,por:quien()}}); },{antes:null,despues:`Giró la ruleta: ${P.t}`});
+      $("#rulRes").innerHTML=ok?`${k==="mayor"?"🏆 <b>¡PREMIO MAYOR!</b>":`🎉 Le tocó: <b>${esc(P.t)}</b>`}<br><span class="small">${esc(P.desc)}</span>${instruccionesPremio(k,vig)}<span class="small muted">Registrado en su expediente · válido hasta el ${esc(fmtDMY(vig))}.</span>`:`Le tocó <b>${esc(P.t)}</b>, pero no se pudo guardar. Inténtalo de nuevo.`;
       $("#rulGo").hidden=ok; $("#rulGo").disabled=false; $("#rulOk").disabled=false; $("#rulOk").textContent="Cerrar"; rulGirando=false;
-      if(ok) aviso("Regalo registrado: "+REGALOS[i]);
+      if(ok) aviso("Ruleta: "+P.t);
     },ms);
   };
   $("#rulOk").onclick=()=>{ if(!rulGirando) dlg.close(); };
   dlg.addEventListener("cancel",e=>{ if(rulGirando) e.preventDefault(); },{once:true});
   dlg.showModal();
+}
+/* Vista de prueba en «Mensajes WhatsApp»: premios, bases y ruleta sin guardar nada */
+(function(){
+  const el=$("#rulDemo"); if(!el) return;
+  const pct=k=>Math.round(CASILLAS.filter(c=>c[0]===k).reduce((a,c)=>a+c[1],0)/360*1000)/10;
+  el.innerHTML=`<div class="msg info"><b>🎡 Ruleta de cumpleaños</b>
+    <ul style="margin:6px 0 6px 18px;padding:0">
+      <li>🎁 <b>Kit completo</b> (${pct("kit")}%): ${esc(KIT_TXT)}. Sin descuento.</li>
+      <li>🔄 <b>Catafixia</b> (${pct("cata")}%): cambia su kit por abrir la taza y descubrir su descuento. 0% = «Gracias por participar» y se lleva su kit; 10% o 20% = solo el descuento. Lo que salga se anota en su expediente.</li>
+      <li>🏆 <b>Premio mayor</b> (${pct("mayor")}%): 30% de descuento directo + kit completo.</li></ul>
+    <b>Bases:</b> girar acudiendo personalmente a la tienda · premio intransferible · <b>los descuentos aplican solo en un par de anteojos completos (armazón + micas); no en lentes de contacto, solo micas, solo armazón, gafas de sol ni accesorios</b> · válido solo durante su mes de cumpleaños; pasado el mes se pierde sin derecho a reclamarla · con anticipo mínimo del 50% conserva su descuento hasta 1 mes después del apartado · puede usar además otras promociones vigentes · su expediente muestra su premio y la fecha límite mientras esté vigente.
+    <div class="row" style="margin-top:8px"><button class="btn sm" type="button" id="rulDemoBtn">🎡 Probar ruleta</button><span class="small muted">Prueba libre: puedes girarla las veces que quieras y no se guarda nada en los expedientes.</span></div></div>`;
+  $("#rulDemoBtn").onclick=()=>{
+    const dlg=$("#rulDlg"); $("#rulT").textContent="Prueba de la ruleta (no se guarda nada)";
+    $("#rulW").innerHTML=svgRueda()+`<div class="ptr" aria-hidden="true"></div>`; let giro=0, n=0, cuenta={kit:0,cata:0,mayor:0};
+    $("#rulRes").innerHTML=`Presiona «Girar» las veces que quieras.`; $("#rulGo").hidden=false; $("#rulGo").disabled=false; $("#rulGo").textContent="Girar"; $("#rulOk").textContent="Cerrar"; $("#rulOk").disabled=false;
+    $("#rulGo").onclick=()=>{
+      if(rulGirando) return; rulGirando=true; $("#rulGo").disabled=true; $("#rulOk").disabled=true;
+      const r=new Uint32Array(1); crypto.getRandomValues(r); const ang=r[0]/4294967296*360;
+      let acc=0,k="kit"; for(const [kk,deg] of CASILLAS){ if(ang<acc+deg){ k=kk; break; } acc+=deg; }
+      giro=Math.ceil(giro/360)*360+360*6+(360-ang);
+      const w=$("#rulW svg.rueda"); w.classList.add("gira"); requestAnimationFrame(()=>{ w.style.transform=`rotate(${giro}deg)`; });
+      const ms=matchMedia("(prefers-reduced-motion: reduce)").matches?60:4300;
+      setTimeout(()=>{ n++; cuenta[k]++; const P=PREMIOS[k];
+        $("#rulRes").innerHTML=`${k==="mayor"?"🏆 <b>¡PREMIO MAYOR!</b>":`🎉 Saldría: <b>${esc(P.t)}</b>`}<br><span class="small">${esc(P.desc)}</span>${instruccionesPremio(k,null)}<span class="small muted">Prueba ${n} · no se guardó nada. Llevas: ${cuenta.kit} kit · ${cuenta.cata} catafixia · ${cuenta.mayor} premio mayor.</span>`;
+        $("#rulGo").disabled=false; $("#rulGo").textContent="Girar otra vez"; $("#rulOk").disabled=false; rulGirando=false; },ms);
+    };
+    $("#rulOk").onclick=()=>{ if(!rulGirando) dlg.close(); };
+    dlg.addEventListener("cancel",e=>{ if(rulGirando) e.preventDefault(); },{once:true});
+    dlg.showModal();
+  };
+})();
+function htmlPromoCumple(x){
+  const ps=(x.promosCumple||[]).slice().sort((a,b)=>b.anio-a.anio); if(!ps.length&&!(x.regalos||[]).length) return "";
+  return `<h2>Promoción de cumpleaños</h2>`+prTable([{l:"Año",w:"8%",k:"anio"},{l:"Premio",f:p=>esc(premioTxt(p))},{l:"Giró",w:"13%",f:p=>esc(fechaCorta(p.giro.fecha))},{l:"Vigencia",w:"14%",f:p=>esc(fmtDMY(vigenciaDe(p)))},{l:"Estado",w:"24%",f:p=>esc(estadoPromo(p).t)}],ps);
 }
 
 /* ================= Impresión: por panel y por acción ================= */
@@ -2564,7 +2691,7 @@ function htmlExp(x){
   if(isBaja(tel)) h+=`<p class="pr-note">Dado de baja de promociones, cumpleaños, examen anual y NPS desde el ${esc(fechaCorta(contactos[tel].baja.f))}.</p>`;
   const rx=e=>(x.rx&&x.rx[e])||{};
   h+=`<h2>Receta vigente</h2><table class="pr-t prx"><thead><tr><th>RX</th><th>ESF</th><th>CIL</th><th>EJE</th><th>D.I.</th><th>ADD</th><th>ACO</th></tr></thead><tbody>`+
-    [["od","OD"],["oi","OS"]].map(([e,l])=>`<tr><th>${l}</th>${RXI.map(k=>`<td>${pv(rx(e)[k])}</td>`).join("")}</tr>`).join("")+`</tbody></table>`+(unaVisita(x)?"":htmlHistVis(x))+((x.regalos||[]).length?`<p class="pr-note"><b>Regalos de cumpleaños:</b> ${(x.regalos||[]).slice().sort((a,b)=>b.anio-a.anio).map(g=>`${g.anio}: ${esc(g.regalo)} (${esc(fechaCorta(g.fecha))})`).join(" · ")}</p>`:"");
+    [["od","OD"],["oi","OS"]].map(([e,l])=>`<tr><th>${l}</th>${RXI.map(k=>`<td>${pv(rx(e)[k])}</td>`).join("")}</tr>`).join("")+`</tbody></table>`+(unaVisita(x)?"":htmlHistVis(x))+htmlPromoCumple(x);
   Object.entries(ITEM_TXT).forEach(([k,t])=>{ const its=x[k]||[]; if(!its.length) return;
     const cat=ITEM_CAT_INV[k]; h+=`<h2>${esc(CATS[cat].t)} (${its.length})</h2>`+prTable(colsDe(cat,its,["nombre","telefono"]),its); });
   const rows=fichaRows(x);
