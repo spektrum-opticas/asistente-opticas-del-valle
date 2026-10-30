@@ -1255,7 +1255,7 @@ Ven a la tienda a girar tu *Ruleta de Cumpleaños* 🎡 y llévate tu regalo:
 
 📅 Válido hasta el *${vig}*.
 
-*Bases:* gira tu ruleta acudiendo personalmente a la tienda. Premio intransferible. Los descuentos aplican únicamente en la compra de un par de anteojos completos (armazón + micas); no aplican en lentes de contacto, solo micas, solo armazón, gafas de sol ni accesorios. Válido solo durante tu mes de cumpleaños; pasada esa fecha la promoción se pierde sin derecho a reclamarla. Con un anticipo mínimo del 50% conservas tu descuento hasta 1 mes después del apartado. Puedes aprovechar además otras promociones vigentes.`); }},
+*Bases:* gira tu ruleta acudiendo personalmente a la tienda; tienes 2 oportunidades: un giro de prueba y el giro definitivo, que es el que vale. Premio intransferible. Los descuentos aplican únicamente en la compra de un par de anteojos completos (armazón + micas); no aplican en lentes de contacto, solo micas, solo armazón, gafas de sol ni accesorios. Válido solo durante tu mes de cumpleaños; pasada esa fecha la promoción se pierde sin derecho a reclamarla. Con un anticipo mínimo del 50% conservas tu descuento hasta 1 mes después del apartado. Puedes aprovechar además otras promociones vigentes.`); }},
   promo:{t:"Promociones del año",d:"Buen Fin, MSI y temporadas",src:["pacientes","ventas"],fields:["temp","benef","pct","msi","libre","minimo","aplica","vig","cond","promo"],optout:1,build:(r,o)=>{
     const T=TEMPORADAS[o.temp]||TEMPORADAS.libre;
     return `${T.abre(nom(r))}
@@ -2520,7 +2520,7 @@ function renderRegalo(){
   if(info.k==="sinfecha") h+=off("Solo para cumpleañeros del mes. Captura su fecha de nacimiento para activar su promoción.");
   else if(info.k==="antes") h+=off(`Solo para cumpleañeros del mes. Se activa en ${MESES[info.mes]}.`);
   else if(info.k==="vencida") h+=off(`Solo para cumpleañeros del mes. Su promoción venció el ${esc(fmtDMY(info.vig))} y ya no aplica.`);
-  else if(info.k==="puede") h+=`<div class="regalo"><span class="chip warn">🎂 Cumpleañero · puede girar hasta el ${esc(fmtDMY(info.vig))}</span>${ed?`<button class="btn sm" type="button" data-a="girar">🎡 Girar ruleta</button>`:""}</div><p class="small muted">Solo en tienda y con el paciente presente. Premio intransferible.</p>`;
+  else if(info.k==="puede"){ const pr=pruebaDelAnio(x); h+=`<div class="regalo"><span class="chip warn">🎂 Cumpleañero · puede girar hasta el ${esc(fmtDMY(info.vig))}</span>${ed?`<button class="btn sm" type="button" data-a="girar">🎡 ${pr?"Giro definitivo":"Girar ruleta"}</button>`:""}</div><p class="small muted">2 oportunidades: 1 giro de prueba y 1 definitivo.${pr?` Ya usó su giro de prueba (salió ${esc(PREMIOS[pr.resultado].t)}, no cuenta).`:""} Solo en tienda y con el paciente presente. Premio intransferible.</p>`; }
   else {
     const p=info.p, st=estadoPromo(p), activo=st.k==="vigente";
     const chip=st.k==="canje"?"ok":st.k==="vencido"?"bad":"warn";
@@ -2553,8 +2553,8 @@ function renderRegalo(){
     if(!(await ask("¿Marcar como canjeado?",`<p>${esc(nota)} a <b>${esc(nom(x))}</b>.</p>${p.resultado==="mayor"||(p.resultado==="cata"&&p.catafixia>0)?`<p class="why">Verifica que la compra sea un par de anteojos completos (armazón + micas). No aplica en lentes de contacto, solo micas, solo armazón, gafas de sol ni accesorios.</p>`:""}`,"Marcar canjeado"))) return;
     if(await guardarPromo(x.id,(d,now)=>{ promoDelAnio(d).canje={fecha:ymdOf(new Date()),nota,por:quien(),registrado:now}; },{antes:null,despues:nota})) aviso("Premio canjeado"); };
   if(q("quitar")) q("quitar").onclick=async()=>{
-    if(!(await ask("¿Quitar la promoción de este año?",`<p>Se borra «${esc(premioTxt(p))}» y, si sigue en su mes de cumpleaños, podrá girar otra vez. Úsalo solo si fue un error.</p>`,"Quitar","Cancelar",true))) return;
-    if(await guardarPromo(x.id,d=>{ d.promosCumple=d.promosCumple.filter(o=>o.anio!==anioActual()); },{antes:premioTxt(p),despues:null})) aviso("Promoción quitada"); };
+    if(!(await ask("¿Quitar la promoción de este año?",`<p>Se borra «${esc(premioTxt(p))}» y su giro de prueba; si sigue en su mes de cumpleaños, tendrá otra vez sus 2 oportunidades. Úsalo solo si fue un error.</p>`,"Quitar","Cancelar",true))) return;
+    if(await guardarPromo(x.id,d=>{ d.promosCumple=d.promosCumple.filter(o=>o.anio!==anioActual()); if(d.pruebaCumple&&d.pruebaCumple.anio===anioActual()) delete d.pruebaCumple; },{antes:premioTxt(p),despues:null})) aviso("Promoción quitada"); };
 }
 /* Instrucciones que aparecen al detenerse la ruleta, según el premio */
 function instruccionesPremio(k,vig){
@@ -2573,24 +2573,37 @@ function instruccionesPremio(k,vig){
   return `<ol class="rulpasos">${pasos.map(x=>`<li>${x}</li>`).join("")}</ol><p class="small muted">Premio intransferible.</p>`;
 }
 let rulGirando=false;
+const pruebaDelAnio=x=>x.pruebaCumple&&x.pruebaCumple.anio===anioActual()?x.pruebaCumple:null;
+/* 2 oportunidades: 1 giro de prueba (no cuenta) y 1 giro definitivo (se registra solo al detenerse) */
 function abrirRuleta(id){
   const x=expMap[id]; const info=x&&cumpleInfo(x); if(!info||info.k!=="puede") return;
   const dlg=$("#rulDlg"); $("#rulT").textContent=`Ruleta de cumpleaños de ${nom(x)}`;
+  let giro=0;
+  const prep=()=>{ const pr=pruebaDelAnio(expMap[id]);
+    $("#rulGo").textContent=pr?"🎯 Giro definitivo":"Giro de prueba"; return pr; };
   $("#rulW").innerHTML=svgRueda()+`<div class="ptr" aria-hidden="true"></div>`;
-  $("#rulRes").innerHTML=`<span class="small">🎁 Kit completo · 🔄 Catafixia · 🏆 Premio mayor 30% + kit</span><br>Gira solo con el paciente presente en tienda.`;
-  $("#rulGo").hidden=false; $("#rulGo").disabled=false; $("#rulGo").textContent="Girar"; $("#rulOk").textContent="Cancelar"; $("#rulOk").disabled=false;
+  const pr0=prep();
+  $("#rulRes").innerHTML=(pr0?`<b>Oportunidad 2 de 2: giro definitivo.</b><br><span class="small">Ya usó su giro de prueba (salió ${esc(PREMIOS[pr0.resultado].t)}, no cuenta). Lo que salga ahora es su premio y se registra solo.</span>`
+    :`<b>Oportunidad 1 de 2: giro de prueba.</b><br><span class="small">No cuenta; después viene el giro definitivo, que es el que vale y se registra solo en su expediente.</span>`)+`<br><span class="small muted">Gira solo con el paciente presente en tienda.</span>`;
+  $("#rulGo").hidden=false; $("#rulGo").disabled=false; $("#rulOk").textContent="Cancelar"; $("#rulOk").disabled=false;
   $("#rulGo").onclick=()=>{
-    if(rulGirando) return; rulGirando=true; $("#rulGo").disabled=true; $("#rulOk").disabled=true;
+    if(rulGirando) return; const esPrueba=!pruebaDelAnio(expMap[id]);
+    rulGirando=true; $("#rulGo").disabled=true; $("#rulOk").disabled=true;
     const r=new Uint32Array(1); crypto.getRandomValues(r); const ang=r[0]/4294967296*360;
     let acc=0, k="kit"; for(const [kk,deg] of CASILLAS){ if(ang<acc+deg){ k=kk; break; } acc+=deg; }
-    const fin=360*6+(360-ang);
-    const w=$("#rulW svg.rueda"); w.classList.add("gira"); requestAnimationFrame(()=>{ w.style.transform=`rotate(${fin}deg)`; });
+    giro=Math.ceil(giro/360)*360+360*6+(360-ang);
+    const w=$("#rulW svg.rueda"); w.classList.add("gira"); requestAnimationFrame(()=>{ w.style.transform=`rotate(${giro}deg)`; });
     const ms=matchMedia("(prefers-reduced-motion: reduce)").matches?60:4300;
     setTimeout(async()=>{
       const vig=info.vig; const P=PREMIOS[k];
-      const ok=await guardarPromo(id,(d,now)=>{ d.promosCumple.push({anio:anioActual(),resultado:k,catafixia:null,vigencia:vig,giro:{fecha:now,por:quien()}}); },{antes:null,despues:`Giró la ruleta: ${P.t}`});
-      $("#rulRes").innerHTML=ok?`${k==="mayor"?"🏆 <b>¡PREMIO MAYOR!</b>":`🎉 Le tocó: <b>${esc(P.t)}</b>`}<br><span class="small">${esc(P.desc)}</span>${instruccionesPremio(k,vig)}<span class="small muted">Registrado en su expediente · válido hasta el ${esc(fmtDMY(vig))}.</span>`:`Le tocó <b>${esc(P.t)}</b>, pero no se pudo guardar. Inténtalo de nuevo.`;
-      $("#rulGo").hidden=ok; $("#rulGo").disabled=false; $("#rulOk").disabled=false; $("#rulOk").textContent="Cerrar"; rulGirando=false;
+      if(esPrueba){
+        const ok=await guardarPromo(id,(d,now)=>{ d.pruebaCumple={anio:anioActual(),resultado:k,fecha:now,por:quien()}; },{antes:null,despues:`Giro de prueba (no cuenta): ${P.t}`});
+        $("#rulRes").innerHTML=ok?`Giro de prueba: salió <b>${esc(P.t)}</b>, pero <b>no cuenta</b>.<br><span class="small">Ahora viene la <b>oportunidad 2 de 2: el giro definitivo</b>. Lo que salga es su premio.</span>`:`No se pudo registrar el giro de prueba. Inténtalo de nuevo.`;
+        prep(); $("#rulGo").disabled=false; $("#rulOk").disabled=false; $("#rulOk").textContent="Cancelar"; rulGirando=false; return;
+      }
+      const ok=await guardarPromo(id,(d,now)=>{ d.promosCumple.push({anio:anioActual(),resultado:k,catafixia:null,vigencia:vig,giro:{fecha:now,por:quien()}}); },{antes:null,despues:`Giro definitivo: ${P.t}`});
+      $("#rulRes").innerHTML=ok?`${k==="mayor"?"🏆 <b>¡PREMIO MAYOR!</b>":`🎉 Le tocó: <b>${esc(P.t)}</b>`}<br><span class="small">${esc(P.desc)}</span>${instruccionesPremio(k,vig)}<span class="small muted">✅ Ya quedó registrado en su expediente · válido hasta el ${esc(fmtDMY(vig))}.</span>`:`Le tocó <b>${esc(P.t)}</b>, pero no se pudo guardar. Inténtalo de nuevo.`;
+      $("#rulGo").hidden=ok; $("#rulGo").disabled=false; $("#rulOk").disabled=false; $("#rulOk").textContent=ok?"Aceptar":"Cancelar"; rulGirando=false;
       if(ok) aviso("Ruleta: "+P.t);
     },ms);
   };
@@ -2607,7 +2620,7 @@ function abrirRuleta(id){
       <li>🎁 <b>Kit completo</b> (${pct("kit")}%): ${esc(KIT_TXT)}. Sin descuento.</li>
       <li>🔄 <b>Catafixia</b> (${pct("cata")}%): cambia su kit por abrir la taza y descubrir su descuento. 0% = «Gracias por participar» y se lleva su kit; 10% o 20% = solo el descuento. Lo que salga se anota en su expediente.</li>
       <li>🏆 <b>Premio mayor</b> (${pct("mayor")}%): 30% de descuento directo + kit completo.</li></ul>
-    <b>Bases:</b> girar acudiendo personalmente a la tienda · premio intransferible · <b>los descuentos aplican solo en un par de anteojos completos (armazón + micas); no en lentes de contacto, solo micas, solo armazón, gafas de sol ni accesorios</b> · válido solo durante su mes de cumpleaños; pasado el mes se pierde sin derecho a reclamarla · con anticipo mínimo del 50% conserva su descuento hasta 1 mes después del apartado · puede usar además otras promociones vigentes · su expediente muestra su premio y la fecha límite mientras esté vigente.
+    <b>Bases:</b> girar acudiendo personalmente a la tienda · <b>2 oportunidades: 1 giro de prueba y 1 definitivo</b>; el definitivo se registra solo en su expediente · premio intransferible · <b>los descuentos aplican solo en un par de anteojos completos (armazón + micas); no en lentes de contacto, solo micas, solo armazón, gafas de sol ni accesorios</b> · válido solo durante su mes de cumpleaños; pasado el mes se pierde sin derecho a reclamarla · con anticipo mínimo del 50% conserva su descuento hasta 1 mes después del apartado · puede usar además otras promociones vigentes · su expediente muestra su premio y la fecha límite mientras esté vigente.
     <div class="row" style="margin-top:8px"><button class="btn sm" type="button" id="rulDemoBtn">🎡 Probar ruleta</button><span class="small muted">Prueba libre: puedes girarla las veces que quieras y no se guarda nada en los expedientes.</span></div></div>`;
   $("#rulDemoBtn").onclick=()=>{
     const dlg=$("#rulDlg"); $("#rulT").textContent="Prueba de la ruleta (no se guarda nada)";
