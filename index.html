@@ -274,6 +274,22 @@ dialog.dlg::backdrop{background:var(--shade)}
 .dlg .acts{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;margin-top:16px}
 .kpi small{font-size:.78rem;color:var(--muted)}
 .dwide{grid-column:1/-1}
+
+/* ===== Dashboard de crecimiento ===== */
+.dashsw{display:flex;justify-content:flex-start}
+.crhead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px}
+.crhead h2{margin:0}
+#dashCrec{display:grid;gap:16px}
+#dashCrec[hidden]{display:none}
+.hb.w{grid-template-columns:minmax(0,130px) minmax(40px,1fr) auto}
+.hb.w .mono{white-space:nowrap}
+.tblwrap{overflow-x:auto}
+.tblwrap td.n,.tblwrap th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tblwrap tr.tot td{font-weight:700;border-top:2px solid var(--line)}
+.tblwrap tr.cur td{background:var(--accent-soft)}
+.up{color:var(--ok)}.down{color:var(--bad)}
+#dashCom{display:flex;flex-direction:column;gap:18px}
+#dashCom[hidden]{display:none}
 </style>
 <style>
 html{color-scheme:light}
@@ -503,6 +519,25 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   </section>
 
   <div class="panel" id="panel-dashboard" role="tabpanel" aria-labelledby="tab-dashboard">
+    <div class="dashsw" id="dashSw" hidden><div class="seg" role="group" aria-label="Qué dashboard ver" id="dashSeg"><button type="button" data-v="com" aria-pressed="true">Comunicación</button><button type="button" data-v="crec" aria-pressed="false">Crecimiento</button></div></div>
+    <div id="dashCrec" hidden>
+      <div class="crhead"><div><h2 id="crTit">Dashboard de crecimiento</h2><p class="small muted" id="crSub"></p></div><div class="seg" role="group" aria-label="Año" id="crAnios"></div></div>
+      <div class="kpis kpis4" id="crK1"></div>
+      <div class="kpis kpis4" id="crK2"></div>
+      <div class="dgrid">
+        <section class="step dwide"><div><h2>Ventas por mes</h2><p class="small muted" id="crVSub">Total de las órdenes por su fecha de orden. El mes en curso se suma al día.</p></div><div class="chart" id="crVentas"></div></section>
+        <section class="step dwide"><div><h2 id="crDiaT">Mes en curso, día a día</h2><p class="small muted" id="crDiaS">Ventas de cada día y acumulado del mes.</p></div><div class="chart" id="crDia"></div></section>
+        <section class="step"><h2>Piezas por mes</h2><div class="chart" id="crPiezas"></div></section>
+        <section class="step"><div><h2>Cobro por tipo (anual)</h2><p class="small muted">Lo cobrado en el año por forma de pago.</p></div><div class="hbars" id="crTipo"></div></section>
+        <section class="step dwide"><div><h2>Formas de cobro por mes</h2><p class="small muted">Anticipo al mes de la orden · saldo al mes de cobro · incluye accesorios en efectivo.</p></div><div class="chart" id="crFormas"></div></section>
+        <section class="step dwide"><h2>Detalle de cobro por mes</h2><div class="tblwrap" id="crCobro"></div></section>
+        <section class="step dwide"><div><h2>Comparativo mes a mes</h2><p class="small muted" id="crCompS"></p></div><div class="tblwrap" id="crComp"></div></section>
+        <section class="step"><h2>Promociones aplicadas</h2><div class="hbars" id="crPromo"></div></section>
+        <section class="step"><div><h2>Estado de las órdenes</h2><p class="small muted">Órdenes del año según su estado en el sistema.</p></div><div class="hbars" id="crEst"></div></section>
+        <section class="step dwide"><h2 id="crOrdT">Órdenes del mes en curso</h2><div class="tblwrap" id="crOrd"></div></section>
+      </div>
+    </div>
+    <div id="dashCom">
     <div class="kpis" id="kpis"></div>
     <div class="kpis kpis4" id="kpisTr"></div>
     <div class="dgrid">
@@ -520,6 +555,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       <section class="step"><div><h2>Diagnósticos estimados</h2><p class="small muted">Calculados con la graduación; un paciente puede tener más de uno.</p></div><div class="hbars" id="cDx"></div></section>
       <section class="step"><div><h2>Calidad de la base</h2><p class="small muted">Expedientes a los que les falta cada dato.</p></div><div class="hbars" id="cCal"></div></section>
       <section class="step"><h2>Envíos por usuario</h2><div class="hbars" id="dUser"></div></section>
+    </div>
     </div>
   </div>
 
@@ -744,7 +780,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   </footer>
 </div>
 
-<dialog class="dlg" id="rulDlg" aria-labelledby="rulT"><h2 id="rulT">Regalo de cumpleaños</h2><div class="rul" id="rulW"></div><p class="rulres" id="rulRes" aria-live="polite"></p><div class="acts"><button class="btn ghost" id="rulOk" type="button">Cancelar</button><button class="btn" id="rulGo" type="button">Girar</button></div></dialog>
+<dialog class="dlg" id="rulDlg" aria-labelledby="rulT"><h2 id="rulT">Regalo de cumpleaños</h2><div class="rul" id="rulW"></div><p class="rulres" id="rulRes" aria-live="polite"></p><div class="acts"><button class="btn ghost sm" id="rulSnd" type="button" style="margin-right:auto">🔊 Sonido</button><button class="btn ghost" id="rulOk" type="button">Cancelar</button><button class="btn" id="rulGo" type="button">Girar</button></div></dialog>
 <dialog class="dlg" id="dlg" aria-labelledby="dlgT"><h2 id="dlgT"></h2><div class="body" id="dlgB"></div><div class="acts"><button class="btn ghost" id="dlgNo" type="button">Cancelar</button><button class="btn" id="dlgOk" type="button">Confirmar</button></div></dialog>
 <div id="tip" hidden></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
@@ -1255,7 +1291,7 @@ Ven a la tienda a girar tu *Ruleta de Cumpleaños* 🎡 y llévate tu regalo:
 
 📅 Válido hasta el *${vig}*.
 
-*Bases:* gira tu ruleta acudiendo personalmente a la tienda; tienes 2 oportunidades: un giro de prueba y el giro definitivo, que es el que vale. Premio intransferible. Los descuentos aplican únicamente en la compra de un par de anteojos completos (armazón + micas); no aplican en lentes de contacto, solo micas, solo armazón, gafas de sol ni accesorios. Válido solo durante tu mes de cumpleaños; pasada esa fecha la promoción se pierde sin derecho a reclamarla. Con un anticipo mínimo del 50% conservas tu descuento hasta 1 mes después del apartado. Puedes aprovechar además otras promociones vigentes.`); }},
+*Bases:* gira tu ruleta acudiendo personalmente a la tienda; tienes 2 oportunidades: un giro de prueba y el giro definitivo, que es el que vale. Premio intransferible. Los descuentos aplican únicamente en la compra de un par de anteojos completos (armazón + micas); no aplican en lentes de contacto, solo micas, solo armazón, gafas de sol ni accesorios. Válido solo durante tu mes de cumpleaños; pasada esa fecha la promoción se pierde sin derecho a reclamarla. Con un anticipo mínimo del 50% conservas tu descuento hasta 1 mes después del apartado. Promoción no acumulable con otras promociones.`); }},
   promo:{t:"Promociones del año",d:"Buen Fin, MSI y temporadas",src:["pacientes","ventas"],fields:["temp","benef","pct","msi","libre","minimo","aplica","vig","cond","promo"],optout:1,build:(r,o)=>{
     const T=TEMPORADAS[o.temp]||TEMPORADAS.libre;
     return `${T.abre(nom(r))}
@@ -1823,10 +1859,10 @@ let usuarios=[], me=null, current=null, editId=null, usuariosListos=false;
 $("#uRol").innerHTML=Object.keys(ROLES).map(r=>`<option>${esc(r)}</option>`).join("");
 const ROL_ACC={"Administrador":"Usuarios, logo, borrar cargas y respuestas, editar expedientes, reactivar bajas","Gerente":"Borrar cargas y respuestas, editar expedientes","Comunicación / CRM":"Solo consulta expedientes","Recepción / Ventas":"Editar expedientes","Optometrista":"Editar expedientes"};
 const quien=()=> current ? current.nombre : "Sin usuario";
-const ACCIONES={encuesta:["Administrador"],logo:["Administrador"],borrarCarga:["Administrador","Gerente"],borrarNps:["Administrador","Gerente"],editarExp:["Administrador","Gerente","Recepción / Ventas","Optometrista"],reactivarBaja:["Administrador"],eliminarExp:["Administrador"],borrarRegistro:["Administrador","Gerente"]};
+const ACCIONES={encuesta:["Administrador"],logo:["Administrador"],borrarCarga:["Administrador","Gerente"],borrarNps:["Administrador","Gerente"],editarExp:["Administrador","Gerente","Recepción / Ventas","Optometrista"],reactivarBaja:["Administrador"],eliminarExp:["Administrador"],borrarRegistro:["Administrador","Gerente"],verCrecimiento:["Administrador","Gerente"]};
 function puede(a){ return !!current&&(ACCIONES[a]||[]).includes(current.rol); }
 /* ================= Roles y permisos editables por el Administrador ================= */
-const ACC_TXT=[["editarExp","Editar expedientes"],["borrarRegistro","Quitar consultas o trabajos duplicados"],["reactivarBaja","Reactivar bajas"],["borrarCarga","Borrar cargas"],["borrarNps","Borrar respuestas NPS"],["eliminarExp","Eliminar expedientes"]];
+const ACC_TXT=[["verCrecimiento","Ver ventas (Dashboard de crecimiento)"],["editarExp","Editar expedientes"],["borrarRegistro","Quitar consultas o trabajos duplicados"],["reactivarBaja","Reactivar bajas"],["borrarCarga","Borrar cargas"],["borrarNps","Borrar respuestas NPS"],["eliminarExp","Eliminar expedientes"]];
 const SOLO_GERENTE=new Set(["borrarCarga","borrarNps","eliminarExp"]); // la base de datos solo deja borrar a Administrador y Gerente
 const SECC_EDIT=SECCIONES.filter(([k])=>k!=="usuarios");
 const PERM_DEF={roles:JSON.parse(JSON.stringify(ROLES)),acciones:JSON.parse(JSON.stringify(ACCIONES))};
@@ -1948,6 +1984,7 @@ function applyAccess(){
   $("#logoBox").hidden=!current;
   if(!lg) $("#logoDel").hidden=true; else $("#logoDel").hidden=$("#logoImg").hidden;
   const enc=puede("encuesta"); $("#encLinkBox").hidden=!enc; $("#encSave").hidden=!enc;
+  crecAcceso();
   renderRoles(); renderUsers(); if(lastHist) renderHist(lastHist); if(typeof renderNps==="function") renderNps(); renderExp(); if(exCur&&!$("#exFicha").hidden){ const ed=puede("editarExp"); $("#exForm").querySelectorAll("input").forEach(i=>{ if(i.id!=="ex-folio") i.disabled=!ed; }); $("#exSave").hidden=!ed; }
   const on=document.querySelector('.tab[aria-selected="true"]');
   if(!perms.length){ all.forEach(x=>$("#panel-"+x).hidden=true); }
@@ -2040,6 +2077,7 @@ function dxDe(x){
 }
 function renderDash(){
   if(!$("#kpis")) return;
+  if(dashVista==="crec"){ renderCrec(); return; }
   const now=new Date(), ym=ymOf(now), ents=envEntries();
   const all=allNps(); const st=npsStats(all); const stM=npsStats(all.filter(x=>(toISO(x.fecha)||String(x.fecha||"")).slice(0,7)===ym));
   const bajas=Object.values(contactos).filter(c=>c.baja).length;
@@ -2143,6 +2181,127 @@ function renderDashTr(rows,ms,now){
     series:[{name:"Entregas",color:SC[0],values:sem.map(s=>T.filter(({t})=>t.fechaEntrega&&t.fechaEntrega>=s.a&&t.fechaEntrega<=s.b).length)}]});
   const dist={"Sin trabajos":0,"1 trabajo":0,"2 trabajos":0,"3 o más":0}; rows.forEach(x=>{ const n=trDe(x).length; dist[n===0?"Sin trabajos":n===1?"1 trabajo":n===2?"2 trabajos":"3 o más"]++; });
   hbars($("#cRep"),rows.length?Object.entries(dist):[],"Aparece cuando haya expedientes.");
+}
+
+/* ================= Dashboard de crecimiento (ventas al día desde optivalle) ================= */
+var crecDocs={}, crecAnio=null, dashVista="com";
+try{ dashVista=localStorage.getItem("ov-dash")==="crec"?"crec":"com"; }catch(e){}
+const mny=v=>money(v)||"$0.00";
+const mnyK=v=>v>=1000?"$"+(v/1000).toLocaleString("es-MX",{maximumFractionDigits:v>=10000?0:1})+"k":"$"+Math.round(v).toLocaleString("es-MX");
+const pctTxt=(a,b)=>b>0?((a-b)/b*100>=0?"+":"")+Math.round((a-b)/b*100)+"%":"—";
+const MesCap=j=>MESES[j][0].toUpperCase()+MESES[j].slice(1);
+function hbarsW(el,items,empty){
+  if(!el) return;
+  if(!items.length){ el.innerHTML=`<p class="small muted">${esc(empty)}</p>`; return; }
+  const mx=Math.max(1,...items.map(x=>x[1]));
+  el.innerHTML=items.map(([l,v,txt])=>`<div class="hb w" data-tip="${esc(l)}: ${esc(txt)}"><span title="${esc(l)}">${esc(l)}</span><div class="tr"><div style="width:${v/mx*100}%"></div></div><span class="mono">${esc(txt)}</span></div>`).join("");
+}
+function crecAnios(){ return Object.keys(crecDocs).map(Number).sort((a,b)=>b-a); }
+function setDashVista(v){
+  dashVista=v==="crec"&&puede("verCrecimiento")?"crec":"com";
+  try{ localStorage.setItem("ov-dash",dashVista); }catch(e){}
+  $("#dashSeg").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===dashVista)));
+  $("#dashCom").hidden=dashVista!=="com"; $("#dashCrec").hidden=dashVista!=="crec";
+  if(dashVista==="crec") renderCrec(); else renderDash();
+}
+function crecAcceso(){
+  const ok=puede("verCrecimiento");
+  $("#dashSw").hidden=!ok;
+  if(!ok&&dashVista==="crec") setDashVista("com"); else setDashVista(dashVista);
+}
+$("#dashSeg").querySelectorAll("button").forEach(b=>b.onclick=()=>setDashVista(b.dataset.v));
+
+function renderCrec(){
+  if(!$("#crK1")||$("#dashCrec").hidden) return;
+  const anios=crecAnios();
+  if(!anios.length){
+    $("#crTit").textContent="Dashboard de crecimiento";
+    $("#crSub").textContent="Todavía no llegan datos de ventas. Se cargan solos con la sincronización automática de la tienda.";
+    ["#crK1","#crK2","#crVentas","#crDia","#crPiezas","#crTipo","#crFormas","#crCobro","#crComp","#crPromo","#crEst","#crOrd"].forEach(s=>$(s).innerHTML="");
+    $("#crAnios").innerHTML=""; return;
+  }
+  if(!anios.includes(crecAnio)) crecAnio=anios[0];
+  $("#crAnios").innerHTML=anios.length>1?anios.map(a=>`<button type="button" data-a="${a}" aria-pressed="${a===crecAnio}">${a}</button>`).join(""):"";
+  $("#crAnios").querySelectorAll("button").forEach(b=>b.onclick=()=>{ crecAnio=+b.dataset.a; renderCrec(); });
+  const D=crecDocs[crecAnio]; const A=crecAnio;
+  const now=new Date(); const esActual=now.getFullYear()===A; const mHoy=esActual?now.getMonth():11; const diaHoy=now.getDate();
+  const ords=Object.values(D.ordenes||{}).filter(o=>!o.baja&&o.fecha&&String(o.fecha).startsWith(String(A)));
+  const mesDe=o=>+String(o.fecha).slice(5,7)-1;
+  const V=Array(12).fill(0), P=Array(12).fill(0), N=Array(12).fill(0);
+  ords.forEach(o=>{ const m=mesDe(o); V[m]+=+o.total||0; P[m]+=+o.piezas||0; N[m]++; });
+  const r2=v=>Math.round(v*100)/100; for(let j=0;j<12;j++) V[j]=r2(V[j]);
+  const ventas=r2(V.reduce((a,b)=>a+b,0)), piezas=P.reduce((a,b)=>a+b,0), nOrd=ords.length;
+  const conVentas=V.map((v,j)=>[v,j]).filter(([v])=>v>0);
+  const prom=conVentas.length?ventas/conVentas.length:0;
+  const mejor=conVentas.slice().sort((a,b)=>b[0]-a[0])[0];
+  const C=D.cobros||{ef:Array(12).fill(0),tc:Array(12).fill(0),td:Array(12).fill(0),tr:Array(12).fill(0)};
+  const tot=k=>C[k].reduce((a,b)=>a+b,0);
+  const cEf=tot("ef"), cTc=tot("tc"), cTd=tot("td"), cTr=tot("tr"), cAll=cEf+cTc+cTd+cTr;
+  const ant=D.ventasAnt||Array(12).fill(0);
+
+  $("#crTit").textContent=`Dashboard de crecimiento — ${A}`;
+  $("#crSub").textContent=`Actualizado ${D.actualizado?fmtDate(D.actualizado):"—"} con la sincronización automática de optivalle.`+(esActual?` Incluye ${MESES[mHoy]} acumulado al día ${diaHoy}.`:"");
+  const kp=a=>a.map(([l,v,s,c])=>`<div class="kpi ${c||""}"><span class="label">${esc(l)}</span><b>${esc(v)}</b><small>${esc(s)}</small></div>`).join("");
+  // Mes en curso contra el mismo corte del mes anterior
+  let cmpTxt="";
+  if(esActual&&mHoy>0){ const pm=mHoy-1; const corte=ords.filter(o=>mesDe(o)===pm&&+String(o.fecha).slice(8,10)<=diaHoy).reduce((a,o)=>a+(+o.total||0),0);
+    cmpTxt=corte>0?` · ${pctTxt(V[mHoy],corte)} vs ${MES3[pm]} al día ${diaHoy}`:""; }
+  $("#crK1").innerHTML=kp([
+    [`Ventas ${A}`,mny(ventas),esActual?`al ${diaHoy} de ${MESES[mHoy]}, con el mes en curso`:"del año","hl"],
+    ["Órdenes",nOrd.toLocaleString("es-MX"),`${piezas.toLocaleString("es-MX")} piezas`],
+    ["Promedio mensual",mny(prom),`${conVentas.length} mes${conVentas.length===1?"":"es"} con ventas`],
+    ["Ticket promedio",mny(piezas?ventas/piezas:0),`por pieza · ${mny(nOrd?ventas/nOrd:0)} por orden`]]);
+  $("#crK2").innerHTML=kp([
+    [esActual?`${MesCap(mHoy)} (en curso)`:"Mejor mes",esActual?mny(V[mHoy]):(mejor?MesCap(mejor[1]):"—"),esActual?`${N[mHoy]} órdenes · ${P[mHoy]} piezas${cmpTxt}`:(mejor?mny(mejor[0]):""),esActual?"hl":""],
+    [esActual?"Mejor mes":"Con tratamiento",esActual?(mejor?`${MES3[mejor[1]]} ${A}`:"—"):(D.tratamiento?`${D.tratamiento.con} de ${D.tratamiento.de}`:"—"),esActual?(mejor?mny(mejor[0]):""):"órdenes"],
+    ...(esActual?[["Con tratamiento",D.tratamiento?`${D.tratamiento.con} de ${D.tratamiento.de}`:"—","órdenes, según optivalle"]]:[]),
+    ["% Efectivo",cAll?(cEf/cAll*100).toFixed(1)+"%":"—",`${mny(cEf)} · tarjeta/transf. ${cAll?((cAll-cEf)/cAll*100).toFixed(1)+"%":"—"} (${mny(cAll-cEf)})`]]);
+
+  const labs=MES3.map(m=>m[0].toUpperCase()+m.slice(1));
+  colChart($("#crVentas"),{labels:labs,aria:`Ventas por mes ${A} contra ${A-1}`,h:220,fmt:mnyK,hl:esActual?mHoy:undefined,empty:"Aparece cuando haya órdenes.",
+    tipLabel:j=>MesCap(j)+(esActual&&j===mHoy?" (en curso)":""),tipExtra:j=>`\nÓrdenes: ${N[j]} · Piezas: ${P[j]}\nValor exacto: ${mny(V[j])}`,
+    series:[{name:String(A),color:SC[0],values:V},...(ant.some(v=>v>0)?[{name:String(A-1),color:SC[5],values:ant}]:[])]});
+  $("#crVSub").textContent=`Total de las órdenes por su fecha de orden${ant.some(v=>v>0)?`, contra ${A-1}`:""}. ${esActual?"El mes en curso se suma al día.":""}`;
+  // Día a día del mes en curso (o del último mes con ventas si el año ya pasó)
+  const md=esActual?mHoy:(mejor?Math.max(...conVentas.map(([,j])=>j)):11); const dias=new Date(A,md+1,0).getDate(); const lim=esActual?diaHoy:dias;
+  const DV=Array(lim).fill(0); ords.filter(o=>mesDe(o)===md).forEach(o=>{ const d=+String(o.fecha).slice(8,10); if(d>=1&&d<=lim) DV[d-1]+=+o.total||0; });
+  let acc=0; const AC=DV.map(v=>r2(acc+=v));
+  $("#crDiaT").textContent=`${MesCap(md)} ${A}, día a día`;
+  $("#crDiaS").textContent=`Ventas de cada día. Acumulado del mes: ${mny(AC[AC.length-1]||0)}.`;
+  colChart($("#crDia"),{labels:DV.map((_,i)=>String(i+1)),aria:`Ventas por día de ${MESES[md]}`,h:190,fmt:mnyK,empty:`Sin ventas en ${MESES[md]} todavía.`,
+    tipLabel:j=>`${j+1} de ${MESES[md]}`,tipExtra:j=>`\nValor exacto: ${mny(DV[j])}\nAcumulado del mes: ${mny(AC[j])}`,
+    series:[{name:"Ventas del día",color:SC[0],values:DV.map(r2)}]});
+  colChart($("#crPiezas"),{labels:labs,aria:"Piezas por mes",h:190,hl:esActual?mHoy:undefined,empty:"Aparece cuando haya órdenes.",tipLabel:j=>MesCap(j),
+    series:[{name:"Piezas",color:SC[2],values:P}]});
+  const FP=[["Efectivo","ef"],["T. Crédito","tc"],["T. Débito","td"],["Transferencia","tr"]];
+  hbarsW($("#crTipo"),cAll?FP.map(([l,k])=>[l,tot(k),`${mny(tot(k))} · ${(tot(k)/cAll*100).toFixed(1)}%`]):[],"Aparece cuando lleguen los cobros.");
+  colChart($("#crFormas"),{labels:labs,stacked:true,aria:"Formas de cobro por mes",h:220,fmt:mnyK,hl:esActual?mHoy:undefined,empty:"Aparece cuando lleguen los cobros.",
+    tipLabel:j=>MesCap(j),series:FP.map(([l,k],i)=>({name:l,color:SC[i],values:C[k]}))});
+  const mesesC=[...Array(12).keys()].filter(j=>C.ef[j]||C.tc[j]||C.td[j]||C.tr[j]);
+  const n=v=>`<td class="n">${mny(v)}</td>`;
+  $("#crCobro").innerHTML=mesesC.length?`<table><thead><tr><th>Mes</th><th class="n">Efectivo</th><th class="n">T. Crédito</th><th class="n">T. Débito</th><th class="n">Transf.</th><th class="n">Total</th><th class="n">% Ef.</th></tr></thead><tbody>`+
+    mesesC.map(j=>{ const t=C.ef[j]+C.tc[j]+C.td[j]+C.tr[j]; return `<tr${esActual&&j===mHoy?' class="cur"':""}><td>${MesCap(j)}${esActual&&j===mHoy?" (en curso)":""}</td>${n(C.ef[j])}${n(C.tc[j])}${n(C.td[j])}${n(C.tr[j])}${n(t)}<td class="n">${t?(C.ef[j]/t*100).toFixed(1)+"%":"—"}</td></tr>`; }).join("")+
+    `<tr class="tot"><td>Total</td>${n(cEf)}${n(cTc)}${n(cTd)}${n(cTr)}${n(cAll)}<td class="n">${cAll?(cEf/cAll*100).toFixed(1)+"%":"—"}</td></tr></tbody></table>`:`<p class="small muted">Aparece cuando lleguen los cobros.</p>`;
+  const cie=D.cierres&&D.cierres.ventas||null;
+  const mesesV=[...Array(12).keys()].filter(j=>V[j]||ant[j]);
+  $("#crCompS").textContent=`Ventas de cada mes contra el mismo mes de ${A-1} y contra el mes anterior.`+(cie?" Los meses con cierre en optivalle se comparan con su cierre; si no coinciden se marcan con ⚠.":"");
+  $("#crComp").innerHTML=mesesV.length?`<table><thead><tr><th>Mes</th><th class="n">Ventas ${A}</th><th class="n">Ventas ${A-1}</th><th class="n">Variación</th><th class="n">vs mes anterior</th><th class="n">Órdenes</th><th class="n">Piezas</th><th class="n">Ticket/pieza</th></tr></thead><tbody>`+
+    mesesV.map(j=>{ const va=pctTxt(V[j],ant[j]); const vm=j>0?pctTxt(V[j],V[j-1]):"—"; const cl=t=>t.startsWith("+")?"up":t.startsWith("-")?"down":"";
+      const dif=cie&&cie[j]>0&&Math.abs(cie[j]-V[j])>0.5; const cur=esActual&&j===mHoy;
+      return `<tr${cur?' class="cur"':""}><td>${MesCap(j)}${cur?` (al día ${diaHoy})`:""}${dif?` <span title="El cierre de optivalle dice ${esc(mny(cie[j]))}">⚠</span>`:""}</td>${n(V[j])}<td class="n">${ant[j]?mny(ant[j]):"—"}</td><td class="n ${cl(va)}">${va}</td><td class="n ${cur?"":cl(vm)}">${cur?"en curso":vm}</td><td class="n">${N[j]}</td><td class="n">${P[j]}</td>${n(P[j]?V[j]/P[j]:0)}</tr>`; }).join("")+
+    `<tr class="tot"><td>Total</td>${n(ventas)}<td class="n">${mny(ant.reduce((a,b)=>a+b,0))}</td><td class="n">${pctTxt(ventas,ant.reduce((a,b)=>a+b,0))}</td><td class="n"></td><td class="n">${nOrd}</td><td class="n">${piezas}</td>${n(piezas?ventas/piezas:0)}</tr></tbody></table>`:`<p class="small muted">Aparece cuando haya órdenes.</p>`;
+  // Promociones: el sistema manda un grupo por orden; lo que sobra después de cubrir las órdenes se omite
+  const pr=[]; let s=0; const totP=(D.tratamiento&&D.tratamiento.de)||nOrd;
+  (D.promos||[]).forEach(([l,v])=>{ if(s>=totP) return; pr.push([l,v,`${v} · ${totP?Math.round(v/totP*100):0}%`]); s+=v; });
+  hbarsW($("#crPromo"),pr.sort((a,b)=>b[1]-a[1]),"Aparece cuando lleguen las promociones.");
+  const est={}; ords.forEach(o=>{ const k=o.estado||"Sin estado"; est[k]=(est[k]||0)+1; });
+  const rk=k=>{ const i=["Pendiente","En proceso","Listo","Entregado"].indexOf(k); return i<0?9:i; };
+  hbarsW($("#crEst"),Object.entries(est).sort((a,b)=>rk(a[0])-rk(b[0])).map(([k,v])=>[k,v,`${v} · ${Math.round(v/nOrd*100)}%`]),"Aparece cuando haya órdenes.");
+  const om=ords.filter(o=>mesDe(o)===md).sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha))||String(b.folio).localeCompare(String(a.folio)));
+  $("#crOrdT").textContent=`Órdenes de ${MESES[md]} ${A} (${om.length})`;
+  $("#crOrd").innerHTML=om.length?`<table><thead><tr><th>Orden</th><th>Paciente</th><th>Expediente</th><th>Fecha</th><th class="n">Piezas</th><th class="n">Total</th><th>Estado</th></tr></thead><tbody>`+
+    om.map(o=>`<tr><td class="mono">${esc(o.folio)}</td><td>${pv(o.paciente)}</td><td class="mono">${pv(o.exp)}</td><td>${esc(fmtDMY(o.fecha))}</td><td class="n">${o.piezas}</td>${n(+o.total||0)}<td>${pv(o.estado)}</td></tr>`).join("")+
+    `<tr class="tot"><td colspan="4">Total</td><td class="n">${om.reduce((a,o)=>a+(+o.piezas||0),0)}</td>${n(om.reduce((a,o)=>a+(+o.total||0),0))}<td></td></tr></tbody></table>`:`<p class="small muted">Sin órdenes en ${MESES[md]}.</p>`;
 }
 
 /* ================= Gráficas de NPS ================= */
@@ -2565,14 +2724,46 @@ function instruccionesPremio(k,vig){
       "Si dice <b>0%</b>: «Gracias por participar» y se lleva su <b>kit completo</b>.",
       "Si dice <b>10% o 20%</b>: aplica ese descuento en su compra; cambió su kit por el descuento, así que <b>no se lleva el kit</b>.",
       "El descuento aplica <b>solo en un par de anteojos completos</b> (armazón + micas). <b>No aplica</b> en lentes de contacto, solo micas, solo armazón, gafas de sol ni accesorios.",
+      "<b>Promoción no acumulable</b>: no se combina con otras promociones ni descuentos.",
       `Registra lo que salió en su expediente: <b>Promoción de cumpleaños → «Lo que salió en la taza» → Registrar</b>.`,
       `Su descuento vale hasta el <b>${esc(v)}</b>. Con anticipo mínimo del 50% lo conserva hasta 1 mes después del apartado (registra el apartado en su expediente).`],
-    mayor:["Felicítalo: ganó el <b>premio mayor</b>.","Aplica <b>30% de descuento directo</b> en su compra y entrégale su <b>kit completo</b>.","El descuento aplica <b>solo en un par de anteojos completos</b> (armazón + micas). <b>No aplica</b> en lentes de contacto, solo micas, solo armazón, gafas de sol ni accesorios.",
+    mayor:["Felicítalo: ganó el <b>premio mayor</b>.","Aplica <b>30% de descuento directo</b> en su compra y entrégale su <b>kit completo</b>.","El descuento aplica <b>solo en un par de anteojos completos</b> (armazón + micas). <b>No aplica</b> en lentes de contacto, solo micas, solo armazón, gafas de sol ni accesorios.","<b>Promoción no acumulable</b>: no se combina con otras promociones ni descuentos.",
       `Si hoy no compra, el premio vale hasta el <b>${esc(v)}</b>. Con anticipo mínimo del 50% lo conserva hasta 1 mes después del apartado (registra el apartado en su expediente).`,
       `Al aplicar el descuento y entregar el kit, presiona <b>«Marcar canjeado»</b>.`]}[k];
-  return `<ol class="rulpasos">${pasos.map(x=>`<li>${x}</li>`).join("")}</ol><p class="small muted">Premio intransferible.</p>`;
+  return `<ol class="rulpasos">${pasos.map(x=>`<li>${x}</li>`).join("")}</ol><p class="small muted">Premio intransferible. Promoción no acumulable con otras promociones.</p>`;
 }
 let rulGirando=false;
+/* ===== Sonidos de la ruleta (generados con Web Audio, sin archivos) ===== */
+let rulActx=null, rulMute=false; try{ rulMute=localStorage.getItem("ov-rul-mute")==="1"; }catch(e){}
+function rulAudio(){ if(rulMute) return null; try{ rulActx=rulActx||new (window.AudioContext||window.webkitAudioContext)(); if(rulActx.state==="suspended") rulActx.resume(); return rulActx; }catch(e){ return null; } }
+function tono(f,t0,dur,{tipo="sine",vol=.2,glide=null}={}){
+  const a=rulAudio(); if(!a) return; const t=a.currentTime+t0;
+  const o=a.createOscillator(), g=a.createGain(); o.type=tipo; o.frequency.setValueAtTime(f,t); if(glide) o.frequency.exponentialRampToValueAtTime(glide,t+dur);
+  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+dur+0.05);
+}
+const SONIDOS={
+  tick:()=>tono(1700,0,0.03,{tipo:"square",vol:.05}),
+  prueba:()=>{ tono(523,0,0.18,{tipo:"triangle",vol:.12}); tono(392,0.15,0.32,{tipo:"triangle",vol:.12}); },
+  kit:()=>{ [659,880,1319].forEach((f,i)=>tono(f,i*0.13,0.45,{vol:.16})); },
+  cata:()=>{ [523,659,784,988].forEach((f,i)=>tono(f,i*0.08,0.22,{tipo:"triangle",vol:.14})); tono(1175,0.36,0.6,{tipo:"triangle",vol:.12,glide:1568}); },
+  mayor:()=>{
+    [[523,0,.15],[523,.17,.15],[523,.34,.15],[659,.51,.45],[587,1.0,.16],[659,1.18,.16],[784,1.36,1.0]].forEach(([f,t,d])=>{ tono(f,t,d,{tipo:"sawtooth",vol:.08}); tono(f*2,t,d,{tipo:"square",vol:.025}); });
+    [1047,1319,1568,2093].forEach(f=>tono(f,1.36,1.3,{tipo:"triangle",vol:.06}));
+    for(let i=0;i<14;i++) tono(1800+((i*733)%2200),1.45+i*0.07,0.09,{vol:.035});
+  }
+};
+/* Clic de la ruleta: suena cada vez que una casilla pasa por la flecha */
+function rulTicks(svg,ms){
+  const lim=CASILLAS.reduce((a,[,d])=>{ a.push((a[a.length-1]||0)+d); return a; },[]);
+  const seg=()=>{ const m=getComputedStyle(svg).transform; if(!m||m==="none") return 0; const v=m.match(/matrix\(([^)]+)\)/); if(!v) return 0;
+    const [a,b]=v[1].split(",").map(Number); const rot=(Math.atan2(b,a)*180/Math.PI+360)%360; const p=(360-rot)%360; return lim.findIndex(x=>p<x); };
+  let last=seg(), t0=performance.now();
+  const loop=()=>{ const i=seg(); if(i!==last){ SONIDOS.tick(); last=i; } if(performance.now()-t0<ms+150) requestAnimationFrame(loop); };
+  requestAnimationFrame(loop);
+}
+function rulBtnSonido(){ const b=$("#rulSnd"); if(!b) return; b.textContent=rulMute?"🔇 Sin sonido":"🔊 Sonido"; b.setAttribute("aria-pressed",String(!rulMute));
+  b.onclick=()=>{ rulMute=!rulMute; try{ localStorage.setItem("ov-rul-mute",rulMute?"1":"0"); }catch(e){} rulBtnSonido(); if(!rulMute) SONIDOS.kit(); }; }
 const pruebaDelAnio=x=>x.pruebaCumple&&x.pruebaCumple.anio===anioActual()?x.pruebaCumple:null;
 /* 2 oportunidades: 1 giro de prueba (no cuenta) y 1 giro definitivo (se registra solo al detenerse) */
 function abrirRuleta(id){
@@ -2592,15 +2783,16 @@ function abrirRuleta(id){
     const r=new Uint32Array(1); crypto.getRandomValues(r); const ang=r[0]/4294967296*360;
     let acc=0, k="kit"; for(const [kk,deg] of CASILLAS){ if(ang<acc+deg){ k=kk; break; } acc+=deg; }
     giro=Math.ceil(giro/360)*360+360*6+(360-ang);
-    const w=$("#rulW svg.rueda"); w.classList.add("gira"); requestAnimationFrame(()=>{ w.style.transform=`rotate(${giro}deg)`; });
     const ms=matchMedia("(prefers-reduced-motion: reduce)").matches?60:4300;
+    const w=$("#rulW svg.rueda"); w.classList.add("gira"); rulAudio(); requestAnimationFrame(()=>{ w.style.transform=`rotate(${giro}deg)`; rulTicks(w,ms); });
     setTimeout(async()=>{
       const vig=info.vig; const P=PREMIOS[k];
-      if(esPrueba){
+      if(esPrueba){ SONIDOS.prueba();
         const ok=await guardarPromo(id,(d,now)=>{ d.pruebaCumple={anio:anioActual(),resultado:k,fecha:now,por:quien()}; },{antes:null,despues:`Giro de prueba (no cuenta): ${P.t}`});
         $("#rulRes").innerHTML=ok?`Giro de prueba: salió <b>${esc(P.t)}</b>, pero <b>no cuenta</b>.<br><span class="small">Ahora viene la <b>oportunidad 2 de 2: el giro definitivo</b>. Lo que salga es su premio.</span>`:`No se pudo registrar el giro de prueba. Inténtalo de nuevo.`;
         prep(); $("#rulGo").disabled=false; $("#rulOk").disabled=false; $("#rulOk").textContent="Cancelar"; rulGirando=false; return;
       }
+      SONIDOS[k]();
       const ok=await guardarPromo(id,(d,now)=>{ d.promosCumple.push({anio:anioActual(),resultado:k,catafixia:null,vigencia:vig,giro:{fecha:now,por:quien()}}); },{antes:null,despues:`Giro definitivo: ${P.t}`});
       $("#rulRes").innerHTML=ok?`${k==="mayor"?"🏆 <b>¡PREMIO MAYOR!</b>":`🎉 Le tocó: <b>${esc(P.t)}</b>`}<br><span class="small">${esc(P.desc)}</span>${instruccionesPremio(k,vig)}<span class="small muted">✅ Ya quedó registrado en su expediente · válido hasta el ${esc(fmtDMY(vig))}.</span>`:`Le tocó <b>${esc(P.t)}</b>, pero no se pudo guardar. Inténtalo de nuevo.`;
       $("#rulGo").hidden=ok; $("#rulGo").disabled=false; $("#rulOk").disabled=false; $("#rulOk").textContent=ok?"Aceptar":"Cancelar"; rulGirando=false;
@@ -2609,7 +2801,7 @@ function abrirRuleta(id){
   };
   $("#rulOk").onclick=()=>{ if(!rulGirando) dlg.close(); };
   dlg.addEventListener("cancel",e=>{ if(rulGirando) e.preventDefault(); },{once:true});
-  dlg.showModal();
+  rulBtnSonido(); dlg.showModal();
 }
 /* Vista de prueba en «Mensajes WhatsApp»: premios, bases y ruleta sin guardar nada */
 (function(){
@@ -2620,7 +2812,7 @@ function abrirRuleta(id){
       <li>🎁 <b>Kit completo</b> (${pct("kit")}%): ${esc(KIT_TXT)}. Sin descuento.</li>
       <li>🔄 <b>Catafixia</b> (${pct("cata")}%): cambia su kit por abrir la taza y descubrir su descuento. 0% = «Gracias por participar» y se lleva su kit; 10% o 20% = solo el descuento. Lo que salga se anota en su expediente.</li>
       <li>🏆 <b>Premio mayor</b> (${pct("mayor")}%): 30% de descuento directo + kit completo.</li></ul>
-    <b>Bases:</b> girar acudiendo personalmente a la tienda · <b>2 oportunidades: 1 giro de prueba y 1 definitivo</b>; el definitivo se registra solo en su expediente · premio intransferible · <b>los descuentos aplican solo en un par de anteojos completos (armazón + micas); no en lentes de contacto, solo micas, solo armazón, gafas de sol ni accesorios</b> · válido solo durante su mes de cumpleaños; pasado el mes se pierde sin derecho a reclamarla · con anticipo mínimo del 50% conserva su descuento hasta 1 mes después del apartado · puede usar además otras promociones vigentes · su expediente muestra su premio y la fecha límite mientras esté vigente.
+    <b>Bases:</b> girar acudiendo personalmente a la tienda · <b>2 oportunidades: 1 giro de prueba y 1 definitivo</b>; el definitivo se registra solo en su expediente · premio intransferible · <b>los descuentos aplican solo en un par de anteojos completos (armazón + micas); no en lentes de contacto, solo micas, solo armazón, gafas de sol ni accesorios</b> · válido solo durante su mes de cumpleaños; pasado el mes se pierde sin derecho a reclamarla · con anticipo mínimo del 50% conserva su descuento hasta 1 mes después del apartado · <b>promoción no acumulable con otras promociones</b> · su expediente muestra su premio y la fecha límite mientras esté vigente.
     <div class="row" style="margin-top:8px"><button class="btn sm" type="button" id="rulDemoBtn">🎡 Probar ruleta</button><span class="small muted">Prueba libre: puedes girarla las veces que quieras y no se guarda nada en los expedientes.</span></div></div>`;
   $("#rulDemoBtn").onclick=()=>{
     const dlg=$("#rulDlg"); $("#rulT").textContent="Prueba de la ruleta (no se guarda nada)";
@@ -2631,15 +2823,15 @@ function abrirRuleta(id){
       const r=new Uint32Array(1); crypto.getRandomValues(r); const ang=r[0]/4294967296*360;
       let acc=0,k="kit"; for(const [kk,deg] of CASILLAS){ if(ang<acc+deg){ k=kk; break; } acc+=deg; }
       giro=Math.ceil(giro/360)*360+360*6+(360-ang);
-      const w=$("#rulW svg.rueda"); w.classList.add("gira"); requestAnimationFrame(()=>{ w.style.transform=`rotate(${giro}deg)`; });
       const ms=matchMedia("(prefers-reduced-motion: reduce)").matches?60:4300;
-      setTimeout(()=>{ n++; cuenta[k]++; const P=PREMIOS[k];
+      const w=$("#rulW svg.rueda"); w.classList.add("gira"); rulAudio(); requestAnimationFrame(()=>{ w.style.transform=`rotate(${giro}deg)`; rulTicks(w,ms); });
+      setTimeout(()=>{ n++; cuenta[k]++; const P=PREMIOS[k]; SONIDOS[k]();
         $("#rulRes").innerHTML=`${k==="mayor"?"🏆 <b>¡PREMIO MAYOR!</b>":`🎉 Saldría: <b>${esc(P.t)}</b>`}<br><span class="small">${esc(P.desc)}</span>${instruccionesPremio(k,null)}<span class="small muted">Prueba ${n} · no se guardó nada. Llevas: ${cuenta.kit} kit · ${cuenta.cata} catafixia · ${cuenta.mayor} premio mayor.</span>`;
         $("#rulGo").disabled=false; $("#rulGo").textContent="Girar otra vez"; $("#rulOk").disabled=false; rulGirando=false; },ms);
     };
     $("#rulOk").onclick=()=>{ if(!rulGirando) dlg.close(); };
     dlg.addEventListener("cancel",e=>{ if(rulGirando) e.preventDefault(); },{once:true});
-    dlg.showModal();
+    rulBtnSonido(); dlg.showModal();
   };
 })();
 function htmlPromoCumple(x){
@@ -2761,7 +2953,7 @@ function printUsuarios(){
     {l:"Estado",w:"14%",f:u=>({activo:"Activo",pausa:"En pausa",baja:"Dado de baja"})[estadoDe(u)]}],l),{sub:`${l.length} usuarios`});
 }
 const PR_PANEL={
-  dashboard:()=>printDoc("Dashboard",limpio($("#panel-dashboard")),{sub:"Resumen de envíos y pacientes"}),
+  dashboard:()=>dashVista==="crec"?printDoc($("#crTit").textContent,limpio($("#dashCrec")),{sub:$("#crSub").textContent,landscape:true}):printDoc("Dashboard",limpio($("#dashCom")),{sub:"Resumen de envíos y pacientes"}),
   carga:printCargas, expedientes:printExpLista, mensajes:printMensajes,
   nps:()=>printDoc("Encuesta NPS",limpio($("#panel-nps")),{sub:"Resultados y comentarios"}),
   usuarios:printUsuarios};
@@ -2916,6 +3108,7 @@ function iniciarDatos(){
   db.collection("expedientes").limit(5000).onSnapshot(s=>{ expList=s.docs.map(d=>({id:d.id,...d.data()})); expMap=Object.fromEntries(expList.map(x=>[x.id,x])); expLoaded=true;
     const op=document.querySelector('#srcSel option[value="__exp"]'); if(op) op.textContent=`Expedientes · ${expList.length} pacientes`;
     if(srcId==="__exp"&&tpl) srcRows=rowsFor(tpl); renderAll(); integrarCargas(); },()=>{ expLoaded=true; renderExp(); });
+  db.collection("reportes").limit(50).onSnapshot(s=>{ const m={}; s.docs.forEach(d=>{ const k=/^crecimiento-(\d{4})$/.exec(d.id); if(k) m[+k[1]]=d.data(); }); crecDocs=m; renderCrec(); },()=>{});
   db.doc("config/marca").onSnapshot(s=>showLogo(s.exists?s.data().logoUrl:null),()=>{});
   db.doc("config/permisos").onSnapshot(s=>{ const d=s.exists?s.data():null; if(JSON.stringify(d)===JSON.stringify(permInfo)) return; permInfo=d; aplicarPermisos(permInfo); permBorrador=null; applyAccess(); },()=>{});
   setTimeout(()=>syncEncuesta(false),600);
