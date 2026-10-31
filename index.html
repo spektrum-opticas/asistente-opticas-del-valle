@@ -1292,7 +1292,7 @@ Ven a la tienda a girar tu *Ruleta de Cumpleaños* 🎡 y llévate tu regalo:
 📅 Válido hasta el *${vig}*.
 
 *Bases:* gira tu ruleta acudiendo personalmente a la tienda; tienes 2 oportunidades: un giro de prueba y el giro definitivo, que es el que vale. Premio intransferible. Los descuentos aplican únicamente en la compra de un par de anteojos completos (armazón + micas); no aplican en lentes de contacto, solo micas, solo armazón, gafas de sol ni accesorios. Válido solo durante tu mes de cumpleaños; pasada esa fecha la promoción se pierde sin derecho a reclamarla. Con un anticipo mínimo del 50% conservas tu descuento hasta 1 mes después del apartado. Promoción no acumulable con otras promociones.`); }},
-  promo:{t:"Promociones del año",d:"Buen Fin, MSI y temporadas",src:["pacientes","ventas"],fields:["temp","benef","pct","msi","libre","minimo","aplica","vig","cond","promo"],optout:1,build:(r,o)=>{
+  promo:{t:"Promociones del año",sinRedes:1,d:"Buen Fin, MSI y temporadas",src:["pacientes","ventas"],fields:["temp","benef","pct","msi","libre","minimo","aplica","vig","cond","promo"],optout:1,build:(r,o)=>{
     const T=TEMPORADAS[o.temp]||TEMPORADAS.libre;
     return `${T.abre(nom(r))}
 
