@@ -525,6 +525,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       <div class="kpis kpis4" id="crK1"></div>
       <div class="kpis kpis4" id="crK2"></div>
       <div class="dgrid">
+        <section class="step dwide crproy" id="crProySec"><div><h2 id="crPMT">Proyectado mensual</h2><p class="small muted" id="crProyS">Calculado con días laborables: de lunes a sábado. Los domingos no se laboran.</p></div><div class="kpis kpis4" id="crProyK"></div></section>
+        <section class="step dwide crproy" id="crProyASec"><div><h2 id="crPAT">Proyectado anual</h2><p class="small muted" id="crProyAS"></p></div><div class="kpis kpis4" id="crProyAK"></div><div class="chart" id="crProy"></div><div class="tblwrap" id="crProyT"></div></section>
         <section class="step dwide"><div><h2>Ventas por mes</h2><p class="small muted" id="crVSub">Total de las órdenes por su fecha de orden. El mes en curso se suma al día.</p></div><div class="chart" id="crVentas"></div></section>
         <section class="step dwide"><div><h2 id="crDiaT">Mes en curso, día a día</h2><p class="small muted" id="crDiaS">Ventas de cada día y acumulado del mes.</p></div><div class="chart" id="crDia"></div></section>
         <section class="step"><h2>Piezas por mes</h2><div class="chart" id="crPiezas"></div></section>
@@ -2211,13 +2213,62 @@ function crecAcceso(){
 }
 $("#dashSeg").querySelectorAll("button").forEach(b=>b.onclick=()=>setDashVista(b.dataset.v));
 
+/* ===== Proyección por días laborables (lunes a sábado; domingo no se labora) ===== */
+function laborables(y,m,d1,d2){ let n=0; for(let d=d1;d<=d2;d++){ if(new Date(y,m,d).getDay()!==0) n++; } return n; }
+function renderProyeccion({A,esActual,mHoy,diaHoy,ords,V,N,P,ventas,labs,now}){
+  const sec=$("#crProySec"), secA=$("#crProyASec"); if(!sec) return;
+  sec.hidden=secA.hidden=!esActual||!ords.length; if(sec.hidden) return;
+  const m=mHoy, dimOf=j=>new Date(A,j+1,0).getDate(), labMes=j=>laborables(A,j,1,dimOf(j));
+  const hoyLab=now.getDay()!==0, ventasHoy=ords.some(o=>o.fecha===ymdOf(now));
+  // Hoy cuenta como transcurrido si ya hubo ventas o ya pasó buena parte de la jornada
+  const cuentaHoy=hoyLab&&(ventasHoy||now.getHours()>=14);
+  const kp=a=>a.map(([l,v,s,c])=>`<div class="kpi ${c||""}"><span class="label">${esc(l)}</span><b>${esc(v)}</b><small>${esc(s)}</small></div>`).join("");
+  const r2=v=>Math.round(v*100)/100;
+  /* --- Mensual --- */
+  const tot=labMes(m), trans=Math.max(1,laborables(A,m,1,diaHoy-1)+(cuentaHoy?1:0)), rest=tot-trans;
+  const pd=V[m]/trans, proy=V[m]+pd*rest, proyN=Math.round(N[m]/trans*tot), proyP=Math.round(P[m]/trans*tot);
+  const pm=m-1, pdPm=pm>=0&&V[pm]?V[pm]/labMes(pm):0;
+  $("#crPMT").textContent=`Proyectado mensual · ${MesCap(m)} ${A}`;
+  $("#crProyS").textContent=`Días laborables de lunes a sábado; los domingos no se laboran. ${MesCap(m)} tiene ${tot} días laborables: van ${trans}${cuentaHoy?" (contando hoy)":""} y faltan ${rest}.`;
+  $("#crProyK").innerHTML=kp([
+    [`Cierre proyectado de ${MESES[m]}`,mny(proy),`llevas ${mny(V[m])}${pm>=0&&V[pm]?` · ${pctTxt(proy,V[pm])} vs ${MES3[pm]} (${mny(V[pm])})`:""}`,"hl"],
+    ["Promedio por día laborable",mny(pd),`en ${MESES[m]}${pdPm?` · ${MES3[pm]}: ${mny(pdPm)}`:""}`],
+    ["Órdenes proyectadas",String(proyN),`van ${N[m]} en ${trans} días laborables`],
+    ["Piezas proyectadas",String(proyP),`van ${P[m]} · faltan ${rest} día${rest===1?"":"s"} laborable${rest===1?"":"s"}`]]);
+  /* --- Anual: promedio por día laborable desde la primera orden del año --- */
+  const prim=ords.map(o=>o.fecha).sort()[0]; const p0=new Date(+prim.slice(0,4),+prim.slice(5,7)-1,+prim.slice(8,10));
+  let labA=0; for(let d=new Date(p0);d<=now;d.setDate(d.getDate()+1)) if(d.getDay()!==0) labA++;
+  if(hoyLab&&!cuentaHoy) labA--; labA=Math.max(1,labA);
+  const nTot=N.reduce((a,b)=>a+b,0), pTot=P.reduce((a,b)=>a+b,0);
+  const pdA=ventas/labA, ndA=nTot/labA, ppA=pTot/labA;
+  const labFut=j=>j===m?rest:(j>m?labMes(j):0);
+  const fut=[...Array(12).keys()].map(j=>r2(j===m?pd*rest:pdA*labFut(j)));
+  const futN=[...Array(12).keys()].map(j=>j===m?proyN-N[m]:Math.round(ndA*labFut(j)));
+  const futP=[...Array(12).keys()].map(j=>j===m?proyP-P[m]:Math.round(ppA*labFut(j)));
+  const resto=fut.reduce((a,b)=>a+b,0), labRest=[...Array(12).keys()].reduce((a,j)=>a+labFut(j),0);
+  $("#crPAT").textContent=`Proyectado anual · ${A}`;
+  $("#crProyAS").textContent=`${MesCap(m)} se proyecta con su propio ritmo; los meses que faltan, con el promedio por día laborable del año (desde la primera orden, el ${fmtDMY(prim)}). Quedan ${labRest} días laborables en ${A}.`;
+  $("#crProyAK").innerHTML=kp([
+    [`Cierre proyectado ${A}`,mny(ventas+resto),`real a la fecha ${mny(ventas)} + proyectado ${mny(resto)}`,"hl"],
+    ["Promedio por día laborable",mny(pdA),`del año, en ${labA} días laborables`],
+    ["Órdenes proyectadas",String(nTot+futN.reduce((a,b)=>a+b,0)),`van ${nTot} en el año`],
+    ["Piezas proyectadas",String(pTot+futP.reduce((a,b)=>a+b,0)),`van ${pTot} en el año`]]);
+  colChart($("#crProy"),{labels:labs,stacked:true,aria:`Ventas reales y proyectadas ${A}`,h:210,fmt:mnyK,hl:m,
+    tipLabel:j=>MesCap(j)+(j===m?" (en curso)":j>m?" (proyectado)":""),tipExtra:j=>j>=m?`\nCierre estimado: ${mny(V[j]+fut[j])}`:"",
+    series:[{name:"Real",color:SC[0],values:V},{name:"Proyectado",color:SC[3],values:fut}]});
+  const n=v=>`<td class="n">${v}</td>`;
+  const meses=[...Array(12).keys()].filter(j=>V[j]||fut[j]);
+  $("#crProyT").innerHTML=`<table><thead><tr><th>Mes</th><th class="n">Días laborables</th><th class="n">Real</th><th class="n">Proyectado</th><th class="n">Cierre estimado</th><th class="n">Órdenes</th><th class="n">Piezas</th></tr></thead><tbody>`+
+    meses.map(j=>`<tr${j===m?' class="cur"':""}><td>${MesCap(j)}${j===m?" (en curso)":j>m?" (proyectado)":""}</td>${n(labMes(j))}${n(V[j]?mny(V[j]):"—")}${n(fut[j]?mny(fut[j]):"—")}${n(mny(V[j]+fut[j]))}${n(N[j]+futN[j])}${n(P[j]+futP[j])}</tr>`).join("")+
+    `<tr class="tot"><td>Total ${A}</td><td class="n"></td>${n(mny(ventas))}${n(mny(resto))}${n(mny(ventas+resto))}${n(nTot+futN.reduce((a,b)=>a+b,0))}${n(pTot+futP.reduce((a,b)=>a+b,0))}</tr></tbody></table>`;
+}
 function renderCrec(){
   if(!$("#crK1")||$("#dashCrec").hidden) return;
   const anios=crecAnios();
   if(!anios.length){
     $("#crTit").textContent="Dashboard de crecimiento";
     $("#crSub").textContent="Todavía no llegan datos de ventas. Se cargan solos con la sincronización automática de la tienda.";
-    ["#crK1","#crK2","#crVentas","#crDia","#crPiezas","#crTipo","#crFormas","#crCobro","#crComp","#crPromo","#crEst","#crOrd"].forEach(s=>$(s).innerHTML="");
+    ["#crK1","#crK2","#crProyK","#crProyAK","#crProyT","#crProy","#crVentas","#crDia","#crPiezas","#crTipo","#crFormas","#crCobro","#crComp","#crPromo","#crEst","#crOrd"].forEach(s=>$(s).innerHTML="");
     $("#crAnios").innerHTML=""; return;
   }
   if(!anios.includes(crecAnio)) crecAnio=anios[0];
@@ -2258,6 +2309,7 @@ function renderCrec(){
     ["% Efectivo",cAll?(cEf/cAll*100).toFixed(1)+"%":"—",`${mny(cEf)} · tarjeta/transf. ${cAll?((cAll-cEf)/cAll*100).toFixed(1)+"%":"—"} (${mny(cAll-cEf)})`]]);
 
   const labs=MES3.map(m=>m[0].toUpperCase()+m.slice(1));
+  renderProyeccion({A,esActual,mHoy,diaHoy,ords,V,N,P,ventas,labs,now});
   colChart($("#crVentas"),{labels:labs,aria:`Ventas por mes ${A} contra ${A-1}`,h:220,fmt:mnyK,hl:esActual?mHoy:undefined,empty:"Aparece cuando haya órdenes.",
     tipLabel:j=>MesCap(j)+(esActual&&j===mHoy?" (en curso)":""),tipExtra:j=>`\nÓrdenes: ${N[j]} · Piezas: ${P[j]}\nValor exacto: ${mny(V[j])}`,
     series:[{name:String(A),color:SC[0],values:V},...(ant.some(v=>v>0)?[{name:String(A-1),color:SC[5],values:ant}]:[])]});
